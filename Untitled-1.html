@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Anass Essouqiani — Portfolio BTS SIO SISR</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #ffffff;
+    --surface: #f0f4ff;
+    --card: #e8eeff;
+    --border: #b8c8f0;
+    --accent: #1a3fd4;
+    --accent2: #2255e8;
+    --text: #0a1a6e;
+    --muted: #2a4aaa;
+    --muted2: #4060c0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CURSOR */
+  .cursor {
+    position: fixed;
+    width: 12px; height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transition: all 0.15s ease;
+    opacity: 0.4;
+  }
+
+  /* NAVBAR */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.2rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 2px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 500;
+    transition: color 0.3s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0;
+    width: 0; height: 2px;
+    background: var(--accent);
+    transition: width 0.3s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-links a:hover::after { width: 100%; }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 0 4rem;
+    position: relative;
+    overflow: hidden;
+    background: var(--bg);
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 80% 50%, rgba(26,63,212,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 15% 80%, rgba(34,85,232,0.06) 0%, transparent 60%);
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(26,63,212,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(26,63,212,0.06) 1px, transparent 1px);
+    background-size: 80px 80px;
+  }
+  .hero-content { position: relative; z-index: 2; max-width: 900px; }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: rgba(26,63,212,0.08);
+    border: 1px solid rgba(26,63,212,0.3);
+    border-radius: 2px;
+    padding: 0.4rem 1rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+  .hero-tag::before {
+    content: '';
+    width: 7px; height: 7px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(0.6); }
+  }
+
+  .hero-name {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(3.5rem, 9vw, 8rem);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    opacity: 0;
+    animation: fadeUp 0.9s 0.4s forwards;
+  }
+  .hero-name span { display: block; }
+  .hero-name .accent { color: var(--accent); }
+  .hero-name .outline {
+    color: transparent;
+    -webkit-text-stroke: 2px var(--accent);
+    opacity: 0.35;
+  }
+
+  .hero-subtitle {
+    margin-top: 1.8rem;
+    font-size: 0.9rem;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    line-height: 1.9;
+    max-width: 500px;
+    font-weight: 400;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.6s forwards;
+  }
+  .hero-subtitle strong { color: var(--accent); font-weight: 600; }
+
+  .hero-cta {
+    margin-top: 3rem;
+    display: flex;
+    gap: 1rem;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.8s forwards;
+  }
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.9rem 2rem;
+    background: var(--accent);
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 2px solid var(--accent);
+    cursor: none;
+    transition: all 0.3s;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+  }
+  .btn-primary:hover { background: #0e2aaa; border-color: #0e2aaa; transform: translateY(-2px); box-shadow: 0 10px 30px rgba(26,63,212,0.3); }
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.9rem 2rem;
+    background: transparent;
+    color: var(--accent);
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 2px solid var(--accent);
+    cursor: none;
+    transition: all 0.3s;
+  }
+  .btn-outline:hover { background: var(--accent); color: #fff; }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 3rem; left: 4rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--muted2);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 500;
+    opacity: 0;
+    animation: fadeUp 1s 1.2s forwards;
+  }
+  .scroll-line {
+    width: 60px; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent));
+    animation: lineExpand 2s 1.5s infinite;
+  }
+  @keyframes lineExpand {
+    0% { width: 0; opacity: 0; }
+    50% { width: 60px; opacity: 1; }
+    100% { width: 60px; opacity: 0; }
+  }
+
+  /* MARQUEE */
+  .marquee-wrap {
+    overflow: hidden;
+    border-top: 2px solid var(--border);
+    border-bottom: 2px solid var(--border);
+    padding: 1rem 0;
+    background: var(--surface);
+  }
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 22s linear infinite;
+  }
+  .marquee-item {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 0 2rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+    font-weight: 500;
+  }
+  .marquee-item span { color: var(--accent); font-size: 1rem; }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* SECTION COMMON */
+  section { padding: 8rem 4rem; position: relative; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 5rem;
+  }
+  .section-num {
+    font-size: 0.65rem;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .section-line {
+    flex: 1; max-width: 60px;
+    height: 2px;
+    background: var(--accent);
+    opacity: 0.5;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--text);
+  }
+  .section-title .dim { color: var(--muted2); opacity: 0.6; }
+
+  /* ABOUT */
+  #about { background: var(--surface); border-top: 2px solid var(--border); border-bottom: 2px solid var(--border); }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center; }
+  .about-text p {
+    color: var(--muted);
+    line-height: 1.9;
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+    font-weight: 400;
+  }
+  .about-text p strong { color: var(--accent); font-weight: 700; }
+  .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .stat-card {
+    background: var(--bg);
+    border: 2px solid var(--border);
+    padding: 1.8rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px; height: 0;
+    background: var(--accent);
+    transition: height 0.4s;
+  }
+  .stat-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+  .stat-card:hover::before { height: 100%; }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 0.4rem;
+    font-weight: 500;
+  }
+
+  /* COMPETENCES */
+  #competences { background: var(--bg); }
+  .comp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2px;
+    background: var(--border);
+    border: 2px solid var(--border);
+  }
+  .comp-card {
+    background: var(--bg);
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+    cursor: none;
+  }
+  .comp-card::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(26,63,212,0.05) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .comp-card:hover { background: var(--surface); }
+  .comp-card:hover::after { opacity: 1; }
+  .comp-code {
+    font-size: 0.65rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    font-weight: 700;
+  }
+  .comp-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+    color: var(--text);
+  }
+  .comp-list { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
+  .comp-list li {
+    font-size: 0.72rem;
+    color: var(--muted);
+    padding-left: 1rem;
+    position: relative;
+    line-height: 1.6;
+    font-weight: 400;
+  }
+  .comp-list li::before { content: '›'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+  .comp-tools { margin-top: 1.2rem; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .tag {
+    padding: 0.25rem 0.6rem;
+    border: 1px solid var(--border);
+    font-size: 0.6rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 500;
+    transition: all 0.3s;
+  }
+  .comp-card:hover .tag { border-color: var(--accent); color: var(--accent); }
+
+  /* TRAVAUX */
+  #travaux { background: var(--surface); border-top: 2px solid var(--border); }
+  .travaux-tabs {
+    display: flex;
+    margin-bottom: 3rem;
+    border: 2px solid var(--border);
+    width: fit-content;
+  }
+  .tab-btn {
+    padding: 0.8rem 2rem;
+    background: transparent;
+    border: none;
+    border-right: 2px solid var(--border);
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+    cursor: none;
+    transition: all 0.3s;
+  }
+  .tab-btn:last-child { border-right: none; }
+  .tab-btn.active { background: var(--accent); color: #fff; font-weight: 700; }
+  .tab-btn:not(.active):hover { color: var(--accent); background: var(--card); }
+  .tab-content { display: none; }
+  .tab-content.active { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5rem; }
+
+  .project-card {
+    background: var(--bg);
+    border: 2px solid var(--border);
+    overflow: hidden;
+    transition: transform 0.4s, border-color 0.4s, box-shadow 0.4s;
+    cursor: none;
+  }
+  .project-card:hover { transform: translateY(-6px); border-color: var(--accent); box-shadow: 0 12px 40px rgba(26,63,212,0.12); }
+  .project-img {
+    height: 160px;
+    background: linear-gradient(135deg, var(--surface) 0%, var(--card) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 2px solid var(--border);
+  }
+  .project-img-icon {
+    font-size: 3rem;
+    opacity: 0.35;
+    transition: opacity 0.4s, transform 0.4s;
+  }
+  .project-card:hover .project-img-icon { opacity: 0.7; transform: scale(1.1); }
+  .project-body { padding: 1.8rem; }
+  .project-comp {
+    font-size: 0.6rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+    font-weight: 700;
+  }
+  .project-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+    line-height: 1.3;
+    color: var(--text);
+  }
+  .project-desc {
+    font-size: 0.72rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 1.2rem;
+    font-weight: 400;
+  }
+  .project-tools { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .tool-tag {
+    padding: 0.2rem 0.6rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    font-size: 0.58rem;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    font-weight: 500;
+  }
+
+  /* SKILLS */
+  #skills { background: var(--bg); }
+  .skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; }
+  .skills-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+  }
+  .skill-item { margin-bottom: 1.8rem; }
+  .skill-header { display: flex; justify-content: space-between; margin-bottom: 0.6rem; }
+  .skill-name { font-size: 0.75rem; color: var(--text); letter-spacing: 0.05em; font-weight: 500; }
+  .skill-pct { font-size: 0.7rem; color: var(--accent); font-weight: 700; }
+  .skill-bar-bg { height: 4px; background: var(--card); border: 1px solid var(--border); overflow: hidden; }
+  .skill-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    width: 0;
+    transition: width 1.5s cubic-bezier(0.4,0,0.2,1);
+    position: relative;
+  }
+  .skill-bar-fill::after {
+    content: '';
+    position: absolute;
+    right: 0; top: -3px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px rgba(26,63,212,0.6);
+  }
+  .tools-cloud { display: flex; flex-wrap: wrap; gap: 0.8rem; }
+  .tool-chip {
+    padding: 0.6rem 1.2rem;
+    border: 2px solid var(--border);
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+    cursor: none;
+  }
+  .tool-chip::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s;
+    z-index: -1;
+  }
+  .tool-chip:hover { color: #fff; border-color: var(--accent); }
+  .tool-chip:hover::before { transform: scaleX(1); }
+
+  /* CONTACT */
+  #contact { background: var(--surface); border-top: 2px solid var(--border); }
+  .contact-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: start; }
+  .contact-info h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+  }
+  .contact-info h3 span { color: var(--accent); }
+  .contact-info > p { color: var(--muted); font-size: 0.82rem; line-height: 1.8; margin-bottom: 2.5rem; }
+  .contact-links { display: flex; flex-direction: column; gap: 1rem; }
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    border: 2px solid var(--border);
+    text-decoration: none;
+    color: var(--text);
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+    transition: all 0.3s;
+  }
+  .contact-link::after { content: '→'; margin-left: auto; color: var(--muted2); transition: all 0.3s; font-weight: 700; }
+  .contact-link:hover { border-color: var(--accent); background: rgba(26,63,212,0.05); color: var(--accent); }
+  .contact-link:hover::after { color: var(--accent); transform: translateX(4px); }
+  .contact-icon { font-size: 1rem; width: 20px; text-align: center; }
+
+  .contact-form-side { display: flex; flex-direction: column; gap: 1.2rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+  .form-label { font-size: 0.62rem; color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase; font-weight: 700; }
+  .form-input, .form-textarea {
+    background: var(--bg);
+    border: 2px solid var(--border);
+    padding: 0.9rem 1.2rem;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 500;
+    outline: none;
+    transition: border-color 0.3s;
+    resize: none;
+    cursor: none;
+  }
+  .form-input::placeholder, .form-textarea::placeholder { color: var(--muted2); opacity: 0.6; }
+  .form-input:focus, .form-textarea:focus { border-color: var(--accent); }
+  .form-textarea { min-height: 120px; }
+  .btn-send {
+    align-self: flex-start;
+    padding: 1rem 2.5rem;
+    background: var(--accent);
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: 2px solid var(--accent);
+    cursor: none;
+    transition: all 0.3s;
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  }
+  .btn-send:hover { background: #0e2aaa; border-color: #0e2aaa; transform: translateY(-2px); }
+
+  /* FOOTER */
+  footer {
+    padding: 2rem 4rem;
+    border-top: 2px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--surface);
+  }
+  footer p { font-size: 0.68rem; color: var(--muted); letter-spacing: 0.08em; font-weight: 500; }
+  .footer-accent { color: var(--accent); font-weight: 700; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s, transform 0.7s; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    section { padding: 5rem 1.5rem; }
+    #hero { padding: 0 1.5rem; }
+    .about-grid, .skills-grid, .contact-wrap { grid-template-columns: 1fr; gap: 3rem; }
+    .hero-scroll { left: 1.5rem; }
+    footer { padding: 1.5rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">AE/</a>
+  <ul class="nav-links">
+    <li><a href="#about">À propos</a></li>
+    <li><a href="#competences">Compétences</a></li>
+    <li><a href="#travaux">Travaux</a></li>
+    <li><a href="#skills">Outils</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-tag">BTS SIO · Option SISR · Portfolio</div>
+    <h1 class="hero-name">
+      <span class="outline">Anass</span>
+      <span class="accent">Essouqiani</span>
+    </h1>
+    <p class="hero-subtitle">
+      Étudiant en <strong>BTS SIO option SISR</strong> — systèmes, réseaux &amp; infrastructure.<br/>
+      Passionné par la <strong>cybersécurité</strong>, l'administration système et les technologies IT modernes.
+    </p>
+    <div class="hero-cta">
+      <a href="#travaux" class="btn-primary">Voir mes travaux →</a>
+      <a href="#competences" class="btn-outline">Mes compétences</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    Défiler
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <div class="marquee-item">Réseaux &amp; Systèmes <span>·</span> Windows Server 2022 <span>·</span> VirtualBox <span>·</span> GLPI <span>·</span> Debian / Ubuntu <span>·</span> Cybersécurité <span>·</span> WordPress <span>·</span> Visual Studio Code <span>·</span> Cobian Backup <span>·</span> C# <span>·</span> HTML / CSS <span>·</span> Administration IT <span>·</span></div>
+    <div class="marquee-item">Réseaux &amp; Systèmes <span>·</span> Windows Server 2022 <span>·</span> VirtualBox <span>·</span> GLPI <span>·</span> Debian / Ubuntu <span>·</span> Cybersécurité <span>·</span> WordPress <span>·</span> Visual Studio Code <span>·</span> Cobian Backup <span>·</span> C# <span>·</span> HTML / CSS <span>·</span> Administration IT <span>·</span></div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-header reveal">
+    <span class="section-num">01</span>
+    <div class="section-line"></div>
+    <h2 class="section-title">À <span class="dim">propos</span></h2>
+  </div>
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <p>Je suis <strong>Anass Essouqiani</strong>, étudiant en <strong>BTS SIO option SISR</strong> (Solutions d'Infrastructure, Systèmes et Réseaux).</p>
+      <p>Mon portfolio présente les travaux réalisés au cours de mes <strong>deux années de formation</strong>, au lycée comme en stage. Chaque projet illustre les compétences du <strong>Bloc 1</strong> du référentiel BTS SIO.</p>
+      <p>Passionné par la <strong>cybersécurité</strong>, l'administration système et les technologies réseau, je cherche constamment à monter en compétences et à rester à jour sur les nouvelles pratiques du secteur IT.</p>
+    </div>
+    <div class="about-stats reveal">
+      <div class="stat-card">
+        <div class="stat-num">6</div>
+        <div class="stat-label">Blocs de compétences</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">13</div>
+        <div class="stat-label">Projets réalisés</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">2</div>
+        <div class="stat-label">Années de formation</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">SISR</div>
+        <div class="stat-label">Option spécialité</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPETENCES -->
+<section id="competences">
+  <div class="section-header reveal">
+    <span class="section-num">02</span>
+    <div class="section-line"></div>
+    <h2 class="section-title">Compétences <span class="dim">Bloc 1</span></h2>
+  </div>
+  <div class="comp-grid">
+    <div class="comp-card reveal">
+      <div class="comp-code">B1.1</div>
+      <div class="comp-title">Gestion du patrimoine informatique</div>
+      <ul class="comp-list">
+        <li>Recensement et identification des ressources numériques</li>
+        <li>Exploitation des référentiels, normes et standards</li>
+        <li>Mise en place des niveaux d'habilitation</li>
+        <li>Gestion des sauvegardes</li>
+        <li>Vérification des règles d'utilisation</li>
+      </ul>
+      <div class="comp-tools">
+        <span class="tag">GLPI</span><span class="tag">Parc informatique</span><span class="tag">Sauvegardes</span>
+      </div>
+    </div>
+    <div class="comp-card reveal">
+      <div class="comp-code">B1.2</div>
+      <div class="comp-title">Réponse aux incidents &amp; demandes d'assistance</div>
+      <ul class="comp-list">
+        <li>Collecte, suivi et orientation des demandes</li>
+        <li>Traitement des incidents applicatifs, réseau et système</li>
+        <li>Correction de bugs applicatifs</li>
+        <li>Réponse aux demandes d'évolution</li>
+      </ul>
+      <div class="comp-tools">
+        <span class="tag">Tickets GLPI</span><span class="tag">Helpdesk</span><span class="tag">Debug</span>
+      </div>
+    </div>
+    <div class="comp-card reveal">
+      <div class="comp-code">B1.3</div>
+      <div class="comp-title">Développement de la présence en ligne</div>
+      <ul class="comp-list">
+        <li>Valorisation de l'image sur les médias numériques</li>
+        <li>Référencement des services en ligne</li>
+        <li>Évolution de sites Web avec données</li>
+      </ul>
+      <div class="comp-tools">
+        <span class="tag">WordPress</span><span class="tag">HTML/CSS</span><span class="tag">SEO</span>
+      </div>
+    </div>
+    <div class="comp-card reveal">
+      <div class="comp-code">B1.4</div>
+      <div class="comp-title">Travail en mode projet</div>
+      <ul class="comp-list">
+        <li>Analyse des objectifs et modalités d'organisation</li>
+        <li>Planification des activités</li>
+        <li>Suivi des indicateurs et analyse des écarts</li>
+      </ul>
+      <div class="comp-tools">
+        <span class="tag">Gestion projet</span><span class="tag">Planification</span><span class="tag">Suivi</span>
+      </div>
+    </div>
+    <div class="comp-card reveal">
+      <div class="comp-code">B1.5</div>
+      <div class="comp-title">Mise à disposition d'un service informatique</div>
+      <ul class="comp-list">
+        <li>Tests d'intégration et d'acceptation</li>
+        <li>Déploiement d'un service</li>
+        <li>Accompagnement des utilisateurs</li>
+      </ul>
+      <div class="comp-tools">
+        <span class="tag">Jeu d'essai</span><span class="tag">Rapport de test</span><span class="tag">Doc utilisateur</span>
+      </div>
+    </div>
+    <div class="comp-card reveal">
+      <div class="comp-code">B1.6</div>
+      <div class="comp-title">Développement professionnel</div>
+      <ul class="comp-list">
+        <li>Mise en place de l'environnement d'apprentissage</li>
+        <li>Veille informationnelle et technologique</li>
+        <li>Gestion de l'identité professionnelle</li>
+        <li>Développement du projet professionnel</li>
+      </ul>
+      <div class="comp-tools">
+        <span class="tag">Veille tech</span><span class="tag">LinkedIn</span><span class="tag">Auto-formation</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRAVAUX -->
+<section id="travaux">
+  <div class="section-header reveal">
+    <span class="section-num">03</span>
+    <div class="section-line"></div>
+    <h2 class="section-title">Travaux <span class="dim">réalisés</span></h2>
+  </div>
+  <div class="travaux-tabs reveal">
+    <button class="tab-btn active" onclick="switchTab('lycee', this)">Au lycée</button>
+    <button class="tab-btn" onclick="switchTab('stage', this)">En stage</button>
+  </div>
+
+  <div class="tab-content active" id="tab-lycee">
+    <div class="project-card reveal">
+      <div class="project-img"><div class="project-img-icon">📋</div></div>
+      <div class="project-body">
+        <div class="project-comp">B1.1 · Patrimoine informatique</div>
+        <div class="project-title">Charte de nommage</div>
+        <p class="project-desc">Vérification de la conformité des règles de nommage des dossiers et fiches utilisateur avec la charte de l'entreprise.</p>
+        <div class="project-tools"><span class="tool-tag">Google Doc</span><span class="tool-tag">Messagerie</span></div>
+      </div>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-img"><div class="project-img-icon">🛡️</div></div>
+      <div class="project-body">
+        <div class="project-comp">B1.1 · Patrimoine informatique</div>
+        <div class="project-title">Charte informatique</div>
+        <p class="project-desc">Vérification de la conformité de situations professionnelles avec la charte informatique de l'entreprise.</p>
+        <div class="project-tools"><span class="tool-tag">Google Doc</span></div>
+      </div>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-img"><div class="project-img-icon">🌐</div></div>
+      <div class="project-body">
+        <div class="project-comp">B1.3 · Présence en ligne</div>
+        <div class="project-title">Site WordPress — Bobocal</div>
+        <p class="project-desc">Création d'un site web complet pour le groupe Bobocal. Apprentissage de WordPress et configuration du CMS.</p>
+        <div class="project-tools"><span class="tool-tag">WordPress</span></div>
+      </div>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-img"><div class="project-img-icon">🖥️</div></div>
+      <div class="project-body">
+        <div class="project-comp">B1.1 · B1.5 · Infrastructure</div>
+        <div class="project-title">Projet Serveur NAS</div>
+        <p class="project-desc">Mise en place et configuration d'un serveur NAS en environnement virtualisé avec gestion des droits et sauvegardes.</p>
+        <div class="project-tools"><span class="tool-tag">Google Doc</span><span class="tool-tag">VirtualBox</span></div>
+      </div>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-img"><div class="project-img-icon">🔧</div></div>
+      <div class="project-body">
+        <div class="project-comp">B1.2 · Incidents &amp; demandes</div>
+        <div class="project-title">Anomalie Linkretz</div>
+        <p class="project-desc">Correction d'un site web statique Linkretz — analyse et résolution d'une anomalie HTML/CSS dans Visual Studio Code.</p>
+        <div class="project-tools"><span class="tool-tag">Visual Studio Code</span><span class="tool-tag">HTML/CSS</span></div>
+      </div>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-img"><div class="project-img-icon">⚙️</div></div>
+      <div class="project-body">
+        <div class="project-comp">B1.2 · Évolution applicative</div>
+        <div class="project-title">Évolution programme C#</div>
+        <p class="project-desc">Traitement d'une demande d'évolution d'un programme C# — analyse du code et implémentation de nouvelles fonctionnalités.</p>
+        <div class="project-tools"><span class="tool-tag">Visual Studio Code</span><span class="tool-tag">C#</span></div>
+      </div>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-img"><div class="project-img-icon">🪟</div></div>
+      <div class="project-body">
+        <div class="project-comp">B1.1 · B1.5 · Systèmes</div>
+        <div class="project-title">Windows Server 2022</div>
+        <p class="project-desc">Installation et configuration de Windows Server 2022, déploiement de différents protocoles et services réseau en machine virtuelle.</p>
+        <div class="project-tools"><span class="tool-tag">Windows Server 2022</span><span class="tool-tag">VirtualBox</span></div>
+      </div>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-img"><div class="project-img-icon">📡</div></div>
+      <div class="project-body">
+        <div class="project-comp">B1.1 · Supervision réseau</div>
+        <div class="project-title">Supervision</div>
+        <p class="project-desc">Mise en place d'une solution de supervision réseau pour surveiller l'état des équipements et services de l'infrastructure.</p>
+        <div class="project-tools"><span class="tool-tag">Google Doc</span><span class="tool-tag">Messagerie</span></div>
+      </div>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-img"><div class="project-img-icon">🔍</div></div>
+      <div class="project-body">
+        <div class="project-comp">B1.6 · Développement professionnel</div>
+        <div class="project-title">Veille technologique</div>
+        <p class="project-desc">Réalisation d'une veille technologique sur la réalité augmentée — analyse des tendances, acteurs et enjeux du secteur.</p>
+        <div class="project-tools"><span class="tool-tag">Google Doc</span><span class="tool-tag">Messagerie</span></div>
+      </div>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-img"><div class="project-img-icon">💾</div></div>
+      <div class="project-body">
+        <div class="project-comp">B1.1 · Sauvegardes</div>
+        <div class="project-title">Les sauvegardes (Cobian Backup)</div>
+        <p class="project-desc">Mise en œuvre de sauvegardes incrémentielle, différentielle et complète avec Cobian Backup sur Windows Server 2022.</p>
+        <div class="project-tools"><span class="tool-tag">Windows Server 2022</span><span class="tool-tag">Cobian Backup</span></div>
+      </div>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-img"><div class="project-img-icon">🗄️</div></div>
+      <div class="project-body">
+        <div class="project-comp">B1.5 · Déploiement service</div>
+        <div class="project-title">Les serveurs Windows Server 2022</div>
+        <p class="project-desc">Installation de différents protocoles et réponse à des questions sur les services réseau en environnement Windows Server.</p>
+        <div class="project-tools"><span class="tool-tag">Windows Server 2022</span><span class="tool-tag">VirtualBox</span></div>
+      </div>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-img"><div class="project-img-icon">🗂️</div></div>
+      <div class="project-body">
+        <div class="project-comp">B1.1 · Patrimoine informatique</div>
+        <div class="project-title">Patrimoine informatique — GLPI</div>
+        <p class="project-desc">Installation et configuration de GLPI pour recenser et gérer les ressources numériques, habilitations et règles d'utilisation.</p>
+        <div class="project-tools"><span class="tool-tag">VirtualBox</span><span class="tool-tag">GLPI</span></div>
+      </div>
+    </div>
+    <div class="project-card reveal">
+      <div class="project-img"><div class="project-img-icon">🐧</div></div>
+      <div class="project-body">
+        <div class="project-comp">B1.1 · B1.5 · Systèmes Linux</div>
+        <div class="project-title">Installation Debian &amp; Ubuntu</div>
+        <p class="project-desc">Installation et configuration de machines virtuelles Linux (Debian et Ubuntu) — paramétrage réseau et services de base.</p>
+        <div class="project-tools"><span class="tool-tag">VirtualBox</span><span class="tool-tag">Debian</span><span class="tool-tag">Ubuntu</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-content" id="tab-stage">
+    <div class="project-card reveal" style="max-width:500px;">
+      <div class="project-img"><div class="project-img-icon">🚧</div></div>
+      <div class="project-body">
+        <div class="project-comp">En cours</div>
+        <div class="project-title">Travaux en stage</div>
+        <p class="project-desc">Les travaux réalisés en stage seront ajoutés prochainement. Revenez bientôt !</p>
+        <div class="project-tools"><span class="tool-tag">À venir</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-header reveal">
+    <span class="section-num">04</span>
+    <div class="section-line"></div>
+    <h2 class="section-title">Outils &amp; <span class="dim">Technos</span></h2>
+  </div>
+  <div class="skills-grid">
+    <div class="reveal">
+      <div class="skills-label">Compétences techniques</div>
+      <div class="skill-item">
+        <div class="skill-header"><span class="skill-name">Administration Systèmes (Windows/Linux)</span><span class="skill-pct">85%</span></div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="85"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span class="skill-name">Réseaux &amp; Infrastructure</span><span class="skill-pct">80%</span></div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="80"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span class="skill-name">Virtualisation (VirtualBox)</span><span class="skill-pct">78%</span></div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="78"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span class="skill-name">Développement Web (HTML/CSS/JS)</span><span class="skill-pct">70%</span></div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="70"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span class="skill-name">GLPI / Gestion de parc</span><span class="skill-pct">75%</span></div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="75"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-header"><span class="skill-name">Cybersécurité (Bases)</span><span class="skill-pct">65%</span></div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" data-width="65"></div></div>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="skills-label">Outils maîtrisés</div>
+      <div class="tools-cloud">
+        <span class="tool-chip">Windows Server 2022</span>
+        <span class="tool-chip">VirtualBox</span>
+        <span class="tool-chip">GLPI</span>
+        <span class="tool-chip">Debian</span>
+        <span class="tool-chip">Ubuntu</span>
+        <span class="tool-chip">WordPress</span>
+        <span class="tool-chip">Visual Studio Code</span>
+        <span class="tool-chip">C#</span>
+        <span class="tool-chip">HTML / CSS</span>
+        <span class="tool-chip">Cobian Backup</span>
+        <span class="tool-chip">Google Workspace</span>
+        <span class="tool-chip">Messagerie</span>
+        <span class="tool-chip">TCP/IP</span>
+        <span class="tool-chip">Active Directory</span>
+        <span class="tool-chip">SSH</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-header reveal">
+    <span class="section-num">05</span>
+    <div class="section-line"></div>
+    <h2 class="section-title">Contact <span class="dim">&amp; infos</span></h2>
+  </div>
+  <div class="contact-wrap">
+    <div class="contact-info reveal">
+      <h3>On reste<br/><span>en contact.</span></h3>
+      <p>N'hésite pas à me contacter pour toute question sur mon parcours, mes projets ou pour une opportunité de stage.</p>
+      <div class="contact-links">
+        <a href="mailto:anass.essouqiani@email.com" class="contact-link">
+          <span class="contact-icon">✉</span>
+          anass.essouqiani@email.com
+        </a>
+        <a href="https://sites.google.com/view/anass-essouqiani/accueil" target="_blank" class="contact-link">
+          <span class="contact-icon">🌐</span>
+          Portfolio Google Sites (original)
+        </a>
+        <a href="#" class="contact-link">
+          <span class="contact-icon">💼</span>
+          BTS SIO — Option SISR
+        </a>
+      </div>
+    </div>
+    <div class="contact-form-side reveal">
+      <div class="form-group">
+        <label class="form-label">Nom</label>
+        <input type="text" class="form-input" placeholder="Votre nom"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" placeholder="votre@email.com"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Message</label>
+        <textarea class="form-textarea" placeholder="Votre message..."></textarea>
+      </div>
+      <button class="btn-send">Envoyer →</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 <span class="footer-accent">Anass Essouqiani</span> — BTS SIO SISR</p>
+  <p>Fait avec <span class="footer-accent">♥</span> — Portfolio personnel</p>
+</footer>
+
+<script>
+  // CURSOR
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = (mx - 6) + 'px';
+    cursor.style.top  = (my - 6) + 'px';
+  });
+  (function animRing() {
+    rx += (mx - rx - 18) * 0.15;
+    ry += (my - ry - 18) * 0.15;
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(animRing);
+  })();
+  document.querySelectorAll('a,button,.comp-card,.project-card,.tool-chip').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursor.style.transform = 'scale(2.5)'; ring.style.opacity = '0'; });
+    el.addEventListener('mouseleave', () => { cursor.style.transform = 'scale(1)';   ring.style.opacity = '0.4'; });
+  });
+
+  // SCROLL REVEAL
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const i = Array.from(reveals).indexOf(e.target) % 4;
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(r => observer.observe(r));
+
+  // SKILL BARS
+  const barObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.width = e.target.dataset.width + '%';
+        barObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.skill-bar-fill').forEach(b => barObs.observe(b));
+
+  // TABS
+  function switchTab(id, btn) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  // NAV highlight on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 200) current = s.id; });
+    navLinks.forEach(a => {
+      a.style.color = a.getAttribute('href') === '#' + current ? 'var(--accent)' : '';
+    });
+  });
+</script>
+</body>
+</html>
