@@ -17,7 +17,7 @@ struct XQSignalParams
    double            slBufferATR, minSlATR, maxSlATR;
    double            point;
    bool              enabled[XQAI_N_STRATEGIES];
-   bool              matrix[XQAI_N_REGIMES * XQAI_N_STRATEGIES];  // [regime * 6 + strategy]
+   bool              regimeMask[XQAI_N_REGIMES * XQAI_N_STRATEGIES];  // [regime * 6 + strategy]
    int               warmup;
   };
 
@@ -31,7 +31,7 @@ struct XQM1Info
 bool XQ_ParseRegimeMatrix(const string text, XQSignalParams &p)
   {
    for(int k = 0; k < XQAI_N_REGIMES * XQAI_N_STRATEGIES; k++)
-      p.matrix[k] = false;
+      p.regimeMask[k] = false;
    string parts[];
    int np = StringSplit(text, '|', parts);
    for(int i = 0; i < np; i++)
@@ -65,7 +65,7 @@ bool XQ_ParseRegimeMatrix(const string text, XQSignalParams &p)
                st = s;
          if(st < 0)
             return false;
-         p.matrix[reg * XQAI_N_STRATEGIES + st] = true;
+         p.regimeMask[reg * XQAI_N_STRATEGIES + st] = true;
         }
      }
    return true;
@@ -238,7 +238,7 @@ void XQ_EvaluateOne(const int s, const int d, const int reg, const bool rowValid
      }
 
    //--- regime and direction gates
-   bool allowed = p.matrix[reg * XQAI_N_STRATEGIES + s] && p.enabled[s];
+   bool allowed = p.regimeMask[reg * XQAI_N_STRATEGIES + s] && p.enabled[s];
    if(!XQ_IsCounterTrend(s))
      {
       if(reg == XQ_R_TREND_UP && d != 1)
