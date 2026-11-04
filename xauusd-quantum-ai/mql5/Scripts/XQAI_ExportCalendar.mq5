@@ -58,7 +58,7 @@ void OnStart(void)
          continue;
       if(InpHighOnly && ev.importance != CALENDAR_IMPORTANCE_HIGH)
          continue;
-      string name = ev.name;
+      string name = ev.event_code + " " + ev.name;   // code = language-independent slug
       StringReplace(name, ",", " ");
       FileWriteString(h, StringFormat("%I64d,USD,%s,%s\r\n", (long)tz.ToUTC(v[i].time), Imp(ev.importance), name));
       written++;

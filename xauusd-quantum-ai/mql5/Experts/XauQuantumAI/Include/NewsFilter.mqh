@@ -74,7 +74,9 @@ private:
             continue;
          int imp = (ev.importance == CALENDAR_IMPORTANCE_HIGH) ? 3 : ((ev.importance == CALENDAR_IMPORTANCE_MODERATE) ? 2 : 1);
          bool fomc;
-         if(Relevant(ev.name, imp, fomc))
+         // event_code is a language-independent English slug (e.g. "nonfarm-payrolls"):
+         // the event name follows the terminal language (French, etc.)
+         if(Relevant(ev.event_code + " " + ev.name, imp, fomc))
             Add(values[i].time, ev.name, fomc);
         }
       return true;
@@ -121,9 +123,9 @@ public:
       m_fomcWin = fomcMin;
       m_csv = csvFile;
       string kw = "nonfarm,non-farm,payroll,cpi,consumer price,pce,fomc,interest rate decision,fed chair,powell,"
-                  "unemployment,jobless,gdp,federal reserve,fed ";
+                  "unemployment,jobless,gdp,federal reserve,fed ,fed-,interest-rate,fed-chair,non-farm";
       StringSplit(kw, ',', m_keywords);
-      string fk = "fomc,interest rate decision,fed chair,powell";
+      string fk = "fomc,interest rate decision,interest-rate-decision,fed chair,fed-chair,powell";
       StringSplit(fk, ',', m_fomcKeys);
       Refresh(true);
      }

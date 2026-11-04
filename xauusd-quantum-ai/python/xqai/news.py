@@ -15,8 +15,9 @@ import numpy as np
 import pandas as pd
 
 KEYWORDS = ["nonfarm", "non-farm", "payroll", "cpi", "consumer price", "pce", "fomc", "interest rate decision",
-            "fed ", "fed chair", "powell", "unemployment", "jobless", "gdp", "federal reserve"]
-FOMC_KEYS = ["fomc", "interest rate decision", "fed chair", "powell"]
+            "fed ", "fed chair", "powell", "unemployment", "jobless", "gdp", "federal reserve",
+            "interest-rate", "fed-chair", "fed-"]
+FOMC_KEYS = ["fomc", "interest rate decision", "interest-rate-decision", "fed chair", "fed-chair", "powell"]
 
 
 def load_calendar(path: str | Path) -> pd.DataFrame:
