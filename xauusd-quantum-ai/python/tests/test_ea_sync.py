@@ -27,7 +27,8 @@ MAP = {"InpRiskPercent": "risk_percent", "InpMaxRiskPercentHard": "max_risk_perc
        "InpMaxSpreadATR": "max_spread_atr", "InpRolloverBlockMinutes": "rollover_block_minutes",
        "InpFridayLastEntryUTC": "friday_last_entry_utc_hour", "InpNewsBeforeMin": "news_block_before_min",
        "InpNewsAfterMin": "news_block_after_min", "InpNewsFomcMin": "news_block_fomc_min",
-       "InpWarmupBars": "warmup_bars", "InpDegradedScoreBonus": "degraded_score_bonus"}
+       "InpWarmupBars": "warmup_bars", "InpScaleLevels": "scale_levels",
+       "InpScaleExpiryBars": "scale_expiry_bars", "InpDegradedScoreBonus": "degraded_score_bonus"}
 
 
 def ea_inputs():

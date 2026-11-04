@@ -205,3 +205,44 @@ def test_news_block():
     cal["name_l"] = cal["name"].str.lower()
     t = np.array([ts("2024-05-03 12:05"), ts("2024-05-03 11:55"), ts("2024-05-01 17:10"), ts("2024-05-01 19:30")])
     assert blocked_mask(t, cal, 30, 30, 60).tolist() == [True, False, True, False]
+
+
+# ------------------------------------------------------------------ staggered entries
+def test_size_group_total_risk_matches_budget():
+    from xqai.risk import size_group
+    cfg = Config(risk_percent=2.0, max_risk_percent_hard=2.0)
+    # the user's example: SELL, SL 4075, entries spread between 4063 and 4070
+    g = size_group(cfg, 3000, 3000, [4063, 4065, 4067, 4068, 4070], 4075)
+    assert g.ok and g.n_legs >= 2
+    assert g.risk_percent <= 2.0 + 1e-9
+    single = size_position(cfg, 3000, 3000, 4063, 4075)
+    assert g.lots_per_leg * g.n_legs >= single.lots      # closer average entry => more lots, same risk
+
+
+def test_size_group_drops_legs_below_min_lot():
+    from xqai.risk import size_group
+    cfg = Config(risk_percent=0.5)
+    g = size_group(cfg, 3000, 3000, [4063, 4067, 4070], 4075)
+    assert g.ok and g.lots_per_leg >= cfg.volume_min
+    assert g.risk_percent <= cfg.max_risk_percent_hard + 1e-9
+
+
+def test_scale_levels_parsing():
+    from xqai.config import DEFAULT_SCALE_LEVELS, parse_scale_levels
+    plan = parse_scale_levels(DEFAULT_SCALE_LEVELS)
+    assert plan["LIQ_SWEEP"] == [0.0, 0.35, 0.6] and plan["BREAKOUT"] == [0.0]
+    with pytest.raises(ValueError):
+        parse_scale_levels("SW:0.2,0.4")          # must start with the market entry
+
+
+def test_scaled_backtest_never_exceeds_risk(synth):
+    cfg, data, X = synth
+    c2 = cfg.replace(use_scaled_entries=True, risk_percent=2.0, max_risk_percent_hard=2.0, max_total_risk_percent=2.0,
+                     daily_loss_limit_percent=4.0)
+    res = run_backtest(data, c2, X, evaluate(X, c2), record_decisions=True)
+    tr = res.trades
+    assert len(tr) > 0 and (tr["legs"] >= 1).all()
+    assert tr["legs"].max() > 1                        # some ideas really were split
+    # a full stop-out of an idea costs about -1R (slippage/gaps can add a little), never more
+    assert tr["r"].min() > -1.3
+    assert (tr.groupby(tr["open_time"] // 86400).size() <= c2.max_trades_per_day).all()

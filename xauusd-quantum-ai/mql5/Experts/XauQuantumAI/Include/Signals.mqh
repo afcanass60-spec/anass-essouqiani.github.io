@@ -71,6 +71,50 @@ bool XQ_ParseRegimeMatrix(const string text, XQSignalParams &p)
    return true;
   }
 
+//--- parses "PB:0,0.3,0.55|SW:0,0.35,0.6|BO:0" (fractions of the entry->SL distance, 0 = market leg)
+//--- into f[strategy * XQ_MAX_LEGS + k] / cnt[strategy]. Missing strategy = market entry only.
+bool XQ_ParseScaleLevels(const string text, double &f[], int &cnt[])
+  {
+   for(int s = 0; s < XQAI_N_STRATEGIES; s++)
+     {
+      cnt[s] = 1;
+      for(int k = 0; k < XQ_MAX_LEGS; k++)
+         f[s * XQ_MAX_LEGS + k] = 0.0;
+     }
+   string parts[];
+   int np = StringSplit(text, '|', parts);
+   for(int i = 0; i < np; i++)
+     {
+      string kv[];
+      if(StringSplit(parts[i], ':', kv) < 2)
+         continue;
+      string code = kv[0];
+      StringTrimLeft(code);
+      StringTrimRight(code);
+      int st = -1;
+      for(int s = 0; s < XQAI_N_STRATEGIES; s++)
+         if(XQ_StrategyCode(s) == code)
+            st = s;
+      if(st < 0)
+         return false;
+      string vals[];
+      int nv = StringSplit(kv[1], ',', vals);
+      if(nv < 1 || nv > XQ_MAX_LEGS)
+         return false;
+      double prev = -1.0;
+      for(int k = 0; k < nv; k++)
+        {
+         double v = StringToDouble(vals[k]);
+         if((k == 0 && v != 0.0) || v < 0.0 || v >= 0.9 || v <= prev)
+            return false;
+         f[st * XQ_MAX_LEGS + k] = v;
+         prev = v;
+        }
+      cnt[st] = nv;
+     }
+   return true;
+  }
+
 //--- validity of the decision row (same rule as features.py "valid")
 bool XQ_RowValid(const CTFData &m5, const CTFData &m15, const CTFData &m30, const CTFData &h1, const CTFData &h4,
                  const int warmup)

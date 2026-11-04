@@ -42,6 +42,24 @@ private:
      }
    void              SetMeta(const ulong tk, const string f, const double v) { GlobalVariableSet(Key(tk, f), v); }
    void              DelMeta(const ulong tk) { GlobalVariablesDeleteAll(StringFormat("%s%I64u_", m_pre, tk)); }
+   //--- idea-level ("group") metas: one trade idea may be split into several legs (staggered entries)
+   string            GKey(const ulong g, const string f) { return StringFormat("XQG_%I64d_%I64u_%s", m_magic, g, f); }
+   double            GMeta(const ulong g, const string f, const double def)
+     {
+      string k = GKey(g, f);
+      return GlobalVariableCheck(k) ? GlobalVariableGet(k) : def;
+     }
+   void              SetGMeta(const ulong g, const string f, const double v) { GlobalVariableSet(GKey(g, f), v); }
+
+   bool              OurOrderSelected(void)
+     {
+      return (OrderGetString(ORDER_SYMBOL) == m_sym && OrderGetInteger(ORDER_MAGIC) == m_magic);
+     }
+   bool              OurPositionSelected(void)
+     {
+      return (PositionGetString(POSITION_SYMBOL) == m_sym && PositionGetInteger(POSITION_MAGIC) == m_magic);
+     }
+   ulong             GroupOf(const ulong tk) { return (ulong)Meta(tk, "grp", (double)tk); }
 
    double            TickSize(void)
      {
@@ -88,25 +106,101 @@ public:
       return NormalizeDouble(MathRound(price / ts) * ts, digits);
      }
 
-   //--- our positions on this symbol
+   //--- number of open trade IDEAS (a staggered idea = several legs/orders = one idea)
    int               Count(int &dirOut, bool &allProtected)
      {
+      ulong seen[];
       int n = 0;
       dirOut = 0;
       allProtected = true;
       for(int i = PositionsTotal() - 1; i >= 0; i--)
         {
          ulong tk = PositionGetTicket(i);
-         if(tk == 0 || PositionGetString(POSITION_SYMBOL) != m_sym || PositionGetInteger(POSITION_MAGIC) != m_magic)
+         if(tk == 0 || !OurPositionSelected())
             continue;
-         n++;
          int d = (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_BUY) ? 1 : -1;
          dirOut = (dirOut == 0 || dirOut == d) ? d : 99;      // 99 = mixed (should never happen)
          double open = PositionGetDouble(POSITION_PRICE_OPEN), sl = PositionGetDouble(POSITION_SL);
          if(sl <= 0 || (sl - open) * d < 0)
             allProtected = false;
+         AddUnique(seen, n, GroupOf(tk));
+        }
+      for(int i = OrdersTotal() - 1; i >= 0; i--)
+        {
+         ulong tk = OrderGetTicket(i);
+         if(tk == 0 || !OurOrderSelected())
+            continue;
+         long ot = OrderGetInteger(ORDER_TYPE);
+         int d = (ot == ORDER_TYPE_BUY_LIMIT || ot == ORDER_TYPE_BUY_STOP) ? 1 : -1;
+         dirOut = (dirOut == 0 || dirOut == d) ? d : 99;
+         allProtected = false;                              // an unfilled leg still carries risk
+         AddUnique(seen, n, GroupOf(tk));
         }
       return n;
+     }
+
+   void              AddUnique(ulong &arr[], int &n, const ulong v)
+     {
+      for(int k = 0; k < n; k++)
+         if(arr[k] == v)
+            return;
+      ArrayResize(arr, n + 1);
+      arr[n] = v;
+      n++;
+     }
+
+   bool              GroupHasPosition(const ulong g)
+     {
+      for(int i = PositionsTotal() - 1; i >= 0; i--)
+        {
+         ulong tk = PositionGetTicket(i);
+         if(tk != 0 && OurPositionSelected() && GroupOf(tk) == g)
+            return true;
+        }
+      return false;
+     }
+
+   //--- deletes the unfilled limit orders of a group (g = 0: all of ours)
+   void              DeletePending(const ulong g, const string reason)
+     {
+      for(int i = OrdersTotal() - 1; i >= 0; i--)
+        {
+         ulong tk = OrderGetTicket(i);
+         if(tk == 0 || !OurOrderSelected())
+            continue;
+         if(g != 0 && GroupOf(tk) != g)
+            continue;
+         double vol = OrderGetDouble(ORDER_VOLUME_CURRENT), px = OrderGetDouble(ORDER_PRICE_OPEN);
+         if(m_trade.OrderDelete(tk))
+           {
+            m_log.Trade("CANCEL", tk, XQ_StrategyName((int)Meta(tk, "st", 0)), 0, vol, px, 0, 0, 0, 0, reason);
+            DelMeta(tk);
+           }
+        }
+     }
+
+   //--- expiry of unfilled legs, and cleanup when the idea has no open position any more
+   void              ManagePending(void)
+     {
+      for(int i = OrdersTotal() - 1; i >= 0; i--)
+        {
+         ulong tk = OrderGetTicket(i);
+         if(tk == 0 || !OurOrderSelected())
+            continue;
+         ulong g = GroupOf(tk);
+         string why = "";
+         if(TimeCurrent() >= (datetime)(long)Meta(tk, "exp", 0))
+            why = "expired";
+         else
+            if(!GroupHasPosition(g))
+               why = "idea_closed";
+         double vol = OrderGetDouble(ORDER_VOLUME_CURRENT), px = OrderGetDouble(ORDER_PRICE_OPEN);
+         if(why != "" && m_trade.OrderDelete(tk))
+           {
+            m_log.Trade("CANCEL", tk, XQ_StrategyName((int)Meta(tk, "st", 0)), 0, vol, px, 0, 0, 0, 0, why);
+            DelMeta(tk);
+           }
+        }
      }
 
    //--- validates stops against the broker's stop level for the current price
@@ -195,9 +289,54 @@ public:
       SetMeta(ticket, "rm", riskMoney);
       SetMeta(ticket, "pnl", 0.0);
       SetMeta(ticket, "t0", (double)TimeCurrent());
+      SetMeta(ticket, "grp", (double)ticket);          // the market leg names the idea
+      SetMeta(ticket, "refE", entry);
+      SetMeta(ticket, "refR", MathAbs(entry - sl));
+      SetGMeta(ticket, "rm", riskMoney);
+      SetGMeta(ticket, "pnl", 0.0);
+      SetGMeta(ticket, "st", c.strategy);
       m_log.Trade("OPEN", ticket, XQ_StrategyName(c.strategy), dir, lots, entry, sl, tp, 0.0, 0.0,
                   StringFormat("score=%.1f slip=%.0fpts", c.score, slip));
       return ticket;
+     }
+
+   //--- total money at risk of the whole idea (all legs filled, SL hit)
+   void              SetGroupRisk(const ulong g, const double riskMoney) { SetGMeta(g, "rm", riskMoney); }
+
+   //--- additional leg of a staggered entry: limit order sharing the idea's SL and TP
+   bool              PlaceLimit(const XQCandidate &c, const double price, const double lots, const ulong g,
+                                const double refE, const double refR, const datetime expiry, const string comment)
+     {
+      MqlTick tick;
+      if(!SymbolInfoTick(m_sym, tick))
+         return false;
+      double point = SymbolInfoDouble(m_sym, SYMBOL_POINT);
+      double lvl = (double)SymbolInfoInteger(m_sym, SYMBOL_TRADE_STOPS_LEVEL) * point;
+      int d = c.dir;
+      double px = Norm(price), sl = Norm(c.sl), tp = Norm(c.tp);
+      //--- a buy limit must sit below the ask, a sell limit above the bid, both with a valid stop distance
+      bool okPrice = (d == 1) ? (tick.ask - px >= lvl && px - sl > lvl) : (px - tick.bid >= lvl && sl - px > lvl);
+      if(!okPrice)
+         return false;
+      bool ok = (d == 1) ? m_trade.BuyLimit(lots, px, m_sym, sl, tp, ORDER_TIME_GTC, 0, comment)
+                         : m_trade.SellLimit(lots, px, m_sym, sl, tp, ORDER_TIME_GTC, 0, comment);
+      if(!ok || (m_trade.ResultRetcode() != TRADE_RETCODE_DONE && m_trade.ResultRetcode() != TRADE_RETCODE_PLACED))
+        {
+         m_log.Warn(StringFormat("limit leg refused: %s", m_trade.ResultRetcodeDescription()));
+         return false;
+        }
+      ulong tk = m_trade.ResultOrder();             // hedging: the filled position keeps this ticket
+      SetMeta(tk, "r0", MathAbs(px - sl));
+      SetMeta(tk, "v0", lots);
+      SetMeta(tk, "st", c.strategy);
+      SetMeta(tk, "ext", refE);
+      SetMeta(tk, "pnl", 0.0);
+      SetMeta(tk, "grp", (double)g);
+      SetMeta(tk, "refE", refE);
+      SetMeta(tk, "refR", refR);
+      SetMeta(tk, "exp", (double)expiry);
+      m_log.Trade("LIMIT", tk, XQ_StrategyName(c.strategy), d, lots, px, sl, tp, 0, 0, comment);
+      return true;
      }
 
    bool              Close(const ulong ticket, const string reason)
@@ -224,6 +363,7 @@ public:
             continue;
          Close(tk, reason);
         }
+      DeletePending(0, reason);
      }
 
    //--- break-even, partial take profit and ATR trailing (called on every new M1 bar)
@@ -241,13 +381,14 @@ public:
       for(int i = PositionsTotal() - 1; i >= 0; i--)
         {
          ulong tk = PositionGetTicket(i);
-         if(tk == 0 || PositionGetString(POSITION_SYMBOL) != m_sym || PositionGetInteger(POSITION_MAGIC) != m_magic)
+         if(tk == 0 || !OurPositionSelected())
             continue;
          int d = (PositionGetInteger(POSITION_TYPE) == POSITION_TYPE_BUY) ? 1 : -1;
          double open = PositionGetDouble(POSITION_PRICE_OPEN);
          double sl = PositionGetDouble(POSITION_SL), tp = PositionGetDouble(POSITION_TP);
          double vol = PositionGetDouble(POSITION_VOLUME);
-         double r0 = Meta(tk, "r0", MathAbs(open - sl));
+         double r0 = Meta(tk, "refR", Meta(tk, "r0", MathAbs(open - sl)));   // idea risk (first entry -> SL)
+         double refE = Meta(tk, "refE", open);
          double v0 = Meta(tk, "v0", vol);
          if(r0 <= 0)
             continue;
@@ -255,7 +396,14 @@ public:
          double ext = Meta(tk, "ext", open);
          ext = (d == 1) ? MathMax(ext, px) : MathMin(ext, px);
          SetMeta(tk, "ext", ext);
-         double fav = (ext - open) * d;
+         double fav = (ext - refE) * d;
+         //--- the move is under way: unfilled legs of this idea are no longer wanted
+         if(fav >= m_p.partialR * r0)
+           {
+            DeletePending(GroupOf(tk), "move_started");
+            if(!PositionSelectByTicket(tk))
+               continue;
+           }
          //--- partial take profit
          if(m_p.usePartial && Meta(tk, "pt", 0) < 0.5 && fav >= m_p.partialR * r0)
            {
@@ -355,21 +503,30 @@ public:
               }
            }
       double rm = Meta(pos, "rm", 0.0);
-      posPnl = acc;
-      posR = (rm > 0) ? acc / rm : 0.0;
       strategy = XQ_StrategyName((int)Meta(pos, "st", 0));
       string why = "";
       long reasonCode = HistoryDealGetInteger(deal, DEAL_REASON);
       if(reasonCode == DEAL_REASON_SL)
-         why = (posPnl < 0) ? "stop_loss" : "protected_stop";
+         why = (acc < 0) ? "stop_loss" : "protected_stop";
       else
          if(reasonCode == DEAL_REASON_TP)
             why = "take_profit";
          else
             why = "market_close";
       m_log.Trade("CLOSE", pos, strategy, dir, HistoryDealGetDouble(deal, DEAL_VOLUME),
-                  HistoryDealGetDouble(deal, DEAL_PRICE), 0, 0, posPnl, posR, why);
+                  HistoryDealGetDouble(deal, DEAL_PRICE), 0, 0, acc, (rm > 0) ? acc / rm : 0.0, why);
+      //--- idea accounting: the idea ends when none of its legs is open
+      ulong g = GroupOf(pos);
+      double gpnl = GMeta(g, "pnl", 0.0) + acc;
+      SetGMeta(g, "pnl", gpnl);
       DelMeta(pos);
+      if(GroupHasPosition(g))
+         return false;
+      DeletePending(g, "idea_closed");
+      double grm = GMeta(g, "rm", rm);
+      posPnl = gpnl;
+      posR = (grm > 0) ? gpnl / grm : 0.0;
+      GlobalVariablesDeleteAll(StringFormat("XQG_%I64d_%I64u_", m_magic, g));
       return true;
      }
   };

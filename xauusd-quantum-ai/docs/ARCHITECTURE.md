@@ -252,3 +252,20 @@ Chaque décision (acceptée ou refusée, avec la raison) est journalisée.
 Métriques produites : net profit, profit factor, win rate, max drawdown, Sharpe, Sortino, espérance
 (monnaie et R), recovery factor, nombre de trades / jour, performance mensuelle, ventilation par
 stratégie, session, régime, distribution Monte Carlo et probabilité de ruine.
+
+### 5.5 Entrées étagées (option `InpUseScaledEntries`, désactivée par défaut)
+Une idée de trade peut être découpée en plusieurs ordres : un ordre au marché puis des ordres limites
+placés entre l'entrée et le stop, à des fractions de la distance entrée→SL propres à chaque stratégie
+(`InpScaleLevels`, par défaut `PB:0,0.3,0.55 | SW:0,0.35,0.6 | MR:0,0.4 | RV:0,0.4 | BO:0 | MO:0`).
+* **Un seul SL et un seul TP** pour toutes les jambes.
+* **Lots égaux par jambe, calculés pour que la perte TOTALE, si toutes les jambes sont exécutées et
+  que le SL est touché, soit égale au risque choisi.** Comme les jambes profondes sont plus proches du
+  stop, la distance moyenne est plus courte : plus de lots pour le même risque. Si une jambe tombe sous
+  le lot minimum, les jambes les plus profondes sont supprimées.
+* Jambes non exécutées annulées après `InpScaleExpiryBars` bougies M5, dès que le prix atteint +1R
+  (le mouvement est parti) ou quand l'idée est clôturée.
+* Les limites (positions max, trades/jour, série de pertes, R) s'appliquent à l'**idée**, pas à chaque jambe.
+* Break-even / partiel / trailing mesurés à partir de la première entrée de l'idée.
+* Nécessite un compte *hedging*. Breakout et Momentum entrent toujours en une fois.
+* Ce n'est ni une martingale ni une moyenne à la baisse : la perte maximale est fixée **avant** l'entrée.
+  À valider en backtest (`use_scaled_entries` dans la config Python) contre l'entrée unique.

@@ -242,7 +242,67 @@ public:
       return lots;
      }
 
-   //--- total open risk (money to SL) of our positions, not counting protected ones
+   //--- staggered entries sharing one SL: equal lots per leg, sized so that the TOTAL loss when all
+   //--- legs are filled and the SL is hit equals the risk budget. Legs below the minimum lot are
+   //--- dropped from the deepest one; with a single leg left the single-entry rules (hard cap) apply.
+   //--- Mirror of python/xqai/risk.py::size_group.
+   double            SizeGroup(const int dir, const double &levels[], const int nLevels, const double sl,
+                               int &nUsed, double &riskMoney, double &riskPct, string &reason)
+     {
+      reason = "";
+      nUsed = 0;
+      riskMoney = 0;
+      riskPct = 0;
+      double bal = AccountInfoDouble(ACCOUNT_BALANCE), eq = AccountInfoDouble(ACCOUNT_EQUITY);
+      double capital = MathMin(bal, eq);
+      if(capital <= 0)
+        { reason = "no_capital"; return 0; }
+      double mult = (m_p.reduceAfter > 0 && m_consec >= m_p.reduceAfter) ? 0.5 : 1.0;
+      double budget = capital * m_p.riskPct / 100.0 * mult;
+      double point = SymbolInfoDouble(m_sym, SYMBOL_POINT);
+      double slAdj = sl - dir * m_p.slippagePoints * point;
+      double vmin = SymbolInfoDouble(m_sym, SYMBOL_VOLUME_MIN), vmax = SymbolInfoDouble(m_sym, SYMBOL_VOLUME_MAX);
+      double vstep = SymbolInfoDouble(m_sym, SYMBOL_VOLUME_STEP);
+      if(vstep <= 0)
+        { reason = "bad_volume_step"; return 0; }
+      int digits = (int)MathMax(0, MathCeil(-MathLog10(vstep) - 1e-9));
+      for(int n = nLevels; n >= 2; n--)
+        {
+         double lossEach = 0.0;                       // loss of 1 lot on EACH leg
+         bool calcOk = true;
+         for(int k = 0; k < n; k++)
+           {
+            double l1 = LossAt(dir, 1.0, levels[k], slAdj);
+            if(l1 <= 0)
+              { calcOk = false; break; }
+            lossEach += l1 + 2.0 * m_p.commissionPerLotSide;
+           }
+         if(!calcOk)
+           { reason = "loss_calc_failed"; return 0; }
+         double lots = MathMin(MathFloor(budget / lossEach / vstep + 1e-9) * vstep, vmax);
+         if(lots < vmin - 1e-12)
+            continue;
+         lots = NormalizeDouble(lots, digits);
+         double margin = 0.0;
+         ENUM_ORDER_TYPE type = (dir == 1) ? ORDER_TYPE_BUY : ORDER_TYPE_SELL;
+         if(!OrderCalcMargin(type, m_sym, lots * n, levels[0], margin))
+           { reason = "margin_calc_failed"; return 0; }
+         if(margin > AccountInfoDouble(ACCOUNT_MARGIN_FREE))
+           { reason = "insufficient_free_margin"; return 0; }
+         double used = AccountInfoDouble(ACCOUNT_MARGIN);
+         if(100.0 * eq / (used + margin) < m_p.minMarginLevel)
+           { reason = "margin_level_limit"; return 0; }
+         nUsed = n;
+         riskMoney = lots * lossEach;
+         riskPct = 100.0 * riskMoney / capital;
+         return lots;
+        }
+      double lots1 = Size(dir, levels[0], sl, riskMoney, riskPct, reason);
+      nUsed = (lots1 > 0) ? 1 : 0;
+      return lots1;
+     }
+
+   //--- total open risk (money to SL) of our positions and unfilled limit legs, not counting protected ones
    double            OpenRisk(void)
      {
       double total = 0.0;
@@ -260,6 +320,21 @@ public:
            }
          if((open - sl) * dir > 0)
             total += MathMax(0.0, LossAt(dir, PositionGetDouble(POSITION_VOLUME), open, sl));
+        }
+      for(int i = OrdersTotal() - 1; i >= 0; i--)
+        {
+         ulong tk = OrderGetTicket(i);
+         if(tk == 0 || OrderGetString(ORDER_SYMBOL) != m_sym || OrderGetInteger(ORDER_MAGIC) != m_magic)
+            continue;
+         long ot = OrderGetInteger(ORDER_TYPE);
+         int dir = (ot == ORDER_TYPE_BUY_LIMIT || ot == ORDER_TYPE_BUY_STOP) ? 1 : -1;
+         double open = OrderGetDouble(ORDER_PRICE_OPEN), sl = OrderGetDouble(ORDER_SL);
+         if(sl <= 0)
+           {
+            total += 1e12;
+            continue;
+           }
+         total += MathMax(0.0, LossAt(dir, OrderGetDouble(ORDER_VOLUME_CURRENT), open, sl));
         }
       return total;
      }

@@ -85,6 +85,11 @@ input double            InpDegradedScoreBonus      = 10.0;
 input int               InpBridgeTimeoutMs         = 3000;
 input int               InpBridgeHeartbeatMaxAge   = 15;
 
+input group "=== Staggered entries (one idea split into several orders) ==="
+input bool              InpUseScaledEntries        = false;  // split entries according to the strategy plan
+input string            InpScaleLevels             = "PB:0,0.3,0.55|SW:0,0.35,0.6|MR:0,0.4|RV:0,0.4|BO:0|MO:0"; // fractions of entry->SL distance (0 = market)
+input int               InpScaleExpiryBars         = 6;      // unfilled limit legs cancelled after N M5 bars
+
 input group "=== Position management ==="
 input bool              InpUseBreakEven            = true;
 input double            InpBreakEvenR              = 1.0;
@@ -150,6 +155,9 @@ int             g_maxPositions;
 bool            g_paused = false;
 datetime        g_lastM5 = 0, g_lastM1 = 0;
 long            g_lastDay = 0;
+double          g_scaleF[XQAI_N_STRATEGIES * XQ_MAX_LEGS];
+int             g_scaleN[XQAI_N_STRATEGIES];
+bool            g_scaled = false;
 double          g_atrM5 = 0.0;
 XQStatus        g_st;
 ulong           g_lastStatusMs = 0, g_lastDashMs = 0;
@@ -290,9 +298,23 @@ string Execute(const XQCandidate &c, const double prob)
    double stops = (double)SymbolInfoInteger(_Symbol, SYMBOL_TRADE_STOPS_LEVEL) * point;
    if(risk < stops + spread)
       return "stops_level";
+   //--- entry plan: market leg + limit legs between the entry and the SL (strategy-specific)
+   double levels[];
+   int nLv = 1;
+   ArrayResize(levels, XQ_MAX_LEGS);
+   levels[0] = entry;
+   if(g_scaled)
+      for(int k = 1; k < g_scaleN[c.strategy]; k++)
+        {
+         double lv = entry - d * g_scaleF[c.strategy * XQ_MAX_LEGS + k] * risk;
+         if((lv - c.sl) * d > stops + spread)          // every leg keeps a valid stop distance
+            levels[nLv++] = lv;
+        }
    double riskMoney, riskPct;
    string why;
-   double lots = g_risk.Size(d, entry, c.sl, riskMoney, riskPct, why);
+   int nLegs = 1;
+   double lots = (nLv > 1) ? g_risk.SizeGroup(d, levels, nLv, c.sl, nLegs, riskMoney, riskPct, why)
+                           : g_risk.Size(d, entry, c.sl, riskMoney, riskPct, why);
    if(lots <= 0)
       return "sizing:" + why + StringFormat("(%.2f%%)", riskPct);
    int dirOpen;
@@ -312,9 +334,22 @@ string Execute(const XQCandidate &c, const double prob)
       return "order_failed";
      }
    g_risk.OnOpened();
+   int placed = 1;
+   if(nLegs > 1 && PositionSelectByTicket(tk))
+     {
+      double refE = PositionGetDouble(POSITION_PRICE_OPEN);
+      double refR = MathAbs(refE - c.sl);
+      datetime expiry = TimeCurrent() + InpScaleExpiryBars * 300;
+      for(int k = 1; k < nLegs; k++)
+         if(g_trader.PlaceLimit(c, levels[k], lots, tk, refE, refR, expiry,
+                                comment + StringFormat(" #%d", k + 1)))
+            placed++;
+      g_log.Info(StringFormat("staggered entry: %d/%d legs x %.2f lots, idea risk %.2f (%.2f%%)", placed, nLegs, lots,
+                              riskMoney, riskPct));
+     }
    if(g_trader.SlippageEvents() >= InpMaxSlippageEventsPerDay)
       g_guard.Pause(24 * 60, "repeated adverse slippage");
-   return "OPEN";
+   return (placed > 1) ? StringFormat("OPEN_%d_LEGS", placed) : "OPEN";
   }
 
 double MinProb(void)
@@ -414,6 +449,7 @@ void OnNewM5Bar(void)
    bool weekend = InpCloseBeforeWeekend && XQ_WeekdayUTC(utc) == 5 && hourUtc >= 20 && minUtc >= 45;
    g_trader.BarExits(g_m5.st.breakDir, chochLast, found ? best.dir : 0, found ? best.score : 0.0,
                      InpCloseOnOppositeScore, InpCloseOnStructureBreak, InpMaxHoldBars, weekend);
+   g_trader.ManagePending();
 
    if(!found)
      {
@@ -581,6 +617,11 @@ int OnInit(void)
      }
    if(InpMinRR < 1.0 || InpMinSLATR <= 0 || InpMaxSLATR <= InpMinSLATR)
       return INIT_PARAMETERS_INCORRECT;
+   if(!XQ_ParseScaleLevels(InpScaleLevels, g_scaleF, g_scaleN))
+     {
+      g_log.Error("invalid InpScaleLevels: " + InpScaleLevels + " (each plan starts at 0, increasing, < 0.9, max 5 legs)");
+      return INIT_PARAMETERS_INCORRECT;
+     }
 
    //--- risk
    XQRiskParams rp;
@@ -595,6 +636,9 @@ int OnInit(void)
    if(g_risk.Halted())
       g_log.Error("EA is HALTED (" + g_risk.HaltReason() + "). Investigate, then restart with InpResetHalt=true.");
    g_maxPositions = g_guard.Netting() ? 1 : MathMax(1, InpMaxPositions);
+   g_scaled = InpUseScaledEntries && !g_guard.Netting();
+   if(InpUseScaledEntries && g_guard.Netting())
+      g_log.Warn("staggered entries need a HEDGING account: disabled on this netting account");
 
    XQManageParams mp;
    mp.useBE = InpUseBreakEven; mp.beR = InpBreakEvenR;
@@ -653,6 +697,7 @@ void OnTick(void)
      {
       g_lastM1 = m1;
       g_trader.Manage(g_atrM5);
+      g_trader.ManagePending();
      }
    datetime m5 = iTime(_Symbol, PERIOD_M5, 0);
    if(m5 != g_lastM5 && m5 > 0)

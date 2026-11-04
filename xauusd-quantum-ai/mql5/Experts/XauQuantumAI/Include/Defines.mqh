@@ -13,6 +13,7 @@
 #define XQAI_N_COMPONENTS   7
 #define XQAI_NONE           EMPTY_VALUE
 #define XQAI_FOLDER         "XQAI\\"
+#define XQ_MAX_LEGS         5      // staggered entries: max orders per trade idea
 
 //--- operating modes
 enum ENUM_XQ_MODE

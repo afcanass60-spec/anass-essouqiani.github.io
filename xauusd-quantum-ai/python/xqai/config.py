@@ -26,6 +26,10 @@ SESSIONS = ["ASIA", "LONDON", "NEWYORK", "OVERLAP", "OFF"]
 # Default regime -> allowed strategies matrix (same string format as the EA input).
 DEFAULT_REGIME_MATRIX = "TU:PB,MO,BO|TD:PB,MO,BO|SQ:BO|RG:MR,SW,RV|TR:SW,RV,PB|VO:"
 
+# Default staggered-entry plans: liquidity sweep / pullback scale into the zone, momentum and
+# breakout enter at once (waiting would miss the move).
+DEFAULT_SCALE_LEVELS = "PB:0,0.3,0.55|SW:0,0.35,0.6|MR:0,0.4|RV:0,0.4|BO:0|MO:0"
+
 SCORE_COMPONENTS = ["structure", "trend", "momentum", "liquidity", "volatility", "price_action", "mtf"]
 
 
@@ -88,6 +92,12 @@ class Config:
     ai_model_path: str = ""
     ai_min_prob: float = 0.55
     degraded_score_bonus: float = 10.0       # min_score increase when AI is required but unavailable
+
+    # ---- scaled (staggered) entries: one trade idea split into several orders ----
+    use_scaled_entries: bool = False
+    # per strategy: fractions of the distance entry -> SL where each order is placed (0 = market)
+    scale_levels: str = DEFAULT_SCALE_LEVELS
+    scale_expiry_bars: int = 6               # unfilled limit orders are cancelled after N M5 bars
 
     # ---- position management ----
     use_break_even: bool = True
@@ -170,3 +180,16 @@ def format_regime_matrix(m: dict) -> str:
         codes = [STRATEGY_CODES[s] for s in STRATEGIES if s in m.get(reg, set())]
         parts.append(f"{REGIME_CODES[reg]}:{','.join(codes)}")
     return "|".join(parts)
+
+
+def parse_scale_levels(s: str) -> dict:
+    """'SW:0,0.35,0.6|BO:0' -> {'LIQ_SWEEP': [0.0, 0.35, 0.6], 'BREAKOUT': [0.0], ...} (missing = [0])."""
+    inv_s = {v: k for k, v in STRATEGY_CODES.items()}
+    out = {st: [0.0] for st in STRATEGIES}
+    for part in filter(None, s.split("|")):
+        code, _, vals = part.partition(":")
+        fr = [float(v) for v in vals.split(",") if v.strip() != ""]
+        if not fr or fr[0] != 0.0 or any(not 0.0 <= f < 0.9 for f in fr) or fr != sorted(fr) or len(fr) > 5:
+            raise ValueError(f"invalid scale levels for {code}: {vals} (start at 0, increasing, < 0.9, max 5)")
+        out[inv_s[code.strip()]] = fr
+    return out
