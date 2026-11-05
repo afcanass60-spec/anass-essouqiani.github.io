@@ -1,0 +1,953 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}[hidden]{display:none!important}img{max-width:100%}</style>
+<title>Objectif TOEIC</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: une feuille de réponses d'examen — papier pâle, encre "drop-out" rouge des formulaires, bulles cochées au crayon graphite. Colonne unique centrée de 760px. */
+:root{
+  --paper:#F3F5F0; --card:#FFFFFF; --ink:#1D2927; --muted:#5B6964; --line:#DCE2DC;
+  --drop:#C9503C; --drop-soft:#F6DDD7; --graphite:#2B3135; --ok:#2C7A4D; --ok-soft:#DCEFE2; --bad:#B0281F; --bad-soft:#F7DCD9;
+  --f-display:"Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+  --f-body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#131816; --card:#1B2220; --ink:#E5ECE8; --muted:#9BA8A3; --line:#2E3835;
+  --drop:#E8775F; --drop-soft:#3A2420; --graphite:#E5ECE8; --ok:#63C08A; --ok-soft:#173326; --bad:#F2796E; --bad-soft:#3B1D1A; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --paper:#131816; --card:#1B2220; --ink:#E5ECE8; --muted:#9BA8A3; --line:#2E3835;
+  --drop:#E8775F; --drop-soft:#3A2420; --graphite:#E5ECE8; --ok:#63C08A; --ok-soft:#173326; --bad:#F2796E; --bad-soft:#3B1D1A; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;margin:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+.wrap{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
+h1,h2,h3{font-family:var(--f-display);line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(2rem,6vw,2.9rem);font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.45rem;font-weight:700}
+h3{font-size:1.1rem;font-weight:700}
+p{margin:0}
+.muted{color:var(--muted)}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--drop)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--drop);outline-offset:2px}
+.stack{display:flex;flex-direction:column;gap:16px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+/* header */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--line)}
+header.top .wrap{padding-block:10px;display:flex;align-items:center;gap:8px 14px;flex-wrap:wrap}
+@media (max-width:620px){header.top nav.tabs{flex:1 1 100%}}
+.brand{font-family:var(--f-display);font-weight:800;font-size:1.15rem;white-space:nowrap;display:flex;align-items:center;gap:8px}
+.brand i{width:14px;height:14px;border-radius:50%;background:var(--graphite);box-shadow:0 0 0 2px var(--paper),0 0 0 4px var(--drop);display:inline-block}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;min-width:0;flex:1}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs a{padding:7px 11px;border-radius:999px;text-decoration:none;color:var(--muted);font-size:.92rem;white-space:nowrap}
+nav.tabs a.on{background:var(--ink);color:var(--paper)}
+body.in-session header.top{display:none}
+
+/* buttons */
+a.btn{text-decoration:none;color:inherit}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 18px;border-radius:999px;border:1.5px solid var(--ink);background:transparent;font-weight:700}
+.btn.primary{background:var(--ink);color:var(--paper)}
+.btn.accent{background:var(--drop);border-color:var(--drop);color:#fff}
+.btn.small{padding:7px 13px;font-size:.9rem}
+.btn.ghost{border-color:var(--line)}
+.btn:disabled{opacity:.4;cursor:default}
+.chip{padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:.88rem}
+.chip.on{border-color:var(--ink);background:var(--ink);color:var(--paper)}
+
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:20px}
+section{margin-top:36px}
+section>h2{margin-bottom:14px}
+
+/* hero */
+.hero{padding-top:28px;display:grid;gap:18px}
+.hero p.lead{font-size:1.08rem;max-width:58ch;color:var(--muted)}
+.scale{margin-top:6px}
+.scale .bar{position:relative;height:12px;border-radius:6px;background:linear-gradient(90deg,var(--drop-soft),var(--drop))}
+.scale .tick{position:absolute;top:-4px;width:2px;height:20px;background:var(--ink);opacity:.5}
+.scale .labels{position:relative;height:38px;font-family:var(--f-mono);font-size:.72rem;color:var(--muted)}
+.scale .labels span{position:absolute;transform:translateX(-50%);top:6px;text-align:center;line-height:1.2;white-space:nowrap}
+.scale .me{position:absolute;top:-9px;width:24px;height:24px;border-radius:50%;background:var(--graphite);border:3px solid var(--card);transform:translateX(-50%)}
+.score-line{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.score-line b{font-family:var(--f-display);font-size:2.4rem;font-weight:800}
+
+table.fmt{width:100%;border-collapse:collapse;font-size:.95rem}
+table.fmt th,table.fmt td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+table.fmt th{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+table.fmt td.n{text-align:right;font-family:var(--f-mono)}
+table.fmt tr.sec td{font-family:var(--f-display);font-weight:700;background:var(--paper);color:var(--drop)}
+.tablebox{overflow-x:auto}
+
+ol.plan{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+ol.plan li{display:grid;grid-template-columns:72px 1fr;gap:12px;align-items:start}
+ol.plan li b{font-family:var(--f-mono);font-size:.8rem;color:var(--drop);padding-top:2px}
+
+/* part grid */
+.parts{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.part{display:flex;flex-direction:column;gap:6px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.part:hover{border-color:var(--ink)}
+.part .pn{font-family:var(--f-mono);font-size:.75rem;color:var(--drop);letter-spacing:.08em}
+.part .pt{font-family:var(--f-display);font-weight:700;font-size:1.08rem}
+.part .pm{font-size:.86rem;color:var(--muted)}
+.part .acc{height:5px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:4px}
+.part .acc i{display:block;height:100%;background:var(--ok)}
+
+.tip{border-left:3px solid var(--drop);padding:4px 0 4px 14px}
+
+/* session */
+.ses-top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--line)}
+.ses-top .wrap{padding-block:10px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.ses-top .grow{flex:1;min-width:0}
+.ses-top .prog{height:4px;background:var(--line);border-radius:2px;overflow:hidden;margin-top:6px}
+.ses-top .prog i{display:block;height:100%;background:var(--drop);transition:width .3s}
+.timer{font-family:var(--f-mono);font-weight:600;padding:5px 10px;border-radius:6px;background:var(--card);border:1px solid var(--line)}
+.timer.warn{color:var(--bad);border-color:var(--bad)}
+.unit{padding-top:22px;display:flex;flex-direction:column;gap:18px}
+.dir{font-size:.92rem;color:var(--muted);background:var(--card);border:1px dashed var(--line);border-radius:var(--r);padding:10px 14px}
+
+.audio{display:flex;flex-wrap:wrap;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.audio .st{flex:1;min-width:150px;font-size:.92rem;color:var(--muted);display:flex;align-items:center;gap:8px}
+.wave{display:inline-flex;gap:3px;align-items:flex-end;height:16px}
+.wave i{width:3px;background:var(--drop);height:4px;border-radius:2px}
+.playing .wave i{animation:w 1s infinite ease-in-out}
+.wave i:nth-child(2){animation-delay:.15s}.wave i:nth-child(3){animation-delay:.3s}.wave i:nth-child(4){animation-delay:.45s}
+@keyframes w{0%,100%{height:4px}50%{height:16px}}
+@media (prefers-reduced-motion:reduce){.playing .wave i{animation:none;height:10px}}
+select.speed{font:inherit;padding:6px 8px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink)}
+
+.photo{position:relative;width:100%;max-width:100%;aspect-ratio:4/3;border-radius:6px;overflow:hidden;border:8px solid var(--card);box-shadow:0 1px 0 var(--line),0 6px 18px rgba(0,0,0,.08)}
+.photo span{position:absolute;transform:translate(-50%,-50%);line-height:1;user-select:none}
+.photo .bar{position:absolute;height:5%;background:#8a6a4c;border-radius:3px;transform:translate(-50%,-50%)}
+.photo small{position:absolute;right:8px;bottom:6px;font-family:var(--f-mono);font-size:.65rem;color:#3b3b3b;opacity:.6}
+
+.doc{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:18px 18px 20px;white-space:pre-line;font-size:.97rem;box-shadow:3px 3px 0 var(--line)}
+.doc .dt{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--drop);display:block;margin-bottom:8px;white-space:normal}
+.blank{display:inline-block;min-width:4.5em;border-bottom:2px solid var(--drop);text-align:center;font-family:var(--f-mono);font-size:.82rem;color:var(--drop);padding:0 4px;white-space:nowrap}
+.blank.ins{display:block;border:2px dashed var(--drop);border-radius:6px;padding:4px;margin:6px 0;min-width:0}
+.sent{font-size:1.12rem;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+
+.q{display:flex;flex-direction:column;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.qhead{display:flex;gap:10px;font-weight:700}
+.qhead .qn{font-family:var(--f-mono);color:var(--drop);flex:none}
+.opts{display:flex;flex-direction:column;gap:6px}
+.opts.bubbles-only{flex-direction:row;gap:14px}
+.opt{display:flex;align-items:flex-start;gap:12px;text-align:left;background:transparent;border:1px solid transparent;border-radius:8px;padding:7px 8px}
+.opt:hover:not(:disabled){background:var(--paper);border-color:var(--line)}
+.opt:disabled{cursor:default}
+.bub{flex:none;width:30px;height:30px;border-radius:50%;border:2px solid var(--drop);color:var(--drop);display:grid;place-items:center;font-family:var(--f-mono);font-weight:600;font-size:.85rem;transition:background .15s}
+.ot{padding-top:3px;min-width:0}
+.opt.sel .bub{background:var(--graphite);border-color:var(--graphite);color:var(--paper)}
+.opt.good{background:var(--ok-soft)}
+.opt.good .bub{background:var(--ok);border-color:var(--ok);color:#fff}
+.opt.wrong{background:var(--bad-soft)}
+.opt.wrong .bub{background:var(--bad);border-color:var(--bad);color:#fff}
+.fb{font-size:.95rem;border-radius:8px;padding:10px 12px}
+.fb.good{background:var(--ok-soft)}
+.fb.bad{background:var(--bad-soft)}
+.fb b.v{display:block;margin-bottom:2px}
+.fb.good b.v{color:var(--ok)}.fb.bad b.v{color:var(--bad)}
+details.tr{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+details.tr summary{cursor:pointer;font-weight:700}
+details.tr p{margin-top:6px}
+details.tr .sp{font-family:var(--f-mono);font-size:.78rem;color:var(--drop);margin-right:6px}
+
+.ses-nav{display:flex;gap:10px;justify-content:space-between;margin-top:22px;flex-wrap:wrap}
+.palette{display:flex;flex-wrap:wrap;gap:6px;margin-top:18px}
+.palette button{width:38px;height:34px;border-radius:6px;border:1px solid var(--line);background:var(--card);font-family:var(--f-mono);font-size:.8rem}
+.palette button.done{background:var(--graphite);color:var(--paper);border-color:var(--graphite)}
+.palette button.cur{outline:2px solid var(--drop);outline-offset:1px}
+.confirm{display:flex;gap:10px;align-items:center;flex-wrap:wrap;background:var(--drop-soft);border-radius:var(--r);padding:12px 14px;margin-top:12px}
+
+.result-big{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.result-big .panel{display:flex;flex-direction:column;gap:2px}
+.result-big b{font-family:var(--f-display);font-size:2.1rem;font-weight:800}
+.lvl{display:inline-block;padding:3px 10px;border-radius:999px;background:var(--ink);color:var(--paper);font-family:var(--f-mono);font-size:.8rem}
+.meter{height:8px;border-radius:4px;background:var(--line);overflow:hidden;flex:1;min-width:80px}
+.meter i{display:block;height:100%;background:var(--ok)}
+.prow{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(56px,1fr) 52px;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:.95rem}
+.prow .mono{text-align:right}
+
+/* vocab */
+.flash{min-height:230px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px;box-shadow:4px 4px 0 var(--line)}
+.flash .w{font-family:var(--f-display);font-size:2rem;font-weight:800}
+.flash .tr{font-size:1.25rem;color:var(--drop);font-weight:700}
+.flash .ex{color:var(--muted);font-style:italic}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.vitem{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:9px 12px;font-size:.92rem;display:flex;flex-direction:column}
+.vitem b{font-weight:700}
+.vitem.k{border-color:var(--ok)}
+
+/* grammar */
+details.g{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px}
+details.g+details.g{margin-top:10px}
+details.g summary{cursor:pointer;font-family:var(--f-display);font-weight:700;font-size:1.08rem;list-style:none;display:flex;justify-content:space-between;gap:10px}
+details.g summary::after{content:"+";color:var(--drop);font-family:var(--f-mono)}
+details.g[open] summary::after{content:"–"}
+.gbody{margin-top:12px;display:flex;flex-direction:column;gap:10px;font-size:.97rem}
+.gbody table{border-collapse:collapse;width:100%;font-size:.92rem}
+.gbody td,.gbody th{border-bottom:1px solid var(--line);padding:6px 6px;text-align:left;vertical-align:top}
+.gbody .ex{font-style:italic;color:var(--muted)}
+.gbody .warn{background:var(--drop-soft);border-radius:8px;padding:8px 12px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:999px;font-size:.92rem;z-index:20}
+</style>
+</head>
+<body>
+
+<header class="top"><div class="wrap">
+  <div class="brand"><i></i>Objectif TOEIC</div>
+  <nav class="tabs" id="nav">
+    <a href="#accueil" data-v="accueil">Accueil</a>
+    <a href="#entrainement" data-v="entrainement">Entraînement</a>
+    <a href="#test" data-v="test">Test blanc</a>
+    <a href="#vocabulaire" data-v="vocabulaire">Vocabulaire</a>
+    <a href="#grammaire" data-v="grammaire">Grammaire</a>
+    <a href="#progres" data-v="progres">Progrès</a>
+  </nav>
+</div></header>
+<main id="app"></main>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+/* =========================================================
+   BANQUE DE QUESTIONS (contenu original, format TOEIC L&R)
+   a = index de la bonne réponse (les options sont mélangées à l'affichage)
+   ========================================================= */
+const P1=[
+ {bg:"office",sc:[["bar",55,74,62],["👩‍💻",42,52,4.6],["🪴",84,56,2.8],["☕",68,66,1.7]],
+  o:["A woman is watering a plant.","A woman is typing on a keyboard.","A woman is closing a window.","A woman is putting on her glasses."],a:1,
+  ex:"On voit une femme qui travaille sur un ordinateur. La plante est visible, mais personne ne l'arrose : c'est le piège classique (objet présent + action fausse)."},
+ {bg:"site",sc:[["🪜",45,55,6.2],["👷",45,36,3.6],["🧱",74,80,2.4],["🧱",83,80,2.4],["🚚",14,76,3.2]],
+  o:["Some bricks are being loaded onto a truck.","A man is climbing down a staircase.","A worker is standing on a ladder.","The man is taking off his helmet."],a:2,
+  ex:"L'ouvrier est debout sur une échelle (ladder). Le camion et les briques sont là, mais personne ne les charge. « Staircase » = escalier, pas échelle."},
+ {bg:"outdoor",sc:[["🚲",25,74,3.4],["🚲",46,74,3.4],["🚲",67,74,3.4],["🌳",87,48,5],["🌳",8,50,4]],
+  o:["Several bicycles are parked side by side.","Some cyclists are racing on a road.","A tree is being planted.","A bicycle is being repaired."],a:0,
+  ex:"Il n'y a personne sur la photo : les réponses avec une action humaine (racing, being planted, being repaired) sont fausses. « Side by side » = côte à côte."},
+ {bg:"restaurant",sc:[["bar",62,74,50],["🤵",28,50,4.4],["🍝",55,64,2.4],["🧑",80,52,3.6],["🍷",69,64,1.7]],
+  o:["The customer is paying the bill.","The tables are being set up outside.","A man is pouring some water.","A waiter is bringing a dish to a table."],a:3,
+  ex:"Le serveur (waiter) apporte un plat (dish). Le verre est visible mais personne ne verse (pour) de l'eau, et on ne voit pas de paiement."},
+ {bg:"airport",sc:[["✈️",80,24,3.6],["🚶",40,56,4.4],["🧳",58,67,2.8],["🕐",14,22,2]],
+  o:["A plane is being boarded.","A traveler is pulling a suitcase.","A man is checking a schedule board.","Suitcases are stacked on a cart."],a:1,
+  ex:"Un voyageur tire une valise (pulling a suitcase). L'avion est en arrière-plan, mais personne n'embarque. Il n'y a qu'une seule valise, pas de chariot."},
+ {bg:"office",sc:[["bar",50,74,72],["👨‍💼",20,52,3.6],["👩‍💼",50,48,3.6],["🧑‍💼",80,52,3.6],["📊",50,20,3.6]],
+  o:["The people are shaking hands.","A woman is printing a document.","Some colleagues are gathered around a presentation.","The room is empty."],a:2,
+  ex:"Trois collègues sont réunis devant un graphique : « gathered around a presentation ». Ils ne se serrent pas la main et la salle n'est pas vide."},
+ {bg:"kitchen",sc:[["bar",55,74,62],["🧑‍🍳",34,48,4.4],["🔪",54,65,2],["🥕",65,66,2.2],["🥬",75,65,2.2],["🍲",86,40,2]],
+  o:["A chef is washing dishes.","Some vegetables are being cut.","The oven door has been left open.","A man is tasting soup."],a:1,
+  ex:"Forme passive très fréquente en Part 1 : « are being cut » = sont en train d'être coupés (le chef les coupe). La soupe est visible, mais il ne la goûte pas."},
+ {bg:"library",sc:[["📚",20,22,3],["📚",40,22,3],["📚",60,22,3],["📚",80,22,3],["📚",20,46,3],["📚",40,46,3],["📚",60,46,3],["📚",80,46,3],["🧑‍🎓",48,78,3.2],["📖",62,82,1.8]],
+  o:["A man is buying a book.","The shelves are empty.","A woman is writing on a board.","Books have been arranged on shelves."],a:3,
+  ex:"« Have been arranged » décrit un état : les livres ont été rangés sur les étagères. Les étagères sont pleines, pas vides."},
+ {bg:"street",sc:[["🚦",86,34,3.4],["🚗",20,72,3.2],["🚕",45,72,3.2],["🚌",70,70,3.6]],
+  o:["Vehicles are stopped at an intersection.","A bus is being washed.","Pedestrians are crossing a bridge.","A car is parked in a garage."],a:0,
+  ex:"Les véhicules (vehicles) attendent au feu. Il n'y a ni piétons (pedestrians), ni pont, ni garage."},
+ {bg:"office",sc:[["bar",55,74,62],["🧑‍💼",40,50,4.4],["📞",58,63,2.2],["☕",72,65,1.7],["🗂️",86,63,2.4]],
+  o:["A man is filing some folders.","A man is hanging up a picture.","A man is speaking on the telephone.","A man is drinking coffee."],a:2,
+  ex:"L'homme est au téléphone. Le café et les dossiers sont présents mais il ne boit pas et ne classe rien : on décrit l'action principale, pas les objets autour."}
+];
+const P2=[
+ {q:"Where is the nearest post office?",o:["It's on Main Street, next to the bank.","I posted it yesterday.","Yes, it's open now."],a:0,ex:"Where → on attend un lieu. « Posted » répète le son de « post » : piège sonore. Une question en Wh- ne se répond jamais par Yes/No."},
+ {q:"When does the meeting start?",o:["In the conference room.","At ten thirty.","Mr. Kim is leading it."],a:1,ex:"When → un moment. « In the conference room » répond à Where, « Mr. Kim » répond à Who."},
+ {q:"Who's in charge of the new project?",o:["Next Monday.","It costs a lot.","Ms. Lopez from marketing."],a:2,ex:"Who → une personne. « In charge of » = responsable de."},
+ {q:"Would you like some coffee?",o:["Yes, I'd love some, thanks.","I liked it a lot.","The coffee shop closed early."],a:0,ex:"« Would you like…? » est une offre : on accepte ou on refuse poliment. Les autres réponses reprennent des mots (like, coffee) sans répondre."},
+ {q:"Why was the flight delayed?",o:["Because of the bad weather.","Gate twelve.","About two hours ago."],a:0,ex:"Why → une raison, souvent introduite par « because (of) »."},
+ {q:"How often do you visit the factory?",o:["By train.","About twice a month.","It's very large."],a:1,ex:"How often → une fréquence (twice a month = deux fois par mois). « By train » répondrait à « How do you get there? »."},
+ {q:"Didn't you send the invoice to the client?",o:["An invoice for three hundred dollars.","I did, this morning.","She's a new client."],a:1,ex:"Question négative = simple question oui/non. « I did » = oui, je l'ai envoyée."},
+ {q:"Should we take a taxi or walk to the hotel?",o:["Yes, we should.","The hotel has a pool.","It's close, so let's walk."],a:2,ex:"Question à choix (A or B ?) : on ne répond pas Yes/No, on choisit une option."},
+ {q:"Can you help me move these boxes?",o:["Sure, where do you want them?","They're made of cardboard.","I moved here last year."],a:0,ex:"Demande d'aide → acceptation (Sure). « Moved here » joue sur un autre sens de « move » (déménager)."},
+ {q:"What time does the store close?",o:["Close to the station.","At nine p.m.","I bought new clothes."],a:1,ex:"What time → une heure. « Close to » (près de) et « clothes » sont des pièges de son."},
+ {q:"How much does the new printer cost?",o:["It prints in color.","Three copies, please.","Around two hundred euros."],a:2,ex:"How much → un prix ou une quantité non dénombrable."},
+ {q:"Has the report been finished yet?",o:["Not yet, I need one more day.","A report about sales.","It finished at five."],a:0,ex:"« Not yet » répond naturellement à « yet ». La 3e réponse reprend « finish » mais n'a pas de sens ici."},
+ {q:"Which room is the interview in?",o:["The candidate is from Lyon.","Room 305, on the third floor.","At two o'clock."],a:1,ex:"Which room → on attend une salle précise."},
+ {q:"I think the projector is broken.",o:["It was a great film.","Let me call the technician.","A new project."],a:1,ex:"Affirmation (pas une question) : la bonne réponse est une réaction logique, ici une solution. « Project » ressemble à « projector » : piège."},
+ {q:"Why don't we have lunch together tomorrow?",o:["Because I was hungry.","That sounds great.","I had a sandwich."],a:1,ex:"« Why don't we…? » n'est PAS une vraie question en Why : c'est une suggestion (= et si on…). On répond « bonne idée », pas « because »."},
+ {q:"Where did you put the contract?",o:["A two-year contract.","In the top drawer of your desk.","Yes, I did."],a:1,ex:"Where → un lieu : le tiroir (drawer) du bureau."},
+ {q:"Who will replace Mr. Tanaka while he's on vacation?",o:["To Hawaii, I think.","For two weeks.","Ms. Green has agreed to."],a:2,ex:"Who → une personne. Les autres répondent à « Where is he going? » et « How long? »."},
+ {q:"Are you coming to the training session?",o:["I'm afraid I have a client meeting.","The train leaves at six.","It was very useful."],a:0,ex:"Réponse indirecte typique du TOEIC : elle ne dit pas « no » mais donne une raison. « Train » est un piège sonore avec « training »."},
+ {q:"How long will the renovation take?",o:["The new lobby.","Probably about three weeks.","It's ten meters long."],a:1,ex:"How long (durée) → about three weeks. « Ten meters long » parle de longueur physique : piège."},
+ {q:"The client wants to change the delivery date.",o:["Again? That's the third time.","The delivery truck is red.","He was changed."],a:0,ex:"Affirmation → réaction naturelle de surprise. Les deux autres reprennent des mots sans logique."},
+ {q:"Do you know where I can buy a charger?",o:["He bought it yesterday.","There's an electronics store on the corner.","The battery is full."],a:1,ex:"Question indirecte : « Do you know where » → on répond par un lieu."},
+ {q:"When will the new software be installed?",o:["In the computer room.","It's very soft.","The IT team will do it tonight."],a:2,ex:"When → tonight. « In the computer room » répond à Where."},
+ {q:"Could you send me the agenda before the meeting?",o:["Of course, I'll email it now.","The meeting went well.","She sent a gift."],a:0,ex:"Demande polie → acceptation. « Agenda » = ordre du jour (faux ami !)."},
+ {q:"Isn't this the way to the conference center?",o:["The conference lasted two days.","No, it's the other direction.","In the center."],a:1,ex:"Question négative = question oui/non sur le chemin. « No, it's the other direction » répond directement."},
+ {q:"Whose jacket is this?",o:["Yes, it is.","It's very warm today.","I think it's Daniel's."],a:2,ex:"Whose → à qui ? On répond avec un possessif : Daniel's."}
+];
+const P3=[
+ {lines:[["W","Hi Kevin, the printer on our floor is out of paper again. Do you know where the supply room key is?"],["M","Ms. Park in human resources keeps it. But I think she left early today for a doctor's appointment."],["W","Oh no. I need to print fifty copies of the handout for the two o'clock workshop."],["M","You could use the printer on the fifth floor. It's usually not busy after lunch."]],
+  qs:[{q:"What is the woman's problem?",o:["A printer has no paper.","A meeting was canceled.","Her computer is broken.","She missed a doctor's appointment."],a:0,ex:"« The printer is out of paper » = l'imprimante n'a plus de papier. Le rendez-vous chez le médecin concerne Ms. Park."},
+      {q:"Who keeps the supply room key?",o:["Kevin","A manager in accounting","Ms. Park","A security guard"],a:2,ex:"« Ms. Park in human resources keeps it. »"},
+      {q:"What does the man suggest?",o:["Postponing the workshop","Using another printer","Buying more paper","Calling Ms. Park"],a:1,ex:"« You could use the printer on the fifth floor » → « You could… » introduit une suggestion."}]},
+ {lines:[["M","Good evening, Bella Vista restaurant. How can I help you?"],["W","Hello, I'd like to book a table for eight people this Friday at seven thirty. It's for a colleague's retirement dinner."],["M","Let me check. I'm sorry, we're fully booked at seven thirty, but we have a private room available at eight."],["W","A private room would actually be perfect. Can we also order a cake?"],["M","Certainly. I'll need a deposit of fifty dollars to confirm the reservation."]],
+  qs:[{q:"Why is the woman calling?",o:["To complain about a meal","To make a reservation","To apply for a job","To cancel an order"],a:1,ex:"« I'd like to book a table » = réserver."},
+      {q:"What is the occasion?",o:["A birthday","A product launch","A retirement","A wedding"],a:2,ex:"« a colleague's retirement dinner » = départ à la retraite."},
+      {q:"What does the man say is required?",o:["A deposit","An ID card","A menu choice","An arrival before seven"],a:0,ex:"« I'll need a deposit of fifty dollars » : un acompte (deposit)."}]},
+ {lines:[["W","Hello, this is Sarah Collins from Bright Logistics. I'm calling about your application for the warehouse supervisor position."],["M","Oh, hi! Thank you for calling."],["W","We'd like to invite you for an interview. Are you available next Tuesday morning?"],["M","Unfortunately, I'm taking a forklift certification exam that day. Would Wednesday work instead?"],["W","Wednesday at ten is fine. Please bring copies of your certificates."]],
+  qs:[{q:"Where does the woman most likely work?",o:["At a school","At a logistics company","At a hospital","At a bank"],a:1,ex:"« Sarah Collins from Bright Logistics » + poste en entrepôt (warehouse)."},
+      {q:"Why can't the man come on Tuesday?",o:["He is on vacation.","He has another interview.","He is taking an exam.","He is moving."],a:2,ex:"« I'm taking a forklift certification exam that day. »"},
+      {q:"What should the man bring?",o:["A reference letter","A photo ID","A completed form","Copies of his certificates"],a:3,ex:"« Please bring copies of your certificates. »"}]},
+ {lines:[["M","Hi Linda, have you heard from the supplier about our order of office chairs?"],["W","Yes, they called this morning. There's a problem at their factory, so the delivery will be two weeks late."],["M","That's a concern. The new employees start on the first of the month, and they'll need somewhere to sit."],["W","I know. I've asked them if they can send half of the order now and the rest later."],["M","Good idea. Let me know what they say, and I'll update the manager."]],
+  qs:[{q:"What are the speakers discussing?",o:["A late delivery","A new office building","A hiring process","A broken machine"],a:0,ex:"« The delivery will be two weeks late. »"},
+      {q:"Why is the man concerned?",o:["The chairs are too expensive.","New staff will arrive soon.","The supplier has closed.","The manager is angry."],a:1,ex:"« The new employees start on the first of the month » → new staff = nouveaux employés (reformulation)."},
+      {q:"What has the woman requested?",o:["A refund","A different model","A partial shipment","A discount"],a:2,ex:"« send half of the order now » = une livraison partielle (partial shipment). Le TOEIC reformule presque toujours !"}]},
+ {lines:[["W","Excuse me, I'd like a return ticket to Manchester, please."],["M","Certainly. The next train leaves at eleven fifteen from platform four. Would you like a window seat?"],["W","Yes, please. Is there a discount for students?"],["M","Yes, twenty percent off if you have a valid student card."],["W","Great, here it is."]],
+  qs:[{q:"Where most likely is the conversation taking place?",o:["At an airport","At a train station","At a hotel","At a bus stop"],a:1,ex:"Train, platform (quai), ticket → gare."},
+      {q:"What time does the next train leave?",o:["At 10:15","At 11:15","At 11:50","At 4:00"],a:1,ex:"« eleven fifteen » = 11:15. Attention à « fifteen » (15) vs « fifty » (50) ; le 4 est le numéro du quai."},
+      {q:"What will the woman probably do next?",o:["Buy a magazine","Look for platform two","Show a student card","Cancel her trip"],a:2,ex:"« Great, here it is » : elle tend sa carte d'étudiant."}]},
+ {lines:[["M","Jessica, did you sign up for the training on the new accounting software?"],["W","Not yet. When is it?"],["M","There are two sessions: Thursday afternoon and Saturday morning. The Thursday one is almost full."],["W","I'd rather not come in on a weekend. I'll register for Thursday right away."],["M","You can do it on the company intranet. Just click on the Training tab."]],
+  qs:[{q:"What is the training about?",o:["Customer service","Accounting software","Safety rules","Leadership skills"],a:1,ex:"« the training on the new accounting software » = logiciel de comptabilité."},
+      {q:"Why does the woman choose Thursday?",o:["She does not want to work on the weekend.","The session is shorter.","Her manager asked her to.","She is meeting clients on Saturday."],a:0,ex:"« I'd rather not come in on a weekend » = je préfère ne pas venir le week-end."},
+      {q:"How can the woman register?",o:["By calling human resources","By sending an email","Through the company intranet","By filling out a paper form"],a:2,ex:"« You can do it on the company intranet. »"}]},
+ {lines:[["W","Good afternoon. I have a reservation under the name Moreau. I booked a room with a sea view."],["M","Welcome, Ms. Moreau. Hmm, I see a standard room facing the garden here."],["W","That's strange. I have the confirmation email right here."],["M","I apologize for the mistake. All the sea-view rooms are taken tonight, but I can move you tomorrow, and we'll offer you free breakfast for your whole stay."]],
+  qs:[{q:"What is the problem?",o:["The reservation was lost.","The room type is wrong.","The hotel is closed.","Her payment was refused."],a:1,ex:"Elle a réservé vue mer mais on lui donne une chambre côté jardin."},
+      {q:"What does the woman show the man?",o:["A passport","A credit card","A confirmation email","A map"],a:2,ex:"« I have the confirmation email right here. »"},
+      {q:"What does the man offer?",o:["A full refund","A late checkout","A taxi to the airport","Free breakfast"],a:3,ex:"« we'll offer you free breakfast for your whole stay »."}]},
+ {lines:[["M","Have you seen the results of the online advertising campaign?"],["W","Yes, website visits went up by forty percent last month."],["M","That's impressive. Do you think we should increase the budget for next quarter?"],["W","Well, sales didn't increase as much. Maybe we should first find out why visitors aren't buying."],["M","Good point. I'll ask the analytics team to prepare a report."]],
+  qs:[{q:"What increased last month?",o:["Sales","Website visits","Prices","The number of employees"],a:1,ex:"« website visits went up by forty percent » (go up = augmenter)."},
+      {q:"Why does the woman say, “Well, sales didn't increase as much”?",o:["To suggest being careful before spending more","To congratulate the team","To complain about prices","To announce a promotion"],a:0,ex:"Question « intention » typique : elle tempère l'enthousiasme avant d'augmenter le budget."},
+      {q:"What will the man do?",o:["Cancel the campaign","Hire a designer","Request a report","Meet a client"],a:2,ex:"« I'll ask the analytics team to prepare a report » = demander un rapport."}]}
+];
+const P4=[
+ {kind:"announcement",g:"W",text:"Attention, passengers on flight BA 207 to Toronto. Due to a technical inspection, departure has been delayed by approximately forty-five minutes. The new boarding time is two fifteen p.m. at gate eighteen, instead of gate twelve. Passengers who need assistance are invited to speak with staff at the information desk. We apologize for the inconvenience.",
+  qs:[{q:"What is the main purpose of the announcement?",o:["To announce a delay and a gate change","To advertise new flights","To explain security rules","To welcome passengers to Toronto"],a:0,ex:"Retard de 45 min + changement de porte (gate 12 → 18)."},
+      {q:"Which gate will the flight leave from?",o:["Gate 12","Gate 18","Gate 207","Gate 15"],a:1,ex:"« at gate eighteen, instead of gate twelve » : instead of = au lieu de."},
+      {q:"What should passengers who need help do?",o:["Call the airline","Wait at gate 12","Go to the information desk","Download an app"],a:2,ex:"« speak with staff at the information desk »."}]},
+ {kind:"telephone message",g:"M",text:"Hi, this is Tom Reed from Greenway Dental Clinic, calling for Ms. Alvarez. I'm calling to remind you of your appointment tomorrow, Thursday, at nine a.m. with Doctor Hassan. Please arrive ten minutes early to complete a new patient form. If you need to reschedule, call us back at 555-0148 before six p.m. today. Thank you.",
+  qs:[{q:"Who most likely is the speaker?",o:["A dentist","A clinic employee","A patient","A pharmacist"],a:1,ex:"Il appelle « from Greenway Dental Clinic » pour rappeler un rendez-vous avec le Dr Hassan : c'est un employé, pas le dentiste."},
+      {q:"Why should the listener arrive early?",o:["To pay a bill","To find parking","To complete a form","To have X-rays taken"],a:2,ex:"« arrive ten minutes early to complete a new patient form »."},
+      {q:"By when should the listener call to reschedule?",o:["Before 9 a.m. tomorrow","Before 6 p.m. today","By Friday","Within ten minutes"],a:1,ex:"« call us back … before six p.m. today »."}]},
+ {kind:"tour",g:"W",text:"Welcome to Solaris Foods. My name is Emma, and I'll be your guide this morning. First, we'll visit the production area, where our cereal bars are made. For safety reasons, you must wear the hairnets and gloves we're handing out now. Please note that photography is not permitted inside the factory. After the tour, at around eleven thirty, you're welcome to taste our new chocolate flavor in the visitor center.",
+  qs:[{q:"What does the company produce?",o:["Cereal bars","Clothing","Cameras","Furniture"],a:0,ex:"« the production area, where our cereal bars are made »."},
+      {q:"What are the listeners asked to do?",o:["Take photographs","Sign a form","Wear hairnets and gloves","Leave their bags at the entrance"],a:2,ex:"« you must wear the hairnets and gloves ». Les photos sont interdites (not permitted)."},
+      {q:"What will happen at around 11:30?",o:["Lunch at a restaurant","A product tasting","A safety video","A meeting with the CEO"],a:1,ex:"« taste our new chocolate flavor » = dégustation (tasting)."}]},
+ {kind:"broadcast",g:"M",text:"Good morning, this is Radio City's traffic update. Drivers heading downtown should avoid Highway 9 this morning, where road repairs have reduced traffic to one lane. Expect delays of up to thirty minutes. We recommend taking Riverside Road instead. For those using public transportation, the subway is running normally. Our next update will be at eight fifteen.",
+  qs:[{q:"What is causing the delays?",o:["An accident","Road repairs","Heavy snow","A parade"],a:1,ex:"« road repairs have reduced traffic to one lane »."},
+      {q:"What does the speaker recommend?",o:["Leaving home early","Taking the subway","Using Riverside Road","Working from home"],a:2,ex:"« We recommend taking Riverside Road instead ». Le métro est mentionné, mais ce n'est pas la recommandation."},
+      {q:"When will the next update be broadcast?",o:["At 8:50","At 7:15","At 8:30","At 8:15"],a:3,ex:"« eight fifteen » = 8:15."}]},
+ {kind:"excerpt from a meeting",g:"W",text:"Before we finish, I have some good news. Our customer satisfaction score reached ninety-two percent this year, the highest in the company's history. To celebrate, management has decided to give every employee an extra day off in December. Also, starting next month, we'll begin offering online training courses that you can take from home. Kate will send you the details by email this afternoon.",
+  qs:[{q:"What news does the speaker share?",o:["A record customer satisfaction score","The arrival of a new CEO","A merger with a competitor","A drop in sales"],a:0,ex:"« the highest in the company's history » = un record."},
+      {q:"What will employees receive?",o:["A bonus","An extra day off","A gift card","A new laptop"],a:1,ex:"« an extra day off in December » = un jour de congé supplémentaire."},
+      {q:"What will Kate do this afternoon?",o:["Organize a party","Lead a training course","Call some customers","Email some details"],a:3,ex:"« Kate will send you the details by email »."}]},
+ {kind:"advertisement",g:"M",text:"Is your office too small for your growing team? At FlexSpace, we offer modern, fully equipped offices in the heart of the city, available by the day, week, or month. All memberships include high-speed internet, meeting rooms, and free coffee. Sign up before March thirty-first and get your first week free. Visit flexspace dot com to book a tour.",
+  qs:[{q:"What is being advertised?",o:["Office furniture","Office spaces for rent","An internet provider","Coffee machines"],a:1,ex:"Bureaux équipés disponibles à la journée/semaine/mois = espaces de bureaux à louer."},
+      {q:"What is included in all memberships?",o:["Free parking","Daily lunch","Meeting rooms","A mobile phone"],a:2,ex:"« high-speed internet, meeting rooms, and free coffee »."},
+      {q:"What do customers get if they sign up before March 31?",o:["A free week","A 31% discount","A free coffee machine","A tour of the city"],a:0,ex:"« get your first week free »."}]}
+];
+const P5=[
+ {s:"The manager asked all employees to submit their reports ------- Friday.",o:["until","by","since","during"],a:1,t:"prep",ex:"« by + date » = au plus tard (date limite). « until » = jusqu'à, pour une action qui continue (I'll work until Friday)."},
+ {s:"Ms. Chen is ------- for organizing the annual conference.",o:["responsible","responsibility","responsibly","respond"],a:0,t:"wordform",ex:"Après « is », il faut un adjectif : be responsible for = être responsable de."},
+ {s:"The new marketing strategy was ------- successful.",o:["surprise","surprised","surprisingly","surprising"],a:2,t:"wordform",ex:"Devant un adjectif (successful), on met un adverbe en -ly : surprisingly successful = étonnamment réussie."},
+ {s:"If the shipment ------- late, we will contact the customer.",o:["arrive","arrives","arrived","will arrive"],a:1,t:"cond",ex:"Conditionnel type 1 : If + présent, … will + verbe. Jamais « will » après if. Sujet singulier → arrives."},
+ {s:"Mr. Davis has worked for the company ------- 2015.",o:["for","since","from","ago"],a:1,t:"prep",ex:"since + point de départ (2015), for + durée (for ten years). Avec le present perfect (has worked)."},
+ {s:"Please read the instructions ------- before using the machine.",o:["careful","care","carefully","caring"],a:2,t:"wordform",ex:"L'adverbe (carefully) décrit comment on fait l'action « read »."},
+ {s:"The conference room ------- every evening by the cleaning staff.",o:["cleans","is cleaned","is cleaning","cleaned"],a:1,t:"passive",ex:"La salle ne nettoie pas : elle EST nettoyée « by the cleaning staff » → passif be + participe passé."},
+ {s:"Neither the director ------- her assistant was available for comment.",o:["or","and","nor","but"],a:2,t:"agree",ex:"Couple fixe : neither … nor (ni … ni). De même : either … or, both … and."},
+ {s:"We are looking forward to ------- with you next year.",o:["work","working","worked","be working"],a:1,t:"verbpat",ex:"« look forward to » + V-ing. Ici « to » est une préposition, pas l'infinitif !"},
+ {s:"This year's sales figures are ------- than last year's.",o:["high","highest","higher","more high"],a:2,t:"comp",ex:"« than » → comparatif. Adjectif court : high → higher."},
+ {s:"The hotel offers a free shuttle service ------- the airport and the city center.",o:["between","among","through","along"],a:0,t:"prep",ex:"between A and B = entre deux éléments. among = parmi (plus de deux)."},
+ {s:"All visitors must ------- at the reception desk.",o:["registration","register","registered","registering"],a:1,t:"verbpat",ex:"Après un modal (must, can, should, will…), on met la base verbale sans « to »."},
+ {s:"The training session was postponed ------- the speaker was ill.",o:["because of","despite","because","although"],a:2,t:"conj",ex:"Après le blanc il y a une proposition complète (sujet + verbe : the speaker was) → because. « because of » est suivi d'un nom."},
+ {s:"Ms. Rossi, ------- joined the company last month, will lead the project.",o:["which","who","whom","whose"],a:1,t:"rel",ex:"Antécédent = une personne (Ms. Rossi) et le pronom est sujet de « joined » → who."},
+ {s:"The company plans to ------- its operations to Asia next year.",o:["expand","expansion","expansive","expanding"],a:0,t:"verbpat",ex:"plan to + base verbale. Il faut un verbe : expand (étendre)."},
+ {s:"Customers can return items within 30 days ------- they keep the receipt.",o:["unless","as long as","even though","whereas"],a:1,t:"conj",ex:"as long as = à condition que. unless = à moins que (sens inverse)."},
+ {s:"The report must be ------- reviewed before it is published.",o:["thorough","thoroughly","thoroughness","more thorough"],a:1,t:"wordform",ex:"Entre « be » et un participe passé (reviewed), on place un adverbe."},
+ {s:"Our office will be closed ------- the national holiday.",o:["while","during","when","as"],a:1,t:"prep",ex:"during + nom (the holiday). while + proposition (while I was working)."},
+ {s:"By the time the CEO arrived, the meeting -------.",o:["already started","has already started","had already started","is starting"],a:2,t:"tense",ex:"Action antérieure à une autre action passée (arrived) → past perfect : had + participe passé."},
+ {s:"The new software is easy to use and very -------.",o:["rely","reliable","reliably","reliance"],a:1,t:"wordform",ex:"Après « very » et coordonné avec « easy », il faut un adjectif : reliable (fiable). Suffixe -able = adjectif."},
+ {s:"Applicants should send their résumés ------- email.",o:["at","by","on","with"],a:1,t:"prep",ex:"Moyen de communication/transport : by email, by phone, by train."},
+ {s:"Mr. Lee would prefer ------- the meeting until next week.",o:["postpone","postponing","to postpone","postponed"],a:2,t:"verbpat",ex:"would prefer + to + verbe (comme would like to)."},
+ {s:"The budget proposal was approved ------- some minor changes.",o:["with","at","for","of"],a:0,t:"prep",ex:"approved with changes = approuvé avec des modifications."},
+ {s:"Each department ------- its own budget.",o:["manage","manages","managing","are managing"],a:1,t:"agree",ex:"each + nom singulier + verbe au singulier → manages (-s à la 3e personne)."},
+ {s:"We have received ------- complaints about the new product.",o:["much","a little","several","a lot"],a:2,t:"agree",ex:"complaints est dénombrable pluriel → several / many. much et a little vont avec l'indénombrable ; « a lot » a besoin de « of »."},
+ {s:"The seminar will take place in the main hall ------- the third floor.",o:["in","at","on","over"],a:2,t:"prep",ex:"Étage → on the third floor."},
+ {s:"Please ------- us if you have any questions.",o:["contact","contacting","to contact","contacted"],a:0,t:"verbpat",ex:"Après « Please », impératif = base verbale."},
+ {s:"The factory has become more ------- since the new machines were installed.",o:["produce","productive","production","productively"],a:1,t:"wordform",ex:"become + adjectif. Suffixe -ive = adjectif (productive = productif)."},
+ {s:"Ms. Grant was promoted ------- her excellent performance.",o:["due to","so that","in order to","although"],a:0,t:"conj",ex:"Suivi d'un groupe nominal (her excellent performance) → due to (= because of)."},
+ {s:"The CEO ------- the new branch next Monday.",o:["visited","has visited","will visit","was visiting"],a:2,t:"tense",ex:"« next Monday » → futur : will visit."},
+ {s:"The company offers a competitive salary and excellent -------.",o:["benefits","benefit","beneficial","beneficially"],a:0,t:"wordform",ex:"Après un adjectif (excellent), on met un nom. « benefits » = avantages sociaux (mutuelle, congés…)."},
+ {s:"The marketing team worked ------- to meet the deadline.",o:["hard","hardly","harder than","hardness"],a:0,t:"wordform",ex:"« hard » est déjà un adverbe (travailler dur). « hardly » = à peine : piège classique !"},
+ {s:"Unless the weather -------, the outdoor event will be canceled.",o:["improve","improves","will improve","improving"],a:1,t:"cond",ex:"Unless (= if not) fonctionne comme if : présent après, pas de will."},
+ {s:"The sales representative ------- with the client for two hours when the fire alarm rang.",o:["has been talking","had been talking","talks","is talking"],a:1,t:"tense",ex:"Action en cours depuis un certain temps avant un moment passé (rang) → past perfect continu."},
+ {s:"Ms. Owen asked me ------- the files to the archive.",o:["take","taking","to take","took"],a:2,t:"verbpat",ex:"ask someone to do something."},
+ {s:"This is the ------- hotel in the city.",o:["more expensive","most expensive","expensiver","expensive than"],a:1,t:"comp",ex:"the + superlatif + in the city. Adjectif long → the most expensive."},
+ {s:"Employees ------- to wear their badges at all times.",o:["require","are required","requiring","have required"],a:1,t:"passive",ex:"Les employés SONT obligés → passif : be required to = être tenu de."},
+ {s:"The new product line will be ------- next month.",o:["launch","launched","launching","launches"],a:1,t:"passive",ex:"will be + participe passé = futur passif (sera lancée)."},
+ {s:"The director has not decided ------- to accept the offer.",o:["whether","if not","that","what"],a:0,t:"conj",ex:"decide whether to + verbe = décider si… (« if » ne s'utilise pas devant « to »)."},
+ {s:"Please keep the receipt ------- you need to return the item.",o:["in case","so","because of","despite"],a:0,t:"conj",ex:"in case = au cas où."},
+ {s:"The documents ------- you requested are on your desk.",o:["who","which","whose","what"],a:1,t:"rel",ex:"Antécédent = chose (documents) → which (ou that). who = personnes."},
+ {s:"We met a supplier ------- prices are very competitive.",o:["who","which","whose","whom"],a:2,t:"rel",ex:"whose = dont (possession) : le fournisseur dont les prix…"},
+ {s:"The new printer is twice as ------- as the old one.",o:["fast","faster","fastest","fastly"],a:0,t:"comp",ex:"as + adjectif SIMPLE + as. « fastly » n'existe pas."},
+ {s:"The more you practice, the ------- you will become.",o:["confident","most confident","more confident","confidence"],a:2,t:"comp",ex:"Structure « the more…, the more… » = plus…, plus…"},
+ {s:"Ms. Kato ------- in Tokyo since she was promoted.",o:["lives","has lived","lived","is living"],a:1,t:"tense",ex:"since + action qui dure jusqu'à maintenant → present perfect (has lived). En français on dit « elle vit depuis », piège !"},
+ {s:"Last week, the team ------- a new client in Berlin.",o:["meets","has met","met","will meet"],a:2,t:"tense",ex:"« Last week » = passé terminé → prétérit (met). Pas de present perfect avec une date passée."},
+ {s:"If I ------- more time, I would take an English course.",o:["have","had","will have","would have"],a:1,t:"cond",ex:"Conditionnel type 2 (hypothèse) : If + prétérit, … would + verbe."},
+ {s:"A new manager ------- next month.",o:["will be appointed","appoints","appointed","is appointing"],a:0,t:"passive",ex:"Le manager est nommé par quelqu'un → passif au futur : will be appointed."}
+];
+const P6=[
+ {title:"E-mail",text:"To: All staff\nFrom: Facilities Department\nSubject: Parking lot maintenance\n\nPlease be advised that the north parking lot will be closed for repairs from Monday, June 3, {0} Friday, June 7. During this period, employees are asked to park in the south lot. {1} We understand that this may cause some {2}, and we appreciate your patience. If you have any questions, please contact Mark Hill at extension 214. The work is expected to be {3} on schedule.",
+  qs:[{o:["to","since","at","of"],a:0,ex:"from … to … = de … à …"},
+      {ins:1,o:["Shuttle buses will run every ten minutes between the south lot and the main entrance.","The cafeteria will offer a new menu next week.","Our company was founded twenty years ago.","Thank you for attending the meeting."],a:0,ex:"La phrase doit continuer l'idée du parking sud : la navette relie ce parking à l'entrée."},
+      {o:["inconvenient","inconvenience","inconveniently","convenient"],a:1,ex:"Après « some », il faut un nom : inconvenience (gêne)."},
+      {o:["complete","completing","completed","completion"],a:2,ex:"be expected to be + participe passé (passif) : être terminé."}]},
+ {title:"Notice",text:"Riverside Public Library is pleased to announce its new evening program for adults. Starting in September, the library {0} free English conversation classes every Tuesday and Thursday from 6 to 8 p.m. The classes are designed for learners at all levels. {1} space is limited, registration is required. You can sign up at the front desk or on our website. {2} Participants will also have access to our language-learning software {3} charge.",
+  qs:[{o:["offered","will offer","has offered","offering"],a:1,ex:"« Starting in September » → futur."},
+      {o:["Because","Despite","However","Unless"],a:0,ex:"Cause : parce que la place est limitée, l'inscription est obligatoire."},
+      {ins:1,o:["Each class is led by an experienced volunteer teacher.","The library was closed last summer.","Many books are currently overdue.","Please return your rental car on time."],a:0,ex:"On reste sur le sujet des cours de conversation."},
+      {o:["free of","out of","instead of","in spite of"],a:0,ex:"free of charge = gratuitement (expression figée)."}]},
+ {title:"Letter",text:"Dear Mr. Patel,\n\nThank you for your recent order with Nova Electronics. Unfortunately, the headphones you ordered are currently out of stock. We expect to receive a new shipment {0} two weeks. {1}, you may choose a similar model at the same price, or cancel your order for a full refund. {2} Please let us know your decision by replying to this email.\n\nWe apologize for the delay and thank you for your {3}.\n\nSincerely,\nCustomer Service Team",
+  qs:[{o:["within","since","among","until"],a:0,ex:"within two weeks = d'ici deux semaines / sous deux semaines."},
+      {o:["In the meantime","As a result","For example","In addition"],a:0,ex:"In the meantime = en attendant (que le stock revienne)."},
+      {ins:1,o:["A list of available models is attached to this message.","Our store opened in 2005.","You have won the first prize.","The headphones were delivered yesterday."],a:0,ex:"Juste après la proposition de choisir un modèle similaire → la liste des modèles disponibles."},
+      {o:["patient","patience","patiently","patients"],a:1,ex:"Après « your », un nom : patience."}]},
+ {title:"Memo",text:"MEMO\nTo: All employees\nRe: New travel expense policy\n\nEffective July 1, all requests for travel reimbursement must be submitted through the new online system. Paper forms will no longer be {0}. Employees should attach scanned copies of all receipts. {1} Requests submitted more than 30 days after the trip will not be {2}. A short training video explaining the system is available on the intranet. We encourage all staff to watch it {3} their next business trip.",
+  qs:[{o:["accept","accepting","accepted","acceptance"],a:2,ex:"will no longer be + participe passé (passif) : ne seront plus acceptés."},
+      {ins:1,o:["Original receipts should be kept for at least one year.","The new office will open in July.","The training room has 30 seats.","Business trips are always enjoyable."],a:0,ex:"Suite logique des copies scannées : garder les originaux."},
+      {o:["processed","process","processing","processor"],a:0,ex:"will not be + participe passé : ne seront pas traitées."},
+      {o:["before","between","since","while"],a:0,ex:"Regarder la vidéo AVANT le prochain voyage."}]}
+];
+const P7=[
+ {docs:[{t:"Notice",b:"GREENLEAF SUPERMARKET — HOLIDAY HOURS\n\nDecember 24: 8:00 a.m. – 4:00 p.m.\nDecember 25: Closed\nDecember 26: 10:00 a.m. – 6:00 p.m.\nDecember 31: 8:00 a.m. – 5:00 p.m.\nJanuary 1: Closed\n\nRegular hours (Mon–Sat 7:00 a.m. – 10:00 p.m., Sun 9:00 a.m. – 8:00 p.m.) resume on January 2.\nOnline orders placed during closures will be delivered on the next opening day."}],
+  qs:[{q:"What time does the store close on December 24?",o:["At 4:00 p.m.","At 5:00 p.m.","At 6:00 p.m.","At 10:00 p.m."],a:0,ex:"Ligne « December 24: 8:00 a.m. – 4:00 p.m. »."},
+      {q:"What is indicated about online orders?",o:["They are not accepted during the holidays.","They are delivered on the next opening day.","Delivery is free in December.","They must be picked up in the store."],a:1,ex:"« delivered on the next opening day »."},
+      {q:"On which day is the store closed?",o:["December 24","December 26","January 1","January 2"],a:2,ex:"January 1: Closed. Le 2 janvier les horaires normaux reprennent (resume)."}]},
+ {docs:[{t:"E-mail",b:"From: Julia Martin\nTo: David Okafor\nDate: March 12\nSubject: Client visit\n\nHi David,\n\nThe representatives from Hartley Industries have confirmed that they will visit our office on March 20. They would like to see a demonstration of our new project management tool and discuss a possible long-term contract.\n\nCould you prepare the demonstration? You know the tool better than anyone on the team. I will take care of booking a meeting room and ordering lunch. Also, since two of the visitors are coming from Singapore, please make sure the presentation slides are clear and avoid using too much technical jargon.\n\nLet me know by Friday if you need any help.\n\nBest,\nJulia"}],
+  qs:[{q:"Why did Julia write the e-mail?",o:["To ask David to prepare a demonstration","To cancel a client meeting","To invite David to Singapore","To complain about a software tool"],a:0,ex:"« Could you prepare the demonstration? » est la demande principale."},
+      {q:"What will Julia do?",o:["Give the presentation","Reserve a room and order lunch","Travel to Singapore","Sign the contract"],a:1,ex:"« I will take care of booking a meeting room and ordering lunch. »"},
+      {q:"What is suggested about David?",o:["He recently joined the company.","He knows the tool very well.","He works for Hartley Industries.","He speaks several languages."],a:1,ex:"« You know the tool better than anyone on the team. »"},
+      {q:"In paragraph 3, the word “clear” is closest in meaning to",o:["transparent","empty","easy to understand","bright"],a:2,ex:"Question de synonyme : ici des diapos « clear » = faciles à comprendre (pas transparentes)."}]},
+ {docs:[{t:"Text message chain",b:"Ryan Cole [9:02 A.M.]\nHi Mei, are you already at the trade fair?\n\nMei Tan [9:04 A.M.]\nYes, I'm setting up our booth. But the boxes with the brochures haven't arrived.\n\nRyan Cole [9:05 A.M.]\nOh no. The courier said they would be delivered by 8:30.\n\nMei Tan [9:06 A.M.]\nCan you call them? The doors open to visitors at 10.\n\nRyan Cole [9:07 A.M.]\nI'm on it. Meanwhile, you could print a few copies at the business center on the ground floor.\n\nMei Tan [9:08 A.M.]\nGood thinking. I'll go now."}],
+  qs:[{q:"Where is Ms. Tan?",o:["At a trade fair","In her office","At a printing company","At an airport"],a:0,ex:"« Are you already at the trade fair? — Yes » (trade fair = salon professionnel)."},
+      {q:"What problem does Ms. Tan mention?",o:["Her booth is too small.","Some brochures have not been delivered.","Visitors arrived late.","A printer is broken."],a:1,ex:"« the boxes with the brochures haven't arrived »."},
+      {q:"At 9:07 A.M., what does Mr. Cole mean when he writes, “I'm on it”?",o:["He will contact the courier.","He is on the ground floor.","He has arrived at the fair.","He is printing the brochures."],a:0,ex:"« I'm on it » = je m'en occupe : il répond à « Can you call them? »."},
+      {q:"What will Ms. Tan most likely do next?",o:["Go to the business center","Close the booth","Call the courier","Wait at the entrance"],a:0,ex:"« Good thinking. I'll go now » → au business center pour imprimer."}]},
+ {docs:[{t:"Article",b:"LOCAL BAKERY EXPANDS\n\nFAIRVIEW — Sunrise Bakery, which opened ten years ago as a small family shop on Elm Street, will open its third location next month in the Westgate Shopping Mall. Owner Clara Duval says the expansion is the result of growing demand for the bakery's whole-grain breads and gluten-free pastries.\n\n“We started with just two employees,” said Ms. Duval. “Now we have thirty-five, and we will hire fifteen more for the new shop.” The Westgate location will also include a café area with seating for forty customers.\n\nTo celebrate the opening on May 5, the bakery will offer free coffee to the first hundred customers."}],
+  qs:[{q:"What is the article mainly about?",o:["A business opening a new location","The construction of a shopping mall","A cooking competition","A change of ownership"],a:0,ex:"Titre + 1re phrase : la boulangerie ouvre un 3e magasin."},
+      {q:"How many people does the bakery currently employ?",o:["2","15","35","50"],a:2,ex:"« Now we have thirty-five ». 2 = au début, 15 = futures embauches."},
+      {q:"What is NOT mentioned about the new location?",o:["It is in a shopping mall.","It has a café area.","It will offer free coffee on opening day.","It will be open 24 hours a day."],a:3,ex:"Question NOT : vérifie chaque option. Rien n'est dit sur une ouverture 24h/24."},
+      {q:"What is indicated about Sunrise Bakery?",o:["It sells gluten-free products.","It was founded twenty years ago.","Its owner recently retired.","It only sells coffee."],a:0,ex:"« gluten-free pastries ». Elle a été fondée il y a dix ans, pas vingt."}]},
+ {docs:[{t:"Job advertisement",b:"JOB OPENING — Customer Service Assistant (part-time)\n\nHarbor Hotel is looking for a friendly customer service assistant to join our front desk team. Hours: 20 hours per week, including weekends.\n\nRequirements:\n• At least one year of experience in customer service\n• Good communication skills in English; a second language is a plus\n• Basic computer skills\n\nSend your CV and cover letter to hr@harborhotel.com before April 15."},
+       {t:"E-mail",b:"To: hr@harborhotel.com\nFrom: Lucas Ferreira\nDate: April 10\nSubject: Customer Service Assistant position\n\nDear Hiring Manager,\n\nI am writing to apply for the part-time customer service assistant position advertised on your website. I have worked for two years as a receptionist at a sports club, where I answered phone calls, managed bookings, and dealt with customer complaints. I speak Portuguese and Spanish fluently, in addition to English.\n\nI am currently a university student, so I am available in the evenings and on weekends. Please find my CV and cover letter attached.\n\nSincerely,\nLucas Ferreira"}],
+  qs:[{q:"What position is being advertised?",o:["A full-time hotel manager","A part-time front desk assistant","A sports coach","A translator"],a:1,ex:"« Customer Service Assistant (part-time) … front desk team »."},
+      {q:"In what way does Mr. Ferreira exceed the job requirements?",o:["He has more experience than required.","He has advanced computer skills.","He has a university degree.","He has a driver's license."],a:0,ex:"Double texte : on exige 1 an d'expérience (doc 1), il en a 2 (doc 2). Il faut croiser les deux documents."},
+      {q:"What is suggested about Mr. Ferreira's application?",o:["It was sent before the deadline.","It does not include a CV.","It was sent by post.","It is for a full-time job."],a:0,ex:"Date limite : April 15 (doc 1). E-mail envoyé le April 10 (doc 2)."},
+      {q:"How many languages does Mr. Ferreira speak?",o:["One","Two","Three","Four"],a:2,ex:"Portugais + espagnol + anglais = trois."}]},
+ {docs:[{t:"Schedule",b:"CITYLINK BUS — Route 42 (Weekdays)\n\nCentral Station    7:00 | 7:30 | 8:00 | 8:30\nCity Hospital      7:12 | 7:42 | 8:12 | 8:42\nTech Park          7:25 | 7:55 | 8:25 | 8:55\nAirport            7:50 | 8:20 | 8:50 | 9:20\n\nNote: From July 1, Route 42 buses will no longer stop at City Hospital due to construction work. Passengers should use Route 15 instead."}],
+  qs:[{q:"How long is the trip from Central Station to the Airport?",o:["25 minutes","50 minutes","30 minutes","1 hour"],a:1,ex:"7:00 → 7:50 = 50 minutes."},
+      {q:"A passenger must be at Tech Park by 8:00. Which bus should they take from Central Station?",o:["The 7:00 bus","The 7:30 bus","The 8:00 bus","The 8:30 bus"],a:1,ex:"Le bus de 7:30 arrive à Tech Park à 7:55."},
+      {q:"What will change on July 1?",o:["Fares will increase.","A stop will be removed from the route.","Weekend service will begin.","Route 15 will be canceled."],a:1,ex:"« will no longer stop at City Hospital »."}]}
+];
+
+const VOCAB={
+ "Bureau":[["deadline","date limite","The deadline for the report is Friday."],["colleague","collègue","My colleague will help you."],["department","service, département","She works in the sales department."],["headquarters","siège social","Our headquarters are in Paris."],["branch","succursale, agence","The bank opened a new branch."],["supervisor","responsable, superviseur","Ask your supervisor for approval."],["schedule","planning, emploi du temps","The schedule has changed."],["to postpone","reporter (à plus tard)","The meeting was postponed."],["to submit","soumettre, remettre","Please submit your form online."],["supplies","fournitures","We need more office supplies."],["filing cabinet","classeur (meuble)","The files are in the filing cabinet."],["to handle","gérer, s'occuper de","She handles customer complaints."],["memo","note de service","Read the memo from the director."],["extension","poste (téléphonique)","Call me at extension 214."],["agenda","ordre du jour","The first item on the agenda is the budget."]],
+ "Ressources humaines":[["to hire","embaucher","We will hire five new employees."],["applicant","candidat","Each applicant must send a CV."],["to apply for","postuler à","He applied for the manager position."],["résumé","CV","Attach your résumé to the email."],["position","poste","The position is full-time."],["salary","salaire","The salary is competitive."],["benefits","avantages sociaux","The job offers good benefits."],["to promote","promouvoir (une personne)","She was promoted to director."],["to retire","prendre sa retraite","He will retire next year."],["staff","personnel","All staff must attend the training."],["training","formation","The training lasts two days."],["qualified","qualifié","We need a qualified engineer."],["to resign","démissionner","She resigned last month."],["workload","charge de travail","My workload is heavy this week."],["performance review","entretien d'évaluation","My performance review is in June."]],
+ "Finance & commerce":[["invoice","facture","We sent the invoice yesterday."],["receipt","reçu, ticket de caisse","Keep your receipt."],["refund","remboursement","You can get a full refund."],["budget","budget","We are over budget."],["revenue","chiffre d'affaires","Revenue rose by 10%."],["profit","bénéfice","The company made a large profit."],["to purchase","acheter","You can purchase tickets online."],["discount","réduction, remise","Students get a 20% discount."],["customer","client","The customer is always right."],["supplier","fournisseur","Our supplier is in Germany."],["order","commande","Your order has been shipped."],["estimate","devis, estimation","Can you send me an estimate?"],["to reimburse","rembourser (des frais)","The company reimburses travel costs."],["merger","fusion","The merger was announced today."],["shareholder","actionnaire","Shareholders met in May."]],
+ "Voyages":[["flight","vol","My flight is at 9 a.m."],["boarding pass","carte d'embarquement","Show your boarding pass at the gate."],["departure","départ","Departure is delayed."],["arrival","arrivée","Arrival is at 6 p.m."],["luggage","bagages","Your luggage is too heavy."],["delayed","retardé","The train is delayed by 20 minutes."],["round-trip ticket","billet aller-retour","I bought a round-trip ticket."],["reservation","réservation","I have a reservation for two nights."],["itinerary","itinéraire, programme de voyage","Here is your itinerary."],["accommodation","hébergement","Accommodation is included."],["platform","quai","The train leaves from platform 4."],["fare","prix du billet","Bus fares will increase."],["to check in","s'enregistrer","Check in two hours before the flight."],["commute","trajet domicile-travail","My commute takes an hour."],["shuttle","navette","A free shuttle goes to the airport."]],
+ "Réunions":[["meeting","réunion","The meeting starts at ten."],["conference call","conférence téléphonique","We have a conference call with Tokyo."],["to attend","assister à","Can you attend the meeting?"],["presentation","présentation","Her presentation was clear."],["handout","document distribué","Take a handout at the door."],["to remind","rappeler (à quelqu'un)","Remind me to call the client."],["to confirm","confirmer","Please confirm your attendance."],["feedback","retour, avis","Thank you for your feedback."],["proposal","proposition","They accepted our proposal."],["announcement","annonce","There is an announcement at noon."],["venue","lieu (d'un événement)","The venue holds 300 people."],["to notify","avertir, informer","Please notify HR of any change."],["minutes","compte rendu de réunion","Who took the minutes?"],["attendance","présence, participation","Attendance is mandatory."],["to reschedule","reprogrammer","Can we reschedule our call?"]],
+ "Logistique":[["warehouse","entrepôt","The goods are stored in a warehouse."],["shipment","envoi, livraison","The shipment arrived late."],["to deliver","livrer","We deliver within 48 hours."],["inventory","stock, inventaire","Check the inventory every week."],["out of stock","en rupture de stock","This model is out of stock."],["factory","usine","The factory employs 500 workers."],["equipment","équipement, matériel","The equipment is new."],["maintenance","entretien, maintenance","The elevator is under maintenance."],["to repair","réparer","They repaired the machine."],["quality control","contrôle qualité","Every product goes through quality control."],["to manufacture","fabriquer","They manufacture car parts."],["forklift","chariot élévateur","He drives a forklift."],["safety","sécurité","Safety glasses are required."],["to ship","expédier","We ship worldwide."],["courier","coursier, transporteur","A courier will pick up the package."]],
+ "Restaurant & loisirs":[["bill","addition","Can we have the bill, please?"],["to book","réserver","I booked a table for four."],["dish","plat","This dish is spicy."],["appetizer","entrée (plat)","We ordered two appetizers."],["refreshments","rafraîchissements","Refreshments will be served."],["exhibition","exposition","The exhibition opens on Monday."],["box office","billetterie","Buy tickets at the box office."],["membership","adhésion, abonnement","Membership is free for students."],["catering","service traiteur","The catering was excellent."],["tip","pourboire","Leave a tip for the waiter."],["banquet","banquet, dîner officiel","The awards banquet is on Friday."],["admission","entrée (prix d'accès)","Admission is ten dollars."],["to recommend","recommander","I recommend the fish."],["seat","place, siège","Please take a seat."],["crowded","bondé","The restaurant was crowded."]],
+ "Faux amis":[["actually","en fait (≠ actuellement)","Actually, I agree with you."],["currently","actuellement","She is currently in London."],["eventually","finalement (≠ éventuellement)","He eventually accepted the offer."],["library","bibliothèque (≠ librairie)","The library opens at 9."],["bookstore","librairie","I bought it at a bookstore."],["to attend","assister à (≠ attendre)","I attended the seminar."],["sensible","raisonnable (≠ sensible)","That's a sensible decision."],["sensitive","sensible","This is sensitive information."],["to pretend","faire semblant (≠ prétendre)","He pretended to be busy."],["hardly","à peine (≠ durement)","I can hardly hear you."],["to realize","se rendre compte (≠ réaliser)","I realized I was late."],["location","emplacement (≠ location)","The hotel's location is perfect."],["rental","location (de voiture…)","Car rental is expensive here."],["coin","pièce de monnaie (≠ coin)","I need a coin for the machine."],["to assist","aider (≠ assister à)","Can I assist you?"]]
+};
+
+const GRAMMAR=[
+ {tag:"wordform",t:"Nature des mots (nom, adjectif, adverbe, verbe)",h:`<p>C'est LE point le plus fréquent en Part 5 : les 4 réponses sont le même mot sous 4 formes. Regarde juste <b>avant et après le blanc</b>.</p>
+<table><tr><th>Nature</th><th>Suffixes typiques</th><th>Où le trouver</th></tr>
+<tr><td>Nom</td><td>-tion, -ment, -ness, -ity, -ance, -er/-or</td><td>après the/a/your/some, après un adjectif</td></tr>
+<tr><td>Adjectif</td><td>-ive, -able, -ful, -ous, -al, -ent, -ic</td><td>devant un nom, après be/become/seem</td></tr>
+<tr><td>Adverbe</td><td>-ly</td><td>devant un adjectif, autour d'un verbe, entre be et un participe</td></tr>
+<tr><td>Verbe</td><td>-ize, -en, -ify</td><td>après un sujet, un modal, to</td></tr></table>
+<p class="ex">The report was <b>extremely</b> (adv) <b>useful</b> (adj). — We need your <b>approval</b> (nom).</p>
+<p class="warn">Pièges : <b>hard</b> = dur / durement, mais <b>hardly</b> = à peine. <b>friendly, costly, lively</b> sont des adjectifs malgré le -ly.</p>`},
+ {tag:"prep",t:"Prépositions de temps et de lieu",h:`<table><tr><th>Préposition</th><th>Usage</th><th>Exemple</th></tr>
+<tr><td>at</td><td>heure, lieu précis</td><td>at 9 a.m., at the desk</td></tr>
+<tr><td>on</td><td>jour, date, étage, surface</td><td>on Monday, on June 3, on the 2nd floor</td></tr>
+<tr><td>in</td><td>mois, année, ville, durée future</td><td>in May, in 2025, in Paris, in two days</td></tr>
+<tr><td>by</td><td>au plus tard (date limite) / moyen</td><td>by Friday, by email, by train</td></tr>
+<tr><td>until</td><td>jusqu'à (l'action continue)</td><td>open until 8 p.m.</td></tr>
+<tr><td>since / for</td><td>depuis (point de départ) / pendant (durée)</td><td>since 2015 / for 3 years</td></tr>
+<tr><td>during / while</td><td>pendant + nom / pendant que + phrase</td><td>during the meeting / while I was away</td></tr>
+<tr><td>within</td><td>dans un délai de</td><td>within 30 days</td></tr>
+<tr><td>between / among</td><td>entre deux / parmi plusieurs</td><td>between A and B / among the staff</td></tr></table>`},
+ {tag:"tense",t:"Les temps verbaux essentiels",h:`<table><tr><th>Temps</th><th>Forme</th><th>Mots-indices</th></tr>
+<tr><td>Présent simple</td><td>he works</td><td>every day, usually, often</td></tr>
+<tr><td>Présent continu</td><td>he is working</td><td>now, currently, at the moment</td></tr>
+<tr><td>Prétérit</td><td>he worked</td><td>yesterday, last week, ago, in 2020</td></tr>
+<tr><td>Present perfect</td><td>he has worked</td><td>since, for, already, yet, recently, so far</td></tr>
+<tr><td>Past perfect</td><td>he had worked</td><td>by the time + passé, before + passé</td></tr>
+<tr><td>Futur</td><td>he will work</td><td>tomorrow, next month, soon</td></tr></table>
+<p class="warn">Piège n°1 des francophones : « Je travaille ici depuis 2 ans » = <b>I have worked here for two years</b> (jamais « I work here since »).</p>`},
+ {tag:"passive",t:"La voix passive",h:`<p>Forme : <b>be (conjugué) + participe passé</b>. On l'utilise quand le sujet <i>subit</i> l'action.</p>
+<p class="ex">The office <b>is cleaned</b> every day. — The report <b>will be sent</b> tomorrow. — The packages <b>have been delivered</b>.</p>
+<p>Astuce Part 5 : si le blanc est suivi de « by + personne » ou s'il n'y a pas de complément d'objet derrière le verbe, pense passif.</p>
+<p>Part 1 : <b>is being + participe</b> = action en train de se faire (quelqu'un doit être visible). <b>has been + participe</b> = état, résultat.</p>`},
+ {tag:"cond",t:"Conditions : if, unless",h:`<table><tr><th>Type</th><th>Structure</th><th>Exemple</th></tr>
+<tr><td>Réel (type 1)</td><td>If + présent, will + verbe</td><td>If it rains, we will stay inside.</td></tr>
+<tr><td>Hypothèse (type 2)</td><td>If + prétérit, would + verbe</td><td>If I had time, I would help.</td></tr>
+<tr><td>Passé (type 3)</td><td>If + had + p.p., would have + p.p.</td><td>If he had called, I would have answered.</td></tr></table>
+<p class="warn">Jamais de <b>will</b> juste après if / unless / when / as soon as. <b>Unless</b> = if… not (à moins que).</p>`},
+ {tag:"conj",t:"Connecteurs logiques",h:`<p>Règle d'or : regarde ce qui suit le blanc. <b>Phrase complète (sujet + verbe)</b> → conjonction. <b>Nom / groupe nominal</b> → préposition.</p>
+<table><tr><th>Sens</th><th>+ phrase</th><th>+ nom</th></tr>
+<tr><td>Cause</td><td>because, since, as</td><td>because of, due to, owing to</td></tr>
+<tr><td>Opposition</td><td>although, even though, whereas</td><td>despite, in spite of</td></tr>
+<tr><td>But</td><td>so that</td><td>in order to + verbe</td></tr>
+<tr><td>Condition</td><td>if, unless, as long as, provided that</td><td>—</td></tr>
+<tr><td>Précaution</td><td>in case</td><td>in case of</td></tr></table>
+<p>Adverbes de liaison (avec virgule) : <b>However</b> (cependant), <b>Therefore</b> (donc), <b>In addition / Moreover</b> (de plus), <b>In the meantime</b> (en attendant), <b>Otherwise</b> (sinon).</p>`},
+ {tag:"rel",t:"Pronoms relatifs",h:`<table><tr><th>Pronom</th><th>Pour</th><th>Exemple</th></tr>
+<tr><td>who</td><td>personne (sujet)</td><td>The man who called…</td></tr>
+<tr><td>whom</td><td>personne (complément, après préposition)</td><td>The client to whom I wrote…</td></tr>
+<tr><td>which</td><td>chose</td><td>The files which you need…</td></tr>
+<tr><td>that</td><td>personne ou chose (pas après une virgule)</td><td>The car that I rented…</td></tr>
+<tr><td>whose</td><td>possession (dont)</td><td>A firm whose profits rose…</td></tr></table>`},
+ {tag:"comp",t:"Comparatifs et superlatifs",h:`<table><tr><th></th><th>Adjectif court</th><th>Adjectif long</th></tr>
+<tr><td>Comparatif</td><td>cheaper than</td><td>more expensive than</td></tr>
+<tr><td>Superlatif</td><td>the cheapest</td><td>the most expensive</td></tr>
+<tr><td>Égalité</td><td colspan="2">as cheap as / not as expensive as</td></tr></table>
+<p>Irréguliers : good → better → the best ; bad → worse → the worst ; far → further.</p>
+<p class="ex">The more you read, the faster you become. (Plus… plus…)</p>`},
+ {tag:"verbpat",t:"Infinitif, -ing ou base verbale ?",h:`<table><tr><th>Structure</th><th>Verbes</th></tr>
+<tr><td>+ base verbale</td><td>modaux : can, must, should, will, may ; let, make, help ; please (impératif)</td></tr>
+<tr><td>+ to + verbe</td><td>want, plan, decide, agree, hope, offer, need, would like, would prefer, ask sb, expect</td></tr>
+<tr><td>+ V-ing</td><td>enjoy, avoid, finish, consider, suggest, mind, keep, après une préposition (before, after, without, for)</td></tr></table>
+<p class="warn">« to » préposition → V-ing : <b>look forward to meeting</b>, <b>be used to working</b>, <b>be committed to providing</b>.</p>`},
+ {tag:"agree",t:"Accords et quantifieurs",h:`<p><b>each / every / either / neither + singulier</b> : Each employee <b>has</b> a badge.</p>
+<table><tr><th>Dénombrable (pluriel)</th><th>Indénombrable</th></tr>
+<tr><td>many, few, a few, several, a number of</td><td>much, little, a little, an amount of</td></tr>
+<tr><td colspan="2">Les deux : a lot of, some, any, plenty of, most</td></tr></table>
+<p>Paires fixes : <b>both … and</b>, <b>either … or</b>, <b>neither … nor</b>, <b>not only … but also</b>.</p>
+<p class="warn">Indénombrables en anglais : information, advice, equipment, furniture, luggage, feedback (jamais de -s).</p>`}
+];
+
+const PARTS={
+ 1:{n:"Part 1",t:"Photographies",sec:"L",real:6,d:"Une photo, 4 phrases entendues. Choisis celle qui décrit le mieux l'image. Les phrases ne sont pas écrites.",
+    m:["Regarde la photo avant l'audio : qui ? quoi ? où ?","Élimine les phrases qui citent un objet visible avec une action fausse.","Passif : « is being cleaned » = action en cours (quelqu'un agit) ; « has been cleaned » = état.","Si personne n'est sur la photo, toute phrase avec une action humaine est fausse."]},
+ 2:{n:"Part 2",t:"Questions-réponses",sec:"L",real:25,d:"Une question ou phrase, puis 3 réponses entendues (A, B, C). Rien n'est écrit.",
+    m:["Concentre-toi sur le 1er mot : Where → lieu, When → moment, Who → personne, Why → raison, How → manière / quantité.","Une question en Wh- n'accepte jamais Yes / No.","Les mots qui sonnent comme ceux de la question sont souvent des pièges.","Les réponses indirectes (« Demande à Paul », « Je n'ai pas encore vu ») sont souvent correctes."]},
+ 3:{n:"Part 3",t:"Conversations",sec:"L",real:39,d:"Une conversation entre 2 ou 3 personnes, puis 3 questions écrites à 4 choix.",
+    m:["Lis les 3 questions AVANT l'audio.","Les réponses arrivent en général dans l'ordre des questions.","Repère qui parle : homme (man) ou femme (woman).","La bonne réponse est souvent une reformulation (synonyme), pas les mêmes mots."]},
+ 4:{n:"Part 4",t:"Exposés",sec:"L",real:30,d:"Un monologue (annonce, message, publicité, radio), puis 3 questions écrites.",
+    m:["Lis les questions avant l'audio.","La 1re question porte souvent sur le but ou le lieu.","Retiens les chiffres, heures et noms.","Attention à « fifteen » (15) / « fifty » (50)."]},
+ 5:{n:"Part 5",t:"Phrases à compléter",sec:"R",real:30,d:"Une phrase avec un blanc et 4 propositions. Grammaire et vocabulaire.",
+    m:["Regarde d'abord les 4 réponses : même mot sous 4 formes → grammaire, regarde autour du blanc.","Sinon c'est du vocabulaire : lis la phrase entière.","Vise 20 à 30 secondes par question pour garder du temps pour la Part 7."]},
+ 6:{n:"Part 6",t:"Textes à compléter",sec:"R",real:16,d:"Un texte court avec 4 blancs, dont 1 phrase entière à insérer.",
+    m:["Lis tout le texte : le temps du verbe dépend souvent du contexte (dates).","Pour la phrase à insérer, vérifie le lien avec la phrase avant ET après."]},
+ 7:{n:"Part 7",t:"Compréhension écrite",sec:"R",real:54,d:"E-mails, articles, annonces, messages : un, deux ou trois documents et 2 à 5 questions.",
+    m:["Lis les questions d'abord, puis cherche l'information (scanning).","Questions « NOT true » : vérifie chaque option dans le texte.","Doubles / triples textes : une question demande toujours de croiser les documents.","Gère ton temps : ~1 minute par question."]}
+};
+
+/* ================== ÉTAT & STOCKAGE ================== */
+const KEY="toeic.v1";
+function load(){const d={ans:{},hist:[],vocab:{},rate:0.9,showText:false};try{const x=JSON.parse(localStorage.getItem(KEY));return x?Object.assign(d,x):d}catch(e){return d}}
+let S=load();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+const LET=["A","B","C","D"];
+const $=(s,r=document)=>r.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+function toast(m){const t=$("#toast");t.textContent=m;t.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>t.hidden=true,2200)}
+
+/* ================== UNITÉS ================== */
+const UNITS=[];
+P1.forEach((x,i)=>UNITS.push({part:1,id:"p1-"+(i+1),bg:x.bg,sc:x.sc,qs:[{uid:"p1-"+(i+1),o:x.o,a:x.a,ex:x.ex}]}));
+P2.forEach((x,i)=>UNITS.push({part:2,id:"p2-"+(i+1),g:i%2?"M":"W",qs:[{uid:"p2-"+(i+1),q:x.q,o:x.o,a:x.a,ex:x.ex}]}));
+P3.forEach((x,i)=>UNITS.push({part:3,id:"p3-"+(i+1),lines:x.lines,qs:x.qs.map((q,j)=>({uid:`p3-${i+1}-${j+1}`,...q}))}));
+P4.forEach((x,i)=>UNITS.push({part:4,id:"p4-"+(i+1),kind:x.kind,g:x.g,text:x.text,qs:x.qs.map((q,j)=>({uid:`p4-${i+1}-${j+1}`,...q}))}));
+P5.forEach((x,i)=>UNITS.push({part:5,id:"p5-"+(i+1),tag:x.t,qs:[{uid:"p5-"+(i+1),q:x.s,o:x.o,a:x.a,ex:x.ex}]}));
+P6.forEach((x,i)=>UNITS.push({part:6,id:"p6-"+(i+1),title:x.title,text:x.text,qs:x.qs.map((q,j)=>({uid:`p6-${i+1}-${j+1}`,...q}))}));
+P7.forEach((x,i)=>UNITS.push({part:7,id:"p7-"+(i+1),docs:x.docs,qs:x.qs.map((q,j)=>({uid:`p7-${i+1}-${j+1}`,...q}))}));
+const byPart=p=>UNITS.filter(u=>u.part===p);
+const qCount=us=>us.reduce((n,u)=>n+u.qs.length,0);
+
+/* ================== VOIX (synthèse vocale) ================== */
+const TTS={ok:"speechSynthesis" in window,M:null,W:null,N:null,tok:0,keep:[],
+ init(){ if(!this.ok)return; const pick=()=>{
+   const vs=speechSynthesis.getVoices().filter(v=>/^en([-_]|$)/i.test(v.lang));
+   const F=/female|zira|samantha|karen|moira|tessa|victoria|susan|hazel|aria|jenny|libby|sonia|natasha|emma|ava|allison|serena|kate|fiona|catherine|joanna|salli|kendra|kimberly|ivy|nicky|michelle|clara|google us english/i;
+   const Mr=/male|david|mark|guy|daniel|alex|fred|tom\b|arthur|aaron|rishi|oliver|george|james|ryan|eric|christopher|brian|andrew|roger|steffan|liam|william|thomas|gordon|lee\b/i;
+   const isF=v=>F.test(v.name), isM=v=>!isF(v)&&Mr.test(v.name);
+   this.W=vs.find(v=>isF(v)&&/US/i.test(v.lang))||vs.find(isF)||vs[0]||null;
+   this.M=vs.find(v=>isM(v)&&/GB/i.test(v.lang))||vs.find(isM)||vs.find(v=>v!==this.W)||this.W;
+   this.N=vs.find(v=>isM(v)&&v!==this.M)||vs.find(v=>v!==this.W&&v!==this.M)||this.M;
+  }; pick(); speechSynthesis.onvoiceschanged=pick; },
+ stop(){this.tok++; if(this.ok){try{speechSynthesis.cancel()}catch(e){}}},
+ play(lines,onend){
+   this.stop(); const tok=this.tok;
+   if(!this.ok){onend&&onend(false);return}
+   let i=0; const same=this.M===this.W;
+   const next=()=>{ if(tok!==this.tok)return; if(i>=lines.length){onend&&onend(true);return}
+     const [s,txt]=lines[i++]; const u=new SpeechSynthesisUtterance(txt);
+     const v=s==="M"?this.M:s==="W"?this.W:this.N; if(v){u.voice=v;u.lang=v.lang}else u.lang="en-US";
+     u.rate=S.rate; u.pitch=same?(s==="M"?.75:s==="W"?1.25:1):1;
+     let done=false; const fin=()=>{if(done)return;done=true;clearInterval(w);setTimeout(next,380)};
+     u.onend=fin; u.onerror=fin; this.keep=[u];
+     speechSynthesis.speak(u);
+     let started=Date.now(); const w=setInterval(()=>{ if(tok!==this.tok){clearInterval(w);return}
+       if(Date.now()-started>1200&&!speechSynthesis.speaking&&!speechSynthesis.pending)fin();
+       if(Date.now()-started>30000)fin(); },300);
+   }; next();
+ },
+ say(txt){this.play([["W",txt]])}
+};
+TTS.init();
+const sentences=t=>t.match(/[^.!?]+[.!?]+[”"]?|\S[^.!?]*$/g).map(x=>x.trim());
+
+/* ================== SESSION (entraînement / examen / correction) ================== */
+let SES=null, TIMER=null, CD=null;
+function prep(units){ let n=1; return units.map(u=>({...u,qs:u.qs.map(q=>({...q,perm:shuffle([...q.o.keys()]),n:n++}))})) }
+function startSession(units,mode,opt={}){
+  stopAll(); if(!units.length){toast("Aucune question disponible ici.");return}
+  SES={mode,units:prep(units),i:0,picks:{},title:opt.title||"Entraînement",kind:opt.kind||"train",readSecs:opt.readSecs||0,stage:mode==="exam"?"introL":"run",confirmQuit:false,confirmEnd:false};
+  document.body.classList.add("in-session"); location.hash="session"; renderSession();
+}
+function stopAll(){TTS.stop();clearInterval(TIMER);clearInterval(CD);TIMER=CD=null}
+function quitSession(){stopAll();SES=null;document.body.classList.remove("in-session");location.hash="accueil"}
+const isL=u=>u.part<=4;
+
+function audioScript(u){
+  const q0=u.qs[0];
+  if(u.part===1)return [["N",`Number ${q0.n}. Look at the picture.`],...q0.perm.map((k,i)=>["N",`${LET[i]}. ${q0.o[k]}`])];
+  if(u.part===2){const s2=u.g==="W"?"M":"W";return [["N",`Number ${q0.n}.`],[u.g,q0.q],...q0.perm.map((k,i)=>[s2,`${LET[i]}. ${q0.o[k]}`])]}
+  const last=u.qs[u.qs.length-1].n;
+  if(u.part===3)return [["N",`Questions ${q0.n} through ${last} refer to the following conversation.`],...u.lines.flatMap(([s,t])=>sentences(t).map(x=>[s,x]))];
+  return [["N",`Questions ${q0.n} through ${last} refer to the following ${u.kind}.`],...sentences(u.text).map(x=>[u.g,x])];
+}
+
+function renderSession(){
+  if(!SES)return; const app=$("#app");
+  if(SES.stage==="introL"){app.innerHTML=sesTop()+`<div class="wrap"><div class="unit"><span class="eyebrow">Section 1 · Listening</span><h1>Compréhension orale</h1>
+   <p class="muted">${qCount(SES.units.filter(isL))} questions, Parts 1 à 4. Comme au vrai TOEIC, chaque audio passe <b>une seule fois</b> et la question suivante arrive automatiquement après quelques secondes. Monte le son et mets un casque si possible.</p>
+   ${TTS.ok?"":`<p class="dir">Ton navigateur ne gère pas la synthèse vocale : la transcription sera affichée à la place de l'audio.</p>`}
+   <div class="row"><button class="btn accent" id="go">Commencer le Listening</button></div></div></div>`;
+   $("#go").onclick=()=>{SES.stage="run";renderSession()}; bindTop(); return}
+  if(SES.stage==="introR"){app.innerHTML=sesTop()+`<div class="wrap"><div class="unit"><span class="eyebrow">Section 2 · Reading</span><h1>Compréhension écrite</h1>
+   <p class="muted">${qCount(SES.units.filter(u=>!isL(u)))} questions, Parts 5 à 7. Tu as <b>${Math.round(SES.readSecs/60)} minutes</b> (même rythme que le vrai test : 75 min pour 100 questions). Tu peux naviguer librement entre les questions.</p>
+   <div class="row"><button class="btn accent" id="go">Lancer le chrono</button></div></div></div>`;
+   $("#go").onclick=()=>{SES.stage="run";SES.readEnd=Date.now()+SES.readSecs*1000;startReadTimer();renderSession()}; bindTop(); return}
+  if(SES.stage==="done"){renderResults();return}
+
+  const u=SES.units[SES.i]; const P=PARTS[u.part];
+  const exam=SES.mode==="exam", review=SES.mode==="review";
+  let h=sesTop()+`<div class="wrap"><div class="unit"><div><span class="eyebrow">${P.n} · ${P.t}</span></div>`;
+  if(SES.i===0||SES.units[SES.i-1].part!==u.part)h+=`<p class="dir">${P.d}</p>`;
+  if(isL(u))h+=audioBox(u);
+  if(u.part===1)h+=photo(u);
+  if(u.part===5)h+=`<div class="sent">${esc(u.qs[0].q).replace("-------",`<span class="blank">${u.qs[0].n}</span>`)}</div>`;
+  if(u.part===6)h+=p6doc(u);
+  if(u.part===7)h+=u.docs.map(d=>`<div class="doc"><span class="dt">${esc(d.t)}</span>${esc(d.b)}</div>`).join("");
+  if(!TTS.ok&&isL(u)&&!review)h+=transcript(u,true);
+  h+=u.qs.map(q=>qBlock(u,q)).join("");
+  if(isL(u)&&(review||(SES.mode==="train"&&u.qs.every(q=>q.uid in SES.picks))))h+=transcript(u,false);
+  h+=navBar(u)+`</div></div>`;
+  app.innerHTML=h; bindTop(); bindUnit(u);
+  window.scrollTo(0,0);
+  if(isL(u)&&!review&&SES.autoplayFor!==SES.i){SES.autoplayFor=SES.i;playUnit(u)}
+}
+function sesTop(){
+  const tot=SES.units.length, pct=Math.round(((SES.i+(SES.stage==="run"?1:0))/tot)*100);
+  const label=SES.mode==="exam"?SES.title:SES.mode==="review"?"Correction":SES.title;
+  const showTimer=SES.mode==="exam"&&SES.readEnd&&SES.stage==="run"&&!isL(SES.units[SES.i]);
+  return `<div class="ses-top"><div class="wrap">
+   ${SES.confirmQuit?`<span>Quitter ? ${SES.mode==="exam"?"Le test sera perdu.":""}</span><button class="btn small accent" id="qyes">Oui, quitter</button><button class="btn small ghost" id="qno">Continuer</button>`:`<button class="btn small ghost" id="quit">✕ Quitter</button>`}
+   <div class="grow"><div class="mono" style="font-size:.85rem">${esc(label)} · ${SES.stage==="run"?`écran ${SES.i+1} / ${tot}`:""}</div><div class="prog"><i style="width:${pct}%"></i></div></div>
+   ${showTimer?`<span class="timer" id="timer">--:--</span>`:""}
+  </div></div>`;
+}
+function bindTop(){
+  const q=$("#quit"); if(q)q.onclick=()=>{ if(SES.mode==="train"&&!Object.keys(SES.picks).length){quitSession();return} SES.confirmQuit=true; rerenderTop()};
+  const y=$("#qyes"); if(y)y.onclick=()=>{ if(SES.mode==="train"&&Object.keys(SES.picks).length){finish();return} quitSession()};
+  const n=$("#qno"); if(n)n.onclick=()=>{SES.confirmQuit=false;rerenderTop()};
+  if(SES&&SES.readEnd)tickTimer();
+}
+function rerenderTop(){const t=document.querySelector(".ses-top");if(!t)return;const d=document.createElement("div");d.innerHTML=sesTop();t.replaceWith(d.firstElementChild);bindTop()}
+
+function audioBox(u){
+  const exam=SES.mode==="exam";
+  return `<div class="audio" id="audio"><div class="st"><span class="wave"><i></i><i></i><i></i><i></i></span><span id="ast">${TTS.ok?"Prêt":"Audio indisponible"}</span></div>
+   ${exam?"":`<button class="btn small" id="aplay">▶ Écouter</button><button class="btn small ghost" id="astop">■ Stop</button>
+   <label class="row" style="gap:6px;font-size:.88rem" for="speed">Vitesse <select class="speed" id="speed">${[[.7,"Lente"],[.85,"Calme"],[.9,"Normale"],[1,"Rapide"]].map(([v,l])=>`<option value="${v}" ${S.rate==v?"selected":""}>${l}</option>`).join("")}</select></label>`}
+  </div>${!exam&&(u.part<=2)?`<label style="display:flex;gap:10px;align-items:flex-start;font-size:.92rem" for="showtxt"><input type="checkbox" id="showtxt" style="margin-top:4px;flex:none" ${S.showText?"checked":""}><span>Afficher le texte des réponses (aide débutant ; au vrai test il n'est pas écrit)</span></label>`:""}`;
+}
+function setAst(t,playing){const a=$("#ast");if(a)a.textContent=t;const b=$("#audio");if(b)b.classList.toggle("playing",!!playing)}
+function playUnit(u){
+  const exam=SES.mode==="exam"; const idx=SES.i;
+  setAst("Écoute en cours…",true);
+  TTS.play(audioScript(u),(ok)=>{
+    if(!SES||SES.i!==idx)return;
+    if(!exam){setAst(ok?"Terminé — tu peux réécouter":"Audio indisponible",false);return}
+    let left=u.part<=2?7:u.qs.length*9;
+    setAst(`Réponds… ${left}s`,false);
+    clearInterval(CD); CD=setInterval(()=>{ if(!SES||SES.i!==idx){clearInterval(CD);return} left--; setAst(`Réponds… ${left}s`,false); if(left<=0){clearInterval(CD);go(1)} },1000);
+  });
+}
+function photo(u){
+  const BG={office:["#dde6ee","#b9c6d2"],site:["#d9e6f2","#c9b38f"],outdoor:["#cfe6f6","#b9d6a5"],restaurant:["#f1e1d5","#c9a98d"],airport:["#e3edf6","#c2ccd6"],kitchen:["#eef0ea","#cdbfae"],library:["#efe3cf","#b99b77"],street:["#d8e3ec","#9aa1a8"]}[u.bg];
+  return `<div class="photo" role="img" aria-label="Illustration de la scène" style="background:linear-gradient(to bottom,${BG[0]} 0 64%,${BG[1]} 64% 100%)">${u.sc.map(([e,x,y,s])=>e==="bar"?`<i class="bar" style="left:${x}%;top:${y}%;width:${s}%"></i>`:`<span style="left:${x}%;top:${y}%;font-size:${s*.8}rem">${e}</span>`).join("")}<small>Illustration · au test : photo réelle</small></div>`;
+}
+function p6doc(u){
+  let t=esc(u.text);
+  u.qs.forEach((q,j)=>{t=t.replace(`{${j}}`,q.ins?`<span class="blank ins">[ ${q.n} ] — phrase à insérer</span>`:`<span class="blank">${q.n}</span>`)});
+  return `<div class="doc"><span class="dt">${esc(u.title)}</span>${t}</div>`;
+}
+function qBlock(u,q){
+  const pick=SES.picks[q.uid]; const answered=pick!==undefined;
+  const reveal=SES.mode==="review"||(SES.mode==="train"&&answered);
+  const hideText=(u.part<=2)&&!reveal&&!(SES.mode==="train"&&S.showText);
+  let head="";
+  if(u.part===3||u.part===4||u.part===7)head=`<div class="qhead"><span class="qn">${q.n}.</span><span>${esc(q.q)}</span></div>`;
+  else if(u.part===6)head=`<div class="qhead"><span class="qn">${q.n}.</span><span>${q.ins?"Quelle phrase convient le mieux à l'espace ["+q.n+"] ?":"Complète l'espace "+q.n}</span></div>`;
+  else head=`<div class="qhead"><span class="qn">${q.n}.</span><span class="muted" style="font-weight:400">${u.part===1?"Quelle phrase décrit le mieux l'image ?":u.part===2?"Choisis la meilleure réponse.":"Choisis le mot qui complète la phrase."}</span></div>`;
+  const opts=q.perm.map((k,i)=>{
+    let c="opt"; if(answered&&pick===k)c+=" sel";
+    if(reveal){ if(k===q.a)c+=" good"; else if(pick===k)c+=" wrong" }
+    return `<button class="${c}" data-u="${q.uid}" data-k="${k}" ${reveal?"disabled":""} aria-label="Réponse ${LET[i]}"><span class="bub">${LET[i]}</span>${hideText?"":`<span class="ot">${esc(q.o[k])}</span>`}</button>`}).join("");
+  let fb="";
+  if(reveal){ const ok=pick===q.a; const L=LET[q.perm.indexOf(q.a)];
+    fb=`<div class="fb ${ok?"good":"bad"}"><b class="v">${pick===undefined?"Pas de réponse — c'était ("+L+")":ok?"✓ Bonne réponse":"✗ La bonne réponse était ("+L+")"}</b>${esc(q.ex)}</div>` }
+  return `<div class="q" id="q-${q.uid}">${head}<div class="opts ${hideText?"bubbles-only":""}">${opts}</div>${fb}</div>`;
+}
+function transcript(u,open){
+  const tag=(s)=>`<span class="sp">${s==="M"?"Homme":s==="W"?"Femme":""}</span>`;
+  let b="";
+  if(u.part===1){const q=u.qs[0];b=q.perm.map((k,i)=>`<p>(${LET[i]}) ${esc(q.o[k])}</p>`).join("")}
+  else if(u.part===2){const q=u.qs[0];b=`<p>${tag(u.g)}${esc(q.q)}</p>`+q.perm.map((k,i)=>`<p>(${LET[i]}) ${esc(q.o[k])}</p>`).join("")}
+  else if(u.part===3)b=u.lines.map(([s,t])=>`<p>${tag(s)}${esc(t)}</p>`).join("");
+  else b=`<p>${esc(u.text)}</p>`;
+  return `<details class="tr" ${open?"open":""}><summary>Transcription de l'audio</summary>${b}</details>`;
+}
+function navBar(u){
+  const exam=SES.mode==="exam", last=SES.i===SES.units.length-1;
+  const inR=!isL(u); const lastL=isL(u)&&(SES.i+1>=SES.units.length||!isL(SES.units[SES.i+1]));
+  const canBack=SES.i>0&&(!exam||(inR&&!isL(SES.units[SES.i-1])));
+  let h=`<div class="ses-nav"><button class="btn ghost" id="prev" ${canBack?"":"disabled"}>← Précédent</button>`;
+  if(exam&&last)h+=`<button class="btn accent" id="end">Terminer le test</button>`;
+  else if(!exam&&last)h+=`<button class="btn primary" id="next">${SES.mode==="review"?"Fermer":"Voir mon résultat"}</button>`;
+  else h+=`<button class="btn primary" id="next">${exam&&lastL?"Passer au Reading →":"Suivant →"}</button>`;
+  h+=`</div>`;
+  if(SES.confirmEnd){const un=SES.units.filter(x=>!isL(x)).flatMap(x=>x.qs).filter(q=>!(q.uid in SES.picks)).length;
+    h+=`<div class="confirm"><span>${un?un+" question(s) sans réponse. ":""}Terminer maintenant ?</span><button class="btn small accent" id="endyes">Oui, terminer</button><button class="btn small ghost" id="endno">Non</button></div>`}
+  if(exam&&inR){ h+=`<div class="palette" aria-label="Aller à la question">`+SES.units.map((x,ui)=>isL(x)?"":x.qs.map(q=>`<button data-go="${ui}" class="${q.uid in SES.picks?"done":""} ${ui===SES.i?"cur":""}">${q.n}</button>`).join("")).join("")+`</div>` }
+  return h;
+}
+function bindUnit(u){
+  document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+    const uid=b.dataset.u,k=+b.dataset.k; if(SES.mode==="review")return;
+    if(SES.mode==="train"&&uid in SES.picks)return;
+    SES.picks[uid]=k;
+    if(SES.mode==="train"){const q=u.qs.find(x=>x.uid===uid);record(q,k===q.a)}
+    const y=window.scrollY; renderSessionKeep(); window.scrollTo(0,y);
+  });
+  const p=$("#prev");if(p)p.onclick=()=>go(-1);
+  const n=$("#next");if(n)n.onclick=()=>go(1);
+  const e=$("#end");if(e)e.onclick=()=>{SES.confirmEnd=true;renderSessionKeep()};
+  const ey=$("#endyes");if(ey)ey.onclick=finish;
+  const en=$("#endno");if(en)en.onclick=()=>{SES.confirmEnd=false;renderSessionKeep()};
+  document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{SES.i=+b.dataset.go;SES.confirmEnd=false;renderSession()});
+  const ap=$("#aplay");if(ap)ap.onclick=()=>playUnit(u);
+  const as=$("#astop");if(as)as.onclick=()=>{TTS.stop();setAst("Arrêté",false)};
+  const sp=$("#speed");if(sp)sp.onchange=()=>{S.rate=+sp.value;save()};
+  const st=$("#showtxt");if(st)st.onchange=()=>{S.showText=st.checked;save();renderSessionKeep()};
+}
+function renderSessionKeep(){ // re-render sans relancer l'audio
+  const y=window.scrollY; SES.autoplayFor=SES.i; const playing=TTS.ok&&speechSynthesis.speaking; const st=$("#ast")?$("#ast").textContent:"";
+  renderSession(); window.scrollTo(0,y); if(playing||st)setAst(st||"Écoute en cours…",playing);
+}
+function go(d){
+  if(!SES)return; clearInterval(CD);
+  const u=SES.units[SES.i];
+  if(d>0&&SES.i>=SES.units.length-1){ if(SES.mode==="review"){quitToResults();return} finish(); return }
+  if(d>0&&SES.mode==="exam"&&isL(u)&&!isL(SES.units[SES.i+1])){TTS.stop();SES.i++;SES.stage="introR";renderSession();return}
+  TTS.stop(); SES.i=Math.max(0,SES.i+d); SES.confirmEnd=false; renderSession();
+}
+function startReadTimer(){clearInterval(TIMER);TIMER=setInterval(tickTimer,1000)}
+function tickTimer(){ if(!SES||!SES.readEnd)return; const left=Math.max(0,Math.round((SES.readEnd-Date.now())/1000));
+  const t=$("#timer"); if(t){t.textContent=`${String(Math.floor(left/60)).padStart(2,"0")}:${String(left%60).padStart(2,"0")}`;t.classList.toggle("warn",left<120)}
+  if(left<=0&&SES.stage==="run"){toast("Temps écoulé !");finish()} }
+
+function record(q,ok){const r=S.ans[q.uid]||{c:0,n:0};r.n++;if(ok)r.c++;r.last=ok;S.ans[q.uid]=r;save()}
+function conv(p,t){for(let i=1;i<t.length;i++)if(p<=t[i][0]){const[a,b]=t[i-1],[c,d]=t[i];return Math.max(5,Math.round((b+(d-b)*(p-a)/(c-a))/5)*5)}return 495}
+const LT=[[0,5],[10,5],[20,60],[30,115],[40,175],[50,240],[60,300],[70,360],[80,415],[90,465],[100,495]];
+const RT=[[0,5],[10,5],[20,45],[30,95],[40,150],[50,205],[60,265],[70,325],[80,390],[90,450],[100,495]];
+function cefr(t){return t>=945?"C1":t>=785?"B2":t>=550?"B1":t>=225?"A2":t>=120?"A1":"< A1"}
+
+function finish(){
+  stopAll(); const parts={};
+  SES.units.forEach(u=>u.qs.forEach(q=>{const p=parts[u.part]||(parts[u.part]=[0,0]);p[1]++;if(SES.picks[q.uid]===q.a)p[0]++;
+    if(SES.mode==="exam")record(q,SES.picks[q.uid]===q.a)}));
+  const sum=(ps)=>ps.reduce((a,p)=>[a[0]+(parts[p]?parts[p][0]:0),a[1]+(parts[p]?parts[p][1]:0)],[0,0]);
+  const L=sum([1,2,3,4]),R=sum([5,6,7]);
+  const res={parts,L,R,date:new Date().toISOString(),kind:SES.kind};
+  if(SES.mode==="exam"){res.Ls=conv(L[0]/L[1]*100,LT);res.Rs=conv(R[0]/R[1]*100,RT);res.T=res.Ls+res.Rs;S.hist.push({d:res.date,k:SES.title,Ls:res.Ls,Rs:res.Rs,T:res.T,parts});save()}
+  SES.result=res; SES.stage="done"; SES.confirmQuit=false; renderSession();
+}
+function quitToResults(){ if(SES.result){SES.mode=SES.prevMode||"train";SES.stage="done";renderSession()} else quitSession() }
+function renderResults(){
+  const r=SES.result, exam=r.Ls!==undefined; const app=$("#app");
+  const tot=r.L[0]+r.R[0], n=r.L[1]+r.R[1];
+  let h=`<div class="wrap"><div class="unit"><span class="eyebrow">${exam?"Résultat du test blanc":"Fin de la série"}</span>`;
+  if(exam){h+=`<h1>Score estimé : ${r.T} / 990</h1><div class="result-big">
+     <div class="panel"><span class="eyebrow">Listening</span><b class="mono">${r.Ls}</b><span class="muted">${r.L[0]} / ${r.L[1]} bonnes réponses</span></div>
+     <div class="panel"><span class="eyebrow">Reading</span><b class="mono">${r.Rs}</b><span class="muted">${r.R[0]} / ${r.R[1]} bonnes réponses</span></div>
+     <div class="panel"><span class="eyebrow">Niveau CECR</span><b>${cefr(r.T)}</b><span class="muted">B1 dès 550, B2 dès 785</span></div></div>
+     <p class="muted" style="font-size:.9rem">Estimation calculée à partir de ton pourcentage de réussite par section. Le vrai TOEIC utilise une conversion officielle propre à chaque session, donc compte une marge d'environ ±50 points.</p>`}
+  else h+=`<h1>${tot} / ${n} bonnes réponses</h1><p class="muted">${n?Math.round(tot/n*100):0} % de réussite. Les questions ratées sont ajoutées à « Mes erreurs » dans l'onglet Progrès.</p>`;
+  h+=`<div class="panel"><h3 style="margin-bottom:6px">Détail par partie</h3>${Object.keys(r.parts).sort().map(p=>{const [c,t]=r.parts[p];const pc=Math.round(c/t*100);return `<div class="prow"><span>${PARTS[p].n} · ${PARTS[p].t}</span><span class="meter"><i style="width:${pc}%"></i></span><span class="mono">${c}/${t}</span></div>`}).join("")}</div>`;
+  const weak=Object.keys(r.parts).filter(p=>r.parts[p][0]/r.parts[p][1]<.6);
+  if(weak.length)h+=`<div class="tip"><b>À travailler en priorité :</b> ${weak.map(p=>PARTS[p].n+" ("+PARTS[p].t+")").join(", ")}. Va dans Entraînement et relis la méthode de ces parties.</div>`;
+  h+=`<div class="row"><button class="btn primary" id="rev">Revoir la correction</button><button class="btn ghost" id="home">Retour à l'accueil</button></div></div></div>`;
+  app.innerHTML=h; window.scrollTo(0,0);
+  $("#rev").onclick=()=>{SES.prevMode=SES.mode;SES.mode="review";SES.stage="run";SES.i=0;renderSession()};
+  $("#home").onclick=quitSession;
+}
+
+/* ================== PAGES ================== */
+function scoreScale(score){
+  const pos=v=>((v-10)/980*100).toFixed(1);
+  const marks=[[225,"A2"],[550,"B1"],[785,"B2"],[945,"C1"]];
+  return `<div class="scale"><div class="bar">${marks.map(([v])=>`<i class="tick" style="left:${pos(v)}%"></i>`).join("")}${score?`<span class="me" style="left:${pos(score)}%" title="Ton dernier score"></span>`:""}</div>
+   <div class="labels">${marks.map(([v,l])=>`<span style="left:${pos(v)}%">${l}<br>${v}</span>`).join("")}</div><p class="muted mono" style="font-size:.72rem">Échelle 10 → 990 · seuils CECR officiels</p></div>`;
+}
+function pageHome(){
+  const last=S.hist[S.hist.length-1]; const answered=Object.keys(S.ans).length;
+  return `<div class="wrap"><div class="hero">
+   <span class="eyebrow">TOEIC Listening & Reading · 200 questions · 2 heures</span>
+   <h1>Prépare ton TOEIC, une question à la fois.</h1>
+   <p class="lead">Les 7 parties de l'examen avec des questions au format officiel, l'audio en anglais, une correction expliquée en français et des tests blancs chronométrés qui estiment ton score.</p>
+   <div class="panel stack">
+     <div class="score-line">${last?`<b class="mono">${last.T}</b><span class="muted">/ 990 · dernier test blanc (${cefr(last.T)})</span>`:`<b class="mono">—</b><span class="muted">Fais un test blanc pour obtenir une estimation de ton score.</span>`}</div>
+     ${scoreScale(last&&last.T)}
+     <div class="row"><a class="btn accent" href="#test">Faire un test blanc</a><a class="btn" href="#entrainement">S'entraîner par partie</a></div>
+     <p class="muted" style="font-size:.9rem">${answered} question(s) déjà travaillée(s) sur ${qCount(UNITS)} dans la banque.</p>
+   </div></div>
+   <section><h2>Le format de l'examen</h2><div class="panel tablebox"><table class="fmt">
+    <tr><th>Partie</th><th>Contenu</th><th style="text-align:right">Questions</th></tr>
+    <tr class="sec"><td colspan="3">Listening · 45 min · score 5–495</td></tr>
+    ${[1,2,3,4].map(p=>`<tr><td>${PARTS[p].n}</td><td>${PARTS[p].t}</td><td class="n">${PARTS[p].real}</td></tr>`).join("")}
+    <tr class="sec"><td colspan="3">Reading · 75 min · score 5–495</td></tr>
+    ${[5,6,7].map(p=>`<tr><td>${PARTS[p].n}</td><td>${PARTS[p].t}</td><td class="n">${PARTS[p].real}</td></tr>`).join("")}
+   </table></div></section>
+   <section><h2>Plan de révision sur 4 semaines</h2><div class="panel"><ol class="plan">
+    <li><b>Semaine 1</b><span>Grammaire de base (temps, prépositions, nature des mots) et 10 questions de Part 5 par jour. 15 mots de vocabulaire par jour.</span></li>
+    <li><b>Semaine 2</b><span>Listening Parts 1 et 2 : apprends à repérer le mot interrogatif. Vocabulaire voyages et réunions.</span></li>
+    <li><b>Semaine 3</b><span>Parts 3, 4 et 6. Premier mini test blanc en fin de semaine.</span></li>
+    <li><b>Semaine 4</b><span>Part 7 et gestion du temps. Test blanc long, puis « Mes erreurs » jusqu'à tout réussir.</span></li>
+   </ol></div></section>
+   <section><h2>5 règles qui rapportent des points</h2><div class="stack">
+    <p class="tip">Ne laisse <b>jamais</b> une case vide : il n'y a pas de points négatifs au TOEIC.</p>
+    <p class="tip">En Part 2, une question Where / When / Who / Why ne se répond jamais par Yes ou No.</p>
+    <p class="tip">En Part 5, regarde les 4 réponses avant de lire la phrase : souvent la grammaire suffit.</p>
+    <p class="tip">Au Listening, lis les questions de la Part 3 et 4 pendant que les consignes sont lues.</p>
+    <p class="tip">Au Reading, ne bloque pas plus d'une minute sur une question : passe et reviens.</p>
+   </div></section></div>`;
+}
+function partAcc(p){let c=0,n=0;for(const[k,v]of Object.entries(S.ans))if(k.startsWith("p"+p+"-")){n++;if(v.last)c++}return n?[c,n]:null}
+function pageTrain(sel){
+  if(sel){const P=PARTS[sel],us=byPart(sel),q=qCount(us);const short=sel<=2||sel===5?Math.min(10,us.length):Math.min(3,us.length);
+    return `<div class="wrap"><div class="unit"><a href="#entrainement" class="muted">← Toutes les parties</a><span class="eyebrow">${P.sec==="L"?"Listening":"Reading"} · ${P.n}</span><h1>${P.t}</h1><p class="muted">${P.d}</p>
+     <div class="panel stack"><h3>La méthode</h3>${P.m.map(m=>`<p class="tip">${m}</p>`).join("")}</div>
+     <div class="row"><button class="btn accent" data-start="${sel}" data-k="short">Série courte (${qCount(shuffle(us).slice(0,short))} questions)</button><button class="btn" data-start="${sel}" data-k="all">Toute la banque (${q} questions)</button></div>
+     ${P.sec==="L"&&!TTS.ok?`<p class="dir">Ton navigateur ne lit pas l'audio : la transcription sera affichée.</p>`:""}</div></div>`}
+  return `<div class="wrap"><div class="unit"><span class="eyebrow">Entraînement</span><h1>Choisis une partie</h1><p class="muted">Correction immédiate après chaque réponse, avec l'explication en français. Pour le Listening, tu peux réécouter et ralentir l'audio.</p>
+   <h3>Listening</h3><div class="parts">${[1,2,3,4].map(partCard).join("")}</div>
+   <h3>Reading</h3><div class="parts">${[5,6,7].map(partCard).join("")}</div></div></div>`;
+}
+function partCard(p){const P=PARTS[p],a=partAcc(p);return `<a class="part" href="#entrainement-${p}" style="text-decoration:none;color:inherit"><span class="pn">${P.n.toUpperCase()}</span><span class="pt">${P.t}</span><span class="pm">${qCount(byPart(p))} questions · ${a?Math.round(a[0]/a[1]*100)+" % réussi":"pas encore commencé"}</span><span class="acc"><i style="width:${a?a[0]/a[1]*100:0}%"></i></span></a>`}
+function pageTest(){
+  const mini=miniCount(), full=qCount(UNITS);
+  return `<div class="wrap"><div class="unit"><span class="eyebrow">Test blanc</span><h1>Conditions d'examen</h1>
+   <p class="muted">Audio joué une seule fois, enchaînement automatique, chrono pour le Reading, aucune correction avant la fin. Tu obtiens ensuite un score estimé sur 990 et la correction détaillée.</p>
+   <div class="parts">
+    <button class="part" id="mini"><span class="pn">≈ 45 MIN</span><span class="pt">Mini TOEIC</span><span class="pm">${mini} questions tirées au hasard dans les 7 parties, dans les mêmes proportions que le vrai test.</span></button>
+    <button class="part" id="full"><span class="pn">≈ 1 H 45</span><span class="pt">Test long</span><span class="pm">Toute la banque : ${full} questions. Le plus proche de l'examen réel en durée.</span></button>
+   </div>
+   ${S.hist.length?`<div class="panel"><h3 style="margin-bottom:6px">Tes derniers tests</h3>${S.hist.slice(-5).reverse().map(h=>`<div class="prow"><span>${new Date(h.d).toLocaleDateString("fr-FR")} · ${esc(h.k)}</span><span class="meter"><i style="width:${h.T/990*100}%"></i></span><span class="mono">${h.T}</span></div>`).join("")}</div>`:""}
+  </div></div>`;
+}
+const MINI={1:4,2:10,3:3,4:2,5:15,6:2,7:3};
+function miniCount(){return Object.entries(MINI).reduce((n,[p,k])=>n+qCount(byPart(+p).slice(0,k)),0)}
+function examUnits(kind){let us=[];for(let p=1;p<=7;p++){let pu=byPart(p);us=us.concat(kind==="mini"?shuffle(pu).slice(0,MINI[p]):pu)}return us}
+function startExam(kind){const us=examUnits(kind);const rq=qCount(us.filter(u=>!isL(u)));startSession(us,"exam",{title:kind==="mini"?"Mini TOEIC":"Test long",kind,readSecs:rq*45})}
+
+/* Vocabulaire */
+let V={theme:Object.keys(VOCAB)[0],mode:"cards",i:0,flip:false,quiz:null,deck:null};
+function deckFor(th){const w=VOCAB[th];return [...w.filter(x=>!S.vocab[x[0]]),...w.filter(x=>S.vocab[x[0]])]}
+function pageVocab(){
+  const th=V.theme, words=VOCAB[th], known=words.filter(w=>S.vocab[w[0]]).length;
+  if(!V.deck)V.deck=deckFor(th);
+  let h=`<div class="wrap"><div class="unit"><span class="eyebrow">Vocabulaire TOEIC</span><h1>Les mots qui tombent</h1>
+   <div class="row">${Object.keys(VOCAB).map(t=>`<button class="chip ${t===th?"on":""}" data-th="${esc(t)}">${esc(t)} <span class="mono">${VOCAB[t].filter(w=>S.vocab[w[0]]).length}/${VOCAB[t].length}</span></button>`).join("")}</div>
+   <div class="row"><button class="chip ${V.mode==="cards"?"on":""}" data-m="cards">Cartes</button><button class="chip ${V.mode==="quiz"?"on":""}" data-m="quiz">Quiz</button><button class="chip ${V.mode==="list"?"on":""}" data-m="list">Liste</button><span class="muted" style="font-size:.9rem">${known} / ${words.length} mots sus dans ce thème</span></div>`;
+  if(V.mode==="cards"){const w=V.deck[V.i%V.deck.length];
+    h+=`<div class="flash"><span class="eyebrow">Carte ${V.i%V.deck.length+1} / ${V.deck.length}</span><span class="w">${esc(w[0])}</span>
+     ${V.flip?`<span class="tr">${esc(w[1])}</span><span class="ex">${esc(w[2])}</span>`:`<span class="muted">Essaie de traduire, puis retourne la carte.</span>`}
+     <div class="row" style="justify-content:center"><button class="btn small ghost" id="say">🔊 Prononcer</button>${V.flip?"":`<button class="btn small primary" id="flip">Retourner</button>`}</div></div>
+     ${V.flip?`<div class="row" style="justify-content:center"><button class="btn" id="again">À revoir</button><button class="btn primary" id="know">Je savais ✓</button></div>`:""}`}
+  else if(V.mode==="quiz"){ if(!V.quiz||V.quiz.th!==th)V.quiz={th,qs:shuffle(words).slice(0,10).map(w=>({w,opts:shuffle([w,...shuffle(words.filter(x=>x!==w)).slice(0,3)])})),i:0,score:0,pick:null};
+    const Q=V.quiz;
+    if(Q.i>=Q.qs.length)h+=`<div class="flash"><span class="w mono">${Q.score} / ${Q.qs.length}</span><span class="muted">Quiz terminé</span><button class="btn primary" id="qre">Recommencer</button></div>`;
+    else{const q=Q.qs[Q.i];h+=`<div class="q"><div class="qhead"><span class="qn">${Q.i+1}/10</span><span>Que veut dire « ${esc(q.w[0])} » ?</span></div><div class="opts">${q.opts.map((o,i)=>{let c="opt";if(Q.pick!==null){if(o===q.w)c+=" good";else if(Q.pick===i)c+=" wrong"}return `<button class="${c}" data-qo="${i}" ${Q.pick!==null?"disabled":""}><span class="bub">${LET[i]}</span><span class="ot">${esc(o[1])}</span></button>`}).join("")}</div>
+     ${Q.pick!==null?`<div class="fb ${q.opts[Q.pick]===q.w?"good":"bad"}"><span class="ex">${esc(q.w[2])}</span></div><div class="row"><button class="btn primary" id="qnext">Suivant →</button></div>`:""}</div>`}}
+  else h+=`<div class="vgrid">${words.map(w=>`<div class="vitem ${S.vocab[w[0]]?"k":""}"><b>${esc(w[0])}</b><span>${esc(w[1])}</span><span class="muted" style="font-size:.85rem">${esc(w[2])}</span></div>`).join("")}</div>`;
+  return h+`</div></div>`;
+}
+function bindVocab(){
+  document.querySelectorAll("[data-th]").forEach(b=>b.onclick=()=>{V.theme=b.dataset.th;V.i=0;V.flip=false;V.quiz=null;V.deck=deckFor(V.theme);route()});
+  document.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{V.mode=b.dataset.m;V.quiz=null;V.flip=false;route()});
+  const f=$("#flip");if(f)f.onclick=()=>{V.flip=true;route()};
+  const s=$("#say");if(s)s.onclick=()=>{const w=V.deck[V.i%V.deck.length];TTS.play([["W",w[0].replace(/^to /,"")],["W",w[2]]])};
+  const k=$("#know");if(k)k.onclick=()=>{const w=V.deck[V.i%V.deck.length];S.vocab[w[0]]=1;save();V.i++;V.flip=false;route()};
+  const a=$("#again");if(a)a.onclick=()=>{const w=V.deck[V.i%V.deck.length];delete S.vocab[w[0]];save();V.i++;V.flip=false;route()};
+  document.querySelectorAll("[data-qo]").forEach(b=>b.onclick=()=>{const Q=V.quiz;Q.pick=+b.dataset.qo;const q=Q.qs[Q.i];if(q.opts[Q.pick]===q.w){Q.score++;S.vocab[q.w[0]]=1;save()}route()});
+  const qn=$("#qnext");if(qn)qn.onclick=()=>{V.quiz.i++;V.quiz.pick=null;route()};
+  const qr=$("#qre");if(qr)qr.onclick=()=>{V.quiz=null;route()};
+}
+function pageGrammar(){
+  return `<div class="wrap"><div class="unit"><span class="eyebrow">Grammaire</span><h1>Les 10 fiches essentielles</h1><p class="muted">Tout ce qui revient en Part 5 et Part 6, expliqué en français. Chaque fiche se termine par des exercices ciblés.</p>
+  <div>${GRAMMAR.map(g=>{const n=P5.filter(x=>x.t===g.tag).length;return `<details class="g"><summary>${esc(g.t)}</summary><div class="gbody">${g.h}<div class="row"><button class="btn small accent" data-gtag="${g.tag}">S'entraîner (${n} questions)</button></div></div></details>`}).join("")}</div></div></div>`;
+}
+function pageProgress(){
+  const wrong=UNITS.filter(u=>u.qs.some(q=>S.ans[q.uid]&&S.ans[q.uid].last===false));
+  const wq=UNITS.flatMap(u=>u.qs).filter(q=>S.ans[q.uid]&&S.ans[q.uid].last===false).length;
+  const vk=Object.keys(S.vocab).length, vt=Object.values(VOCAB).flat().length;
+  return `<div class="wrap"><div class="unit"><span class="eyebrow">Progrès</span><h1>Où tu en es</h1>
+   <div class="panel"><h3 style="margin-bottom:6px">Réussite par partie</h3><p class="muted" style="font-size:.88rem">Basé sur ta dernière réponse à chaque question.</p>
+    ${[1,2,3,4,5,6,7].map(p=>{const a=partAcc(p);return `<div class="prow"><span>${PARTS[p].n} · ${PARTS[p].t}</span><span class="meter"><i style="width:${a?a[0]/a[1]*100:0}%"></i></span><span class="mono">${a?Math.round(a[0]/a[1]*100)+" %":"—"}</span></div>`}).join("")}
+    <div class="prow"><span>Vocabulaire</span><span class="meter"><i style="width:${vk/vt*100}%"></i></span><span class="mono">${vk}/${vt}</span></div></div>
+   <div class="panel stack"><h3>Mes erreurs</h3><p class="muted">${wq?`${wq} question(s) ratée(s) à refaire. Une question réussie sort de la liste.`:"Aucune erreur en attente. Bravo, ou alors il est temps de t'entraîner !"}</p>${wq?`<div class="row"><button class="btn accent" id="redo">Refaire mes erreurs</button></div>`:""}</div>
+   <div class="panel"><h3 style="margin-bottom:6px">Historique des tests blancs</h3>${S.hist.length?S.hist.slice().reverse().map(h=>`<div class="prow"><span>${new Date(h.d).toLocaleDateString("fr-FR")} · ${esc(h.k)} <span class="muted mono" style="font-size:.8rem">L ${h.Ls} · R ${h.Rs}</span></span><span class="meter"><i style="width:${h.T/990*100}%"></i></span><span class="mono">${h.T}</span></div>`).join(""):`<p class="muted">Pas encore de test blanc.</p>`}</div>
+   <div class="row" id="resetzone"><button class="btn small ghost" id="reset">Effacer toute ma progression</button></div>
+   <p class="muted" style="font-size:.85rem">Ta progression est enregistrée dans ce navigateur, sur cet appareil uniquement.</p>
+  </div></div>`;
+}
+
+/* ================== ROUTEUR ================== */
+function route(){
+  if(SES&&location.hash==="#session")return;
+  if(SES){stopAll();SES=null;document.body.classList.remove("in-session")}
+  const h=(location.hash||"#accueil").slice(1); const [v,arg]=h.split("-");
+  document.querySelectorAll("#nav a").forEach(a=>a.classList.toggle("on",a.dataset.v===v));
+  const app=$("#app");
+  if(v==="entrainement"){app.innerHTML=pageTrain(arg?+arg:0);
+    document.querySelectorAll("[data-start]").forEach(b=>b.onclick=()=>{const p=+b.dataset.start,us=byPart(p);const short=p<=2||p===5?10:3;
+      startSession(b.dataset.k==="all"?shuffle(us):shuffle(us).slice(0,short),"train",{title:PARTS[p].n+" · "+PARTS[p].t})})}
+  else if(v==="test"){app.innerHTML=pageTest();$("#mini").onclick=()=>startExam("mini");$("#full").onclick=()=>startExam("full")}
+  else if(v==="vocabulaire"){app.innerHTML=pageVocab();bindVocab()}
+  else if(v==="grammaire"){app.innerHTML=pageGrammar();document.querySelectorAll("[data-gtag]").forEach(b=>b.onclick=()=>{const g=GRAMMAR.find(x=>x.tag===b.dataset.gtag);startSession(shuffle(byPart(5).filter(u=>u.tag===g.tag)),"train",{title:g.t})})}
+  else if(v==="progres"){app.innerHTML=pageProgress();
+    const r=$("#redo");if(r)r.onclick=()=>{const us=UNITS.filter(u=>u.qs.some(q=>S.ans[q.uid]&&S.ans[q.uid].last===false));startSession(us,"train",{title:"Mes erreurs"})};
+    $("#reset").onclick=()=>{$("#resetzone").innerHTML=`<div class="confirm"><span>Tout effacer (réponses, tests, vocabulaire) ?</span><button class="btn small accent" id="ry">Oui, effacer</button><button class="btn small ghost" id="rn">Annuler</button></div>`;
+      $("#ry").onclick=()=>{S={ans:{},hist:[],vocab:{},rate:0.9,showText:false};save();toast("Progression effacée");route()};$("#rn").onclick=route}}
+  else {app.innerHTML=pageHome();document.querySelectorAll("#nav a")[0].classList.add("on")}
+  if(v!=="vocabulaire")window.scrollTo(0,0);
+}
+window.addEventListener("hashchange",route);
+if(location.hash==="#session")location.hash="accueil";
+route();
+</script>
+</body>
+</html>
