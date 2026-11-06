@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"/>
+<meta name="theme-color" content="#070b18"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<link rel="manifest" href="manifest.json"/>
+<link rel="icon" href="icon.svg" type="image/svg+xml"/>
+<title>Clio 4 Launcher</title>
+<style>
+:root{
+  --sky1:#060a18; --sky2:#141c38; --sky3:#3a3550; --glow:rgba(255,150,80,.18);
+  --mount1:#0d1226; --mount2:#151b34;
+  --ground1:#0a0e1c; --ground2:#05070f;
+  --text:#f2f5ff; --muted:#9aa6c4; --dim:#6b7698;
+  --card:rgba(18,24,44,.62); --card-op:.62; --border:rgba(255,255,255,.10);
+  --accent:#ffcc33; --accent2:#3dd68c; --btn:rgba(255,255,255,.08);
+  --car:#c4161c; --car-dark:#6e0a0e; --car-light:#ff5a5a;
+}
+body.day{
+  --sky1:#5a8fd8; --sky2:#8fb6e8; --sky3:#d8e6f5; --glow:rgba(255,255,255,.25);
+  --mount1:#566a8c; --mount2:#7488a8;
+  --ground1:#4a5468; --ground2:#2a3040;
+  --card:rgba(20,28,52,.55);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+html,body{width:100%;height:100%;overflow:hidden;background:#05070f}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--text);font-size:1.6vh}
+body.reduced *{transition:none!important;animation:none!important}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+input{font:inherit;color:inherit}
+
+/* ---------- SCENE ---------- */
+#scene{position:fixed;inset:0;overflow:hidden;background:linear-gradient(180deg,var(--sky1) 0%,var(--sky2) 30%,var(--sky3) 52%,var(--ground1) 56%,var(--ground2) 100%);transition:background 1s}
+#scene::before{content:"";position:absolute;left:0;right:0;top:30%;height:30%;background:radial-gradient(ellipse 60% 60% at 50% 100%,var(--glow),transparent 70%)}
+.stars{position:absolute;inset:0 0 50% 0;background-image:radial-gradient(1px 1px at 10% 20%,#fff8,transparent),radial-gradient(1px 1px at 30% 8%,#fff6,transparent),radial-gradient(1px 1px at 55% 15%,#fff7,transparent),radial-gradient(1.5px 1.5px at 75% 6%,#fff9,transparent),radial-gradient(1px 1px at 88% 25%,#fff6,transparent),radial-gradient(1px 1px at 42% 30%,#fff5,transparent),radial-gradient(1px 1px at 65% 35%,#fff4,transparent),radial-gradient(1px 1px at 20% 38%,#fff5,transparent);transition:opacity 1s}
+body.day .stars{opacity:0}
+#mountains{position:absolute;left:0;right:0;top:36%;width:100%;height:20%}
+.ground-lights{position:absolute;left:0;right:0;top:55%;height:45%;background:
+  radial-gradient(ellipse 1.2% 30% at 8% 0%,rgba(255,190,110,.35),transparent),
+  radial-gradient(ellipse 1% 25% at 16% 0%,rgba(255,170,90,.28),transparent),
+  radial-gradient(ellipse 1.2% 35% at 84% 0%,rgba(255,190,110,.35),transparent),
+  radial-gradient(ellipse 1% 22% at 93% 0%,rgba(140,180,255,.25),transparent),
+  repeating-linear-gradient(180deg,rgba(255,255,255,.015) 0 2px,transparent 2px 7px);transition:opacity 1s}
+body.day .ground-lights{opacity:.3}
+#dim{position:fixed;inset:0;background:#000;pointer-events:none;z-index:900;opacity:0}
+
+/* ---------- CAR ---------- */
+#carWrap{position:absolute;left:50%;top:20vh;width:min(44vw,72vh);transform:translateX(-50%);z-index:1;transition:opacity .5s}
+#carWrap svg{width:100%;display:block;overflow:visible}
+#carReflect{transform:scaleY(-1);opacity:.28;-webkit-mask-image:linear-gradient(0deg,#000 0%,transparent 55%);mask-image:linear-gradient(0deg,#000 0%,transparent 55%);margin-top:-1px;filter:blur(1.5px)}
+.hl-lens{transition:fill .35s}
+.lights-on .hl-lens{fill:#fffbe8}
+.beam,.hl-glow,.drl{opacity:0;transition:opacity .35s}
+.lights-on .beam{opacity:.55}
+.lights-on .hl-glow{opacity:1}
+.lights-on .drl{opacity:1}
+.screen.dimcar #carWrap{opacity:.18}
+
+/* ---------- LAYOUT ---------- */
+.screen{position:fixed;inset:0;z-index:5;display:none}
+.screen.active{display:block}
+.topbar{position:absolute;left:2.2vw;right:2.2vw;top:2vh;height:9vh;display:flex;align-items:flex-start;justify-content:space-between}
+.clock{font-size:5.4vh;font-weight:700;letter-spacing:-.02em;line-height:1}
+.date{color:var(--muted);font-size:1.7vh;margin-top:.5vh}
+.brand{position:absolute;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:1.2vw}
+.brand svg{height:6vh;width:auto}
+.brand .name{font-size:3.6vh;font-weight:700;line-height:1}
+.brand .sub{color:var(--muted);font-size:1.7vh;margin-top:.3vh}
+.status{display:flex;gap:1.2vw;align-items:center;font-size:2vh;color:var(--text)}
+.status svg{height:2.2vh;width:auto;fill:currentColor}
+.status .off{opacity:.3}
+
+.pill{display:inline-flex;align-items:center;gap:.6vw;padding:.9vh 1.6vw;border-radius:99px;background:rgba(10,14,30,.6);border:1px solid var(--border);font-size:1.7vh;backdrop-filter:blur(8px)}
+.pill svg{height:1.8vh;fill:currentColor}
+#lightsBtn{position:absolute;left:50%;top:13vh;transform:translateX(-50%);z-index:6}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:1.6vh;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+#infoCards{position:absolute;left:2.2vw;top:21vh;width:22vw;display:flex;flex-direction:column;gap:0}
+#infoCards .card{padding:1vh 1.2vw}
+.irow{display:flex;align-items:center;gap:.9vw;padding:1.4vh 0;border-bottom:1px solid var(--border)}
+.irow:last-child{border-bottom:0}
+.irow svg{height:2.6vh;width:2.6vh;fill:none;stroke:currentColor;stroke-width:2;flex:none}
+.irow .lbl{font-size:2vh;flex:1}
+.irow .lbl small{font-size:1.2vh;color:var(--dim);margin-left:.3vw}
+.irow .val{font-size:1.5vh;color:var(--muted)}
+.irow .val.big{font-size:2.2vh;color:var(--text);font-weight:600}
+.bar{height:.5vh;background:rgba(255,255,255,.1);border-radius:9px;margin-top:.6vh;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent2)}
+
+#rightPanel{position:absolute;right:2.2vw;top:21vh;width:25vw}
+#weather{padding:1.6vh 1.2vw;background:linear-gradient(160deg,rgba(90,150,230,.85),rgba(150,190,240,.75));border-color:rgba(255,255,255,.35)}
+body.night #weather{background:linear-gradient(160deg,rgba(40,70,140,.8),rgba(70,100,170,.7))}
+.w-top{display:flex;justify-content:space-between;align-items:flex-start}
+.w-temp{font-size:7vh;font-weight:300;line-height:1}
+.w-desc{font-size:2vh;font-weight:600;margin-top:.5vh}
+.w-icon svg{height:9vh;width:9vh}
+.w-meta{text-align:right;font-size:1.3vh;line-height:1.6;opacity:.9}
+.w-hours{display:grid;grid-template-columns:repeat(3,1fr);gap:.6vw;margin-top:1.4vh}
+.w-hours div{background:rgba(255,255,255,.18);border-radius:1vh;text-align:center;padding:.8vh 0;font-size:1.3vh}
+.w-hours svg{height:3.4vh;width:3.4vh;display:block;margin:.3vh auto}
+.w-hours b{font-size:1.6vh}
+.w-place{font-size:1.2vh;opacity:.8;margin-top:1vh}
+
+#vehicle{padding:1.6vh 1.2vw;display:none}
+#vehicle h3{font-size:2vh;margin-bottom:1.2vh}
+.v-body{display:flex;gap:1vw;align-items:center}
+.v-body svg{width:7vw;flex:none}
+.v-list{flex:1;font-size:1.4vh}
+.v-list div{display:flex;justify-content:space-between;padding:.75vh 0;border-bottom:1px solid var(--border)}
+.v-list span:last-child{color:var(--dim)}
+.v-note{font-size:1.15vh;color:var(--dim);margin-top:1.2vh;line-height:1.4}
+body.show-vehicle #vehicle{display:block}
+body.show-vehicle #weather{display:none}
+
+/* dock */
+#dock{position:absolute;left:50%;bottom:3vh;transform:translateX(-50%);display:flex;gap:1.2vw;z-index:6}
+.dbtn{width:9.5vw;height:11vh;border-radius:1.6vh;background:rgba(20,26,48,.7);border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.8vh;font-size:1.7vh;backdrop-filter:blur(10px);transition:transform .15s,background .2s}
+.dbtn:active{transform:scale(.94)}
+.dbtn svg{height:3vh;width:3vh;fill:none;stroke:currentColor;stroke-width:1.8}
+.dbtn.on{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.3)}
+.dbtn.cp .ic{background:#3dd68c;border-radius:.8vh;width:3.6vh;height:3.6vh;display:grid;place-items:center}
+.dbtn.cp .ic svg{height:2.2vh;stroke:#fff}
+#homebar{position:absolute;left:50%;bottom:1.2vh;width:12vw;height:.5vh;border-radius:9px;background:#fff;opacity:.8;transform:translateX(-50%)}
+
+/* ---------- SUB SCREENS (apps/settings) ---------- */
+.subtop{position:absolute;left:1.6vw;right:1.6vw;top:1.8vh;height:6vh;display:flex;align-items:center;gap:1.2vw}
+.homeb{width:5vh;height:5vh;border-radius:1.2vh;background:var(--btn);border:1px solid var(--border);display:grid;place-items:center}
+.homeb svg{height:2.6vh;fill:none;stroke:currentColor;stroke-width:2}
+.subtop .clock{font-size:3vh}
+.subtop .date{margin:0;font-size:1.5vh}
+.panel{position:absolute;left:1.6vw;right:1.6vw;top:9.5vh;bottom:2.5vh;background:rgba(10,14,28,.72);border:1px solid var(--border);border-radius:1.8vh;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);overflow:hidden}
+
+#appsGrid{display:grid;grid-template-columns:repeat(8,1fr);gap:3vh 1vw;padding:4vh 3vw;overflow-y:auto;max-height:100%}
+.app{display:flex;flex-direction:column;align-items:center;gap:1vh;font-size:1.5vh;color:var(--text);text-decoration:none;text-align:center}
+.app .ai{width:8vh;height:8vh;border-radius:2vh;display:grid;place-items:center;font-size:3.4vh;font-weight:700;box-shadow:0 .6vh 2vh rgba(0,0,0,.35);transition:transform .15s}
+.app:active .ai{transform:scale(.9)}
+.app .ai svg{width:4.4vh;height:4.4vh;fill:#fff}
+
+/* settings */
+#settings .panel{display:flex}
+.side{width:16vw;padding:1.6vh .8vw;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:.6vh}
+.side button{display:flex;align-items:center;gap:.8vw;text-align:left;padding:1.3vh 1vw;border-radius:1vh;font-size:1.7vh;color:var(--muted)}
+.side button svg{height:2.2vh;width:2.2vh;fill:none;stroke:currentColor;stroke-width:2}
+.side button.on{background:#2f6bff;color:#fff}
+.content{flex:1;padding:1.6vh 1.4vw;overflow-y:auto}
+.sec{display:none;flex-direction:column;gap:1vh}
+.sec.on{display:flex}
+.row{display:flex;align-items:center;justify-content:space-between;gap:2vw;padding:1.4vh 1.4vw;background:rgba(255,255,255,.045);border:1px solid var(--border);border-radius:1.2vh}
+.row .t{font-size:1.8vh}
+.row .d{font-size:1.25vh;color:var(--dim);margin-top:.3vh}
+.seg{display:flex;background:rgba(255,255,255,.07);border-radius:1vh;padding:.4vh}
+.seg button{padding:.8vh 1.2vw;border-radius:.8vh;font-size:1.4vh;color:var(--muted)}
+.seg button.on{background:#f2f5ff;color:#111}
+.btn{padding:.9vh 1.4vw;border-radius:1vh;background:rgba(255,255,255,.1);border:1px solid var(--border);font-size:1.5vh;white-space:nowrap}
+.btn.primary{background:#2f6bff;border-color:#2f6bff}
+.btn.danger{background:rgba(255,70,70,.2);border-color:rgba(255,70,70,.5)}
+.step{display:flex;align-items:center;gap:.8vw;font-size:1.8vh}
+.step button{width:4vh;height:4vh;border-radius:50%;background:rgba(255,255,255,.1);font-size:2.2vh}
+.step span{min-width:4vw;text-align:center}
+input[type=range]{-webkit-appearance:none;appearance:none;width:16vw;height:.6vh;border-radius:9px;background:rgba(255,255,255,.2);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:3vh;height:3vh;border-radius:50%;background:#fff;box-shadow:0 0 1vh rgba(0,0,0,.5)}
+input[type=range]::-moz-range-thumb{width:3vh;height:3vh;border-radius:50%;background:#fff;border:0}
+input[type=text]{background:rgba(255,255,255,.08);border:1px solid var(--border);border-radius:1vh;padding:.9vh 1vw;font-size:1.6vh;width:18vw;user-select:text;-webkit-user-select:text}
+.swatches{display:flex;gap:.8vw}
+.swatches button{width:4vh;height:4vh;border-radius:50%;border:2px solid transparent}
+.swatches button.on{border-color:#fff;box-shadow:0 0 0 2px #2f6bff}
+.applist{display:flex;flex-direction:column;gap:.6vh}
+.applist .row{padding:.9vh 1.2vw}
+.applist .mini{width:4vh;height:4vh;border-radius:1vh;display:grid;place-items:center;font-weight:700;flex:none}
+.applist .mini svg{width:2.4vh;height:2.4vh;fill:#fff}
+.help{font-size:1.45vh;color:var(--muted);line-height:1.6;padding:1.2vh 1.4vw;background:rgba(255,255,255,.04);border-radius:1.2vh;border:1px solid var(--border)}
+.help b{color:var(--text)}
+
+/* toast + boot */
+#toast{position:fixed;left:50%;bottom:16vh;transform:translateX(-50%) translateY(2vh);background:rgba(10,14,28,.92);border:1px solid var(--border);padding:1.2vh 2vw;border-radius:99px;font-size:1.7vh;opacity:0;transition:all .3s;z-index:950;pointer-events:none}
+#toast.show{opacity:1;transform:translateX(-50%)}
+#boot{position:fixed;inset:0;z-index:1000;background:#000;display:none;align-items:center;justify-content:center;flex-direction:column;gap:3vh;transition:opacity .8s}
+#boot.show{display:flex}
+#boot svg{height:18vh;animation:bootLogo 1.6s ease-out both}
+#boot .bt{font-size:2.4vh;letter-spacing:.6em;color:#ddd;animation:fadeIn 1s .6s both}
+@keyframes bootLogo{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.fade-in{animation:fadeIn .35s ease-out}
+
+@media (max-aspect-ratio:4/3){
+  #carWrap{width:80vw;top:18vh}
+  #infoCards{width:42vw;top:auto;bottom:17vh}
+  #rightPanel{width:50vw;top:auto;bottom:17vh}
+  .dbtn{width:20vw}
+  #appsGrid{grid-template-columns:repeat(4,1fr)}
+}
+</style>
+</head>
+<body class="night">
+
+<!-- ===== Décor ===== -->
+<div id="scene">
+  <div class="stars"></div>
+  <svg id="mountains" viewBox="0 0 1000 200" preserveAspectRatio="none">
+    <path style="fill:var(--mount2)" d="M0 140 L80 90 L150 120 L240 50 L330 110 L420 70 L520 130 L600 60 L700 115 L790 40 L880 100 L1000 70 L1000 200 L0 200Z"/>
+    <path style="fill:var(--mount1)" d="M0 170 L110 125 L200 150 L300 110 L400 160 L500 120 L620 165 L720 130 L830 160 L930 120 L1000 145 L1000 200 L0 200Z"/>
+  </svg>
+  <div class="ground-lights"></div>
+</div>
+
+<!-- ===== Voiture (vue de face Clio 4, dessin vectoriel) ===== -->
+<div id="carWrap" class="lights-on">
+  <svg id="carSvg" viewBox="0 0 600 330">
+    <defs>
+      <linearGradient id="gBody" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" style="stop-color:var(--car-light)"/>
+        <stop offset=".45" style="stop-color:var(--car)"/>
+        <stop offset="1" style="stop-color:var(--car-dark)"/>
+      </linearGradient>
+      <linearGradient id="gGlass" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#2a3550"/><stop offset=".5" stop-color="#0c111e"/><stop offset="1" stop-color="#1a2236"/>
+      </linearGradient>
+      <linearGradient id="gHood" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#ffffff" stop-opacity=".35"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+      </linearGradient>
+      <radialGradient id="gBeam" cx=".5" cy=".5" r=".5">
+        <stop offset="0" stop-color="#fff6d8" stop-opacity=".9"/><stop offset="1" stop-color="#fff6d8" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="gGlow" cx=".5" cy=".5" r=".5">
+        <stop offset="0" stop-color="#ffffff"/><stop offset=".4" stop-color="#fff3c8" stop-opacity=".7"/><stop offset="1" stop-color="#fff3c8" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="gShadow" cx=".5" cy=".5" r=".5">
+        <stop offset="0" stop-color="#000" stop-opacity=".75"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <!-- faisceaux au sol -->
+    <ellipse class="beam" cx="150" cy="322" rx="140" ry="22" fill="url(#gBeam)"/>
+    <ellipse class="beam" cx="450" cy="322" rx="140" ry="22" fill="url(#gBeam)"/>
+    <!-- ombre -->
+    <ellipse cx="300" cy="318" rx="290" ry="18" fill="url(#gShadow)"/>
+    <!-- roues -->
+    <rect x="48" y="250" width="70" height="72" rx="14" fill="#0b0d12"/>
+    <rect x="482" y="250" width="70" height="72" rx="14" fill="#0b0d12"/>
+    <!-- rétroviseurs -->
+    <path d="M118 128 Q86 120 72 132 Q70 148 96 150 L128 146Z" fill="url(#gBody)"/>
+    <path d="M482 128 Q514 120 528 132 Q530 148 504 150 L472 146Z" fill="url(#gBody)"/>
+    <!-- caisse -->
+    <path d="M200 38 Q300 26 400 38 L452 118 Q520 132 548 168 Q568 200 564 252 Q562 290 540 304 L60 304 Q38 290 36 252 Q32 200 52 168 Q80 132 148 118Z" fill="url(#gBody)"/>
+    <!-- pare-brise -->
+    <path d="M210 48 Q300 38 390 48 L432 116 Q300 106 168 116Z" fill="url(#gGlass)"/>
+    <path d="M222 54 Q300 46 378 54 L388 70 Q300 62 214 70Z" fill="#fff" opacity=".08"/>
+    <!-- reflet capot -->
+    <path d="M160 128 Q300 116 440 128 Q470 150 482 172 Q300 160 118 172 Q130 150 160 128Z" fill="url(#gHood)"/>
+    <path d="M250 130 L235 190 M350 130 L365 190" stroke="#000" stroke-opacity=".18" stroke-width="2" fill="none"/>
+    <!-- bandeau noir calandre + phares -->
+    <path d="M70 178 Q90 168 230 188 L300 196 L370 188 Q510 168 530 178 Q540 196 526 212 L380 222 L300 226 L220 222 L74 212 Q60 196 70 178Z" fill="#0a0c12"/>
+    <!-- phares -->
+    <path class="hl-lens" d="M82 182 Q100 174 222 192 L226 212 L86 206 Q74 196 82 182Z" fill="#3a4258"/>
+    <path class="hl-lens" d="M518 182 Q500 174 378 192 L374 212 L514 206 Q526 196 518 182Z" fill="#3a4258"/>
+    <circle cx="125" cy="196" r="10" fill="#1a1f2c" opacity=".6"/>
+    <circle cx="170" cy="200" r="10" fill="#1a1f2c" opacity=".6"/>
+    <circle cx="475" cy="196" r="10" fill="#1a1f2c" opacity=".6"/>
+    <circle cx="430" cy="200" r="10" fill="#1a1f2c" opacity=".6"/>
+    <ellipse class="hl-glow" cx="150" cy="197" rx="95" ry="36" fill="url(#gGlow)"/>
+    <ellipse class="hl-glow" cx="450" cy="197" rx="95" ry="36" fill="url(#gGlow)"/>
+    <!-- logo losange -->
+    <g transform="translate(300 206)">
+      <path d="M0 -26 L16 0 L0 26 L-16 0Z" fill="none" stroke="#d8dce6" stroke-width="5" stroke-linejoin="round"/>
+      <path d="M0 -12 L7.5 0 L0 12 L-7.5 0Z" fill="none" stroke="#d8dce6" stroke-width="3"/>
+    </g>
+    <!-- bouclier bas -->
+    <path d="M200 240 L400 240 L388 288 L212 288Z" fill="#0a0c12"/>
+    <path d="M214 252 H386 M218 264 H382 M222 276 H378" stroke="#2a2f3c" stroke-width="2"/>
+    <rect x="246" y="228" width="108" height="24" rx="3" fill="#e9ecf2" stroke="#999" stroke-width="1"/>
+    <rect x="246" y="228" width="12" height="24" rx="2" fill="#1d3fb8"/>
+    <text id="plateTxt" x="306" y="245.5" font-size="14" font-weight="700" text-anchor="middle" fill="#222" font-family="Arial">AB-123-CD</text>
+    <!-- antibrouillards + LED (feux de jour en C) -->
+    <path d="M84 246 Q120 236 150 252 L146 282 Q110 288 80 278Z" fill="#0a0c12"/>
+    <path d="M516 246 Q480 236 450 252 L454 282 Q490 288 520 278Z" fill="#0a0c12"/>
+    <circle cx="114" cy="264" r="11" fill="#2a3040"/>
+    <circle cx="486" cy="264" r="11" fill="#2a3040"/>
+    <path class="drl" d="M92 248 Q120 240 144 254" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <path class="drl" d="M508 248 Q480 240 456 254" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round"/>
+  </svg>
+  <svg id="carReflect" viewBox="0 0 600 330"><use href="#carSvg"/></svg>
+</div>
+
+<!-- ===== ACCUEIL ===== -->
+<section id="home" class="screen active">
+  <div class="topbar">
+    <div><div class="clock" data-clock>--:--</div><div class="date" data-date></div></div>
+    <div class="brand">
+      <svg viewBox="-20 -30 40 60"><path d="M0 -26 L16 0 L0 26 L-16 0Z" fill="none" stroke="#fff" stroke-width="5" stroke-linejoin="round"/><path d="M0 -12 L7.5 0 L0 12 L-7.5 0Z" fill="none" stroke="#fff" stroke-width="3"/></svg>
+      <div><div class="name" data-carname>Clio 4</div><div class="sub" data-engine>dCi 90</div></div>
+    </div>
+    <div class="status">
+      <svg viewBox="0 0 24 24"><path d="M12 2v8.6L7.4 6 6 7.4 10.6 12 6 16.6 7.4 18l4.6-4.6V22h1l5.7-5.7-4.3-4.3 4.3-4.3L13 2h-1zm2 3.8 1.9 1.9L14 9.6V5.8zm0 8.6 1.9 1.9-1.9 1.9v-3.8z"/></svg>
+      <svg data-wifi viewBox="0 0 24 24"><path d="M12 21 0 8.5C3.2 5.4 7.4 3.5 12 3.5s8.8 1.9 12 5z" opacity=".9"/></svg>
+      <span data-outtemp>--°C</span>
+    </div>
+  </div>
+
+  <button id="lightsBtn" class="pill" onclick="toggleLights()">
+    <svg viewBox="0 0 24 24"><path d="M10 5C5 5 3 8.5 3 12s2 7 7 7c1.5 0 2-1 2-2V7c0-1-.5-2-2-2zm4 2h7v2h-7zm0 4h7v2h-7zm0 4h7v2h-7z"/></svg>
+    <span id="lightsTxt">Éteindre les phares</span>
+  </button>
+
+  <div id="infoCards"><div class="card">
+    <div class="irow"><svg viewBox="0 0 24 24"><path d="M4 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M3 21h12M4 11h10M14 8l3 2v8a1.5 1.5 0 0 0 3 0V9l-3-3"/></svg><div class="lbl">Carburant<div class="bar"><i></i></div></div><div class="val">Indisponible</div></div>
+    <div class="irow"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="12" rx="2"/><path d="M7 7V5h3v2M14 7V5h3v2M7 13h4M15 11v4M13 13h4"/></svg><div class="lbl">Batterie</div><div class="val">Indisponible</div></div>
+    <div class="irow"><svg viewBox="0 0 24 24"><path d="M10 14V4a2 2 0 1 1 4 0v10a4 4 0 1 1-4 0z"/></svg><div class="lbl">Extérieur<small>météo</small></div><div class="val big" data-outtemp>--</div></div>
+    <div class="irow"><svg viewBox="0 0 24 24"><path d="M4 10h3l2-3h6l2 3h2v6h-2l-2 3H9l-2-3H4zM2 11v4M22 11v4"/></svg><div class="lbl">Moteur</div><div class="val">Indisponible</div></div>
+  </div></div>
+
+  <div id="rightPanel">
+    <div id="weather" class="card">
+      <div class="w-top">
+        <div><div class="w-temp" id="wTemp">--°</div><div class="w-desc" id="wDesc">Chargement…</div></div>
+        <div style="text-align:right"><div class="w-icon" id="wIcon"></div><div class="w-meta" id="wMeta"></div></div>
+      </div>
+      <div class="w-hours" id="wHours"></div>
+      <div class="w-place" id="wPlace"></div>
+    </div>
+    <div id="vehicle" class="card">
+      <h3>Ouvrants et radars</h3>
+      <div class="v-body">
+        <svg viewBox="0 0 100 200">
+          <rect x="10" y="10" width="80" height="180" rx="30" style="fill:var(--car)"/>
+          <path d="M20 58 Q50 44 80 58 L76 84 Q50 78 24 84Z" fill="#141a28"/>
+          <rect x="22" y="90" width="56" height="54" rx="8" style="fill:var(--car-dark)"/>
+          <path d="M24 150 Q50 156 76 150 L78 170 Q50 178 22 170Z" fill="#141a28"/>
+          <rect x="4" y="66" width="8" height="12" rx="3" style="fill:var(--car)"/><rect x="88" y="66" width="8" height="12" rx="3" style="fill:var(--car)"/>
+          <path d="M18 16 L34 14 M82 16 L66 14" stroke="#fff8e0" stroke-width="4" stroke-linecap="round"/>
+          <path d="M18 186 L32 188 M82 186 L68 188" stroke="#ff3030" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+        <div class="v-list">
+          <div><span>Conducteur</span><span>Indisponible</span></div>
+          <div><span>Passager</span><span>Indisponible</span></div>
+          <div><span>Arrière</span><span>Indisponible</span></div>
+          <div><span>Coffre</span><span>Indisponible</span></div>
+          <div><span>Capot</span><span>Indisponible</span></div>
+          <div><span>Radars</span><span>Indisponible</span></div>
+        </div>
+      </div>
+      <div class="v-note">Information seulement. Rien n'est affiché tant que le poste ne le transmet pas.</div>
+    </div>
+  </div>
+
+  <div id="dock">
+    <button class="dbtn cp" onclick="launchKey('carplay')"><div class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M10 8.5v7l5.5-3.5z" fill="#fff"/></svg></div>CarPlay</button>
+    <button class="dbtn" onclick="openScreen('settings')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg>Réglages</button>
+    <button class="dbtn" onclick="openScreen('apps')"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.5"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.5"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.5"/></svg>Apps</button>
+    <button class="dbtn" id="vehBtn" onclick="toggleVehicle()"><svg viewBox="0 0 24 24"><path d="M3 17v-5l2-5a2 2 0 0 1 2-1.4h10A2 2 0 0 1 19 7l2 5v5M3 17h18M3 17v2h3v-2M18 17v2h3v-2M3 12h18M7 14.5h1M16 14.5h1"/></svg>Véhicule</button>
+  </div>
+  <div id="homebar"></div>
+</section>
+
+<!-- ===== APPS ===== -->
+<section id="apps" class="screen dimcar">
+  <div class="subtop">
+    <button class="homeb" onclick="openScreen('home')"><svg viewBox="0 0 24 24"><path d="M3 11 12 4l9 7M5 10v10h14V10"/></svg></button>
+    <span class="clock" data-clock>--:--</span><span class="date" data-date></span>
+  </div>
+  <div class="panel"><div id="appsGrid"></div></div>
+</section>
+
+<!-- ===== RÉGLAGES ===== -->
+<section id="settings" class="screen dimcar">
+  <div class="subtop">
+    <button class="homeb" onclick="openScreen('home')"><svg viewBox="0 0 24 24"><path d="M3 11 12 4l9 7M5 10v10h14V10"/></svg></button>
+    <span class="clock" data-clock>--:--</span><span class="date" data-date></span>
+  </div>
+  <div class="panel">
+    <nav class="side" id="side">
+      <button data-sec="ecran" class="on"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>Écran</button>
+      <button data-sec="audio"><svg viewBox="0 0 24 24"><path d="M9 18V5l10-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg>Audio</button>
+      <button data-sec="bt"><svg viewBox="0 0 24 24"><path d="m7 7 10 10-5 5V2l5 5L7 17"/></svg>Bluetooth</button>
+      <button data-sec="nav"><svg viewBox="0 0 24 24"><path d="M12 2 4 21l8-4 8 4z"/></svg>Navigation</button>
+      <button data-sec="veh"><svg viewBox="0 0 24 24"><path d="M3 17v-5l2-5h14l2 5v5zM3 12h18"/></svg>Véhicule</button>
+      <button data-sec="appsSet"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6"/><rect x="14" y="4" width="6" height="6"/><rect x="4" y="14" width="6" height="6"/><rect x="14" y="14" width="6" height="6"/></svg>Applications</button>
+      <button data-sec="sys"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>Système</button>
+    </nav>
+    <div class="content">
+      <!-- Écran -->
+      <div class="sec on" id="sec-ecran">
+        <div class="row"><div><div class="t">Luminosité</div><div class="d">Réglage de l'écran du launcher</div></div><input type="range" min="20" max="100" id="sBright"/></div>
+        <div class="row"><div><div class="t">Thème</div><div class="d">Automatique : nuit selon les horaires ci-dessous</div></div><div class="seg" id="sTheme"><button data-v="auto">Automatique</button><button data-v="day">Jour</button><button data-v="night">Nuit</button></div></div>
+        <div class="row"><div><div class="t">Début de la nuit</div></div><div class="step"><button onclick="stepH('nightStart',-1)">−</button><span id="vNight">20 h</span><button onclick="stepH('nightStart',1)">+</button></div></div>
+        <div class="row"><div><div class="t">Début du jour</div></div><div class="step"><button onclick="stepH('dayStart',-1)">−</button><span id="vDay">7 h</span><button onclick="stepH('dayStart',1)">+</button></div></div>
+        <div class="row"><div><div class="t">Opacité des cartes</div><div class="d">Plus opaque = plus lisible en plein soleil</div></div><input type="range" min="20" max="95" id="sOpacity"/></div>
+        <div class="row"><div><div class="t">Phares sur l'image</div><div class="d">Change la photo de fond, pas la voiture réelle</div></div><div class="seg" id="sLights"><button data-v="off">Éteints</button><button data-v="on">Allumés</button></div></div>
+        <div class="row"><div><div class="t">Animations</div></div><div class="seg" id="sAnim"><button data-v="full">Complètes</button><button data-v="reduced">Réduites</button></div></div>
+        <div class="row"><div><div class="t">Animation de démarrage</div><div class="d">Logo puis phares qui clignotent</div></div><div style="display:flex;gap:1vw;align-items:center"><div class="seg" id="sBoot"><button data-v="on">Oui</button><button data-v="off">Non</button></div><button class="btn" onclick="playBoot()">Rejouer</button></div></div>
+      </div>
+      <!-- Audio -->
+      <div class="sec" id="sec-audio">
+        <div class="row"><div><div class="t">Son du système</div><div class="d">Volume, égaliseur, fader : gérés par Android</div></div><a class="btn" href="intent:#Intent;action=android.settings.SOUND_SETTINGS;end">Ouvrir</a></div>
+        <div class="row"><div><div class="t">Musique par défaut</div><div class="d">Le bouton Musique des Apps ouvre cette appli</div></div><div class="seg" id="sMusic"><button data-v="spotify">Spotify</button><button data-v="ytmusic">YT Music</button><button data-v="deezer">Deezer</button></div></div>
+      </div>
+      <!-- Bluetooth -->
+      <div class="sec" id="sec-bt">
+        <div class="row"><div><div class="t">Paramètres Bluetooth</div><div class="d">Appairer le téléphone</div></div><a class="btn" href="intent:#Intent;action=android.settings.BLUETOOTH_SETTINGS;end">Ouvrir</a></div>
+        <div class="row"><div><div class="t">Wi-Fi</div><div class="d">Pour la météo et le streaming (partage de connexion du téléphone)</div></div><a class="btn" href="intent:#Intent;action=android.settings.WIFI_SETTINGS;end">Ouvrir</a></div>
+      </div>
+      <!-- Navigation -->
+      <div class="sec" id="sec-nav">
+        <div class="row"><div><div class="t">GPS par défaut</div></div><div class="seg" id="sNav"><button data-v="waze">Waze</button><button data-v="gmaps">Google Maps</button></div></div>
+        <div class="row"><div><div class="t">Adresse « Maison »</div><div class="d">Raccourci Maison dans les Apps</div></div><input type="text" id="sHomeAddr" placeholder="ex : 10 rue de Paris, Lyon"/></div>
+        <div class="row"><div><div class="t">Adresse « Travail »</div></div><input type="text" id="sWorkAddr" placeholder="ex : Gare de Lyon, Paris"/></div>
+      </div>
+      <!-- Véhicule -->
+      <div class="sec" id="sec-veh">
+        <div class="row"><div><div class="t">Nom affiché</div></div><input type="text" id="sName"/></div>
+        <div class="row"><div><div class="t">Motorisation</div><div class="d">ex : dCi 90, TCe 90, 1.2 16V 75, RS 200</div></div><input type="text" id="sEngine"/></div>
+        <div class="row"><div><div class="t">Plaque</div></div><input type="text" id="sPlate"/></div>
+        <div class="row"><div><div class="t">Couleur carrosserie</div></div><div class="swatches" id="sColor"></div></div>
+      </div>
+      <!-- Apps -->
+      <div class="sec" id="sec-appsSet">
+        <div class="help">Le <b>nom du paquet</b> d'une appli se trouve dans l'URL Play Store : <b>play.google.com/store/apps/details?id=<u>com.waze</u></b>.</div>
+        <div class="applist" id="appList"></div>
+        <div class="row"><div style="display:flex;gap:1vw;flex-wrap:wrap"><input type="text" id="newName" placeholder="Nom (ex : Radio)" style="width:14vw"/><input type="text" id="newPkg" placeholder="Paquet (ex : com.audials)" style="width:22vw"/></div><button class="btn primary" onclick="addApp()">Ajouter</button></div>
+        <div class="row"><div><div class="t">Paquet du bouton CarPlay</div><div class="d">ZLink : com.zjinnova.zlink · Android Auto : com.google.android.projection.gearhead · CarbitLink : com.mtk.carbit</div></div><input type="text" id="sCarplay"/></div>
+      </div>
+      <!-- Système -->
+      <div class="sec" id="sec-sys">
+        <div class="row"><div><div class="t">Plein écran</div><div class="d">Cache la barre du navigateur</div></div><button class="btn" onclick="goFull()">Activer</button></div>
+        <div class="row"><div><div class="t">Météo</div><div class="d" id="geoInfo">Position : automatique</div></div><button class="btn" onclick="refreshWeather(true)">Actualiser</button></div>
+        <div class="row"><div><div class="t">Réglages Android</div><div class="d">Ouvre les vrais paramètres du poste</div></div><a class="btn" href="intent:#Intent;action=android.settings.SETTINGS;end">Ouvrir</a></div>
+        <div class="row"><div><div class="t">Réinitialiser le launcher</div><div class="d">Remet tous les réglages et les applis par défaut</div></div><button class="btn danger" onclick="resetAll()">Réinitialiser</button></div>
+        <div class="help">
+          <b>Installer comme écran d'accueil :</b><br/>
+          1. Ouvre cette page dans <b>Chrome</b> sur l'écran de la Clio.<br/>
+          2. Menu ⋮ → <b>Ajouter à l'écran d'accueil / Installer l'application</b>.<br/>
+          3. Lance l'icône « Clio 4 » : elle s'ouvre en plein écran, sans barre.<br/>
+          4. Pour qu'elle s'ouvre au démarrage, utilise une appli comme <b>Fully Kiosk Browser</b> (« Start on boot ») ou les réglages de démarrage automatique de ton poste.<br/>
+          Les données moteur/ouvrants restent « Indisponible » : une page web ne peut pas lire la prise OBD/CAN.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="dim"></div>
+<div id="toast"></div>
+<div id="boot"><svg viewBox="-20 -30 40 60"><path d="M0 -26 L16 0 L0 26 L-16 0Z" fill="none" stroke="#fff" stroke-width="5" stroke-linejoin="round"/><path d="M0 -12 L7.5 0 L0 12 L-7.5 0Z" fill="none" stroke="#fff" stroke-width="3"/></svg><div class="bt" data-carname>CLIO</div></div>
+
+<script>
+/* ================== Réglages persistants ================== */
+const ICONS={
+  play:'<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>',
+  pin:'<svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg>',
+  waze:'<svg viewBox="0 0 24 24"><path d="M12 3C7 3 3.5 6.5 3.5 11c0 1.5-.8 2.6-2 3 1 1.6 2.6 2.7 4.5 3a2 2 0 1 0 3.8.8h4.4a2 2 0 1 0 3.9-.6C20.6 16 22 13.6 22 11c0-4.5-4.5-8-10-8zm-3 7a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm6 0a1 1 0 1 1 0-2 1 1 0 0 1 0 2zm-6.5 2.5h1.2a2.4 2.4 0 0 0 4.6 0h1.2a3.6 3.6 0 0 1-7 0z"/></svg>',
+  note:'<svg viewBox="0 0 24 24"><path d="M9 18V5l11-2v13a3 3 0 1 1-2-2.8V7.4L11 8.7V18a3 3 0 1 1-2-2.8z"/></svg>',
+  phone:'<svg viewBox="0 0 24 24"><path d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z"/></svg>',
+  home:'<svg viewBox="0 0 24 24"><path d="M12 3 2 12h3v8h5v-6h4v6h5v-8h3z"/></svg>',
+  work:'<svg viewBox="0 0 24 24"><path d="M10 3h4a2 2 0 0 1 2 2v1h4a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4V5a2 2 0 0 1 2-2zm0 3h4V5h-4z"/></svg>',
+  yt:'<svg viewBox="0 0 24 24"><path d="M9 7.5v9l7.5-4.5z"/></svg>',
+  n:'<svg viewBox="0 0 24 24"><path d="M6 3h3.5L15 15V3h3v18h-3.5L9 9v12H6z"/></svg>',
+  gear:'<svg viewBox="0 0 24 24"><path d="M19.4 13a7.5 7.5 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7 7 0 0 0-1.7-1L15 3h-4l-.4 2.7a7 7 0 0 0-1.7 1l-2.5-1-2 3.5L6.5 11a7.5 7.5 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7 7 0 0 0 1.7 1L11 21h4l.4-2.7a7 7 0 0 0 1.7-1l2.5 1 2-3.5zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/></svg>',
+  cam:'<svg viewBox="0 0 24 24"><path d="M9 4 7.2 6H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3.2L15 4zm3 4.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9z"/></svg>'
+};
+const DEFAULT_APPS=[
+  {name:'CarPlay',key:'carplay',color:'#3dd68c',icon:'play'},
+  {name:'Waze',pkg:'com.waze',color:'#33ccff',icon:'waze'},
+  {name:'Maps',pkg:'com.google.android.apps.maps',color:'#34a853',icon:'pin'},
+  {name:'Maison',key:'navhome',color:'#ff8a3d',icon:'home'},
+  {name:'Travail',key:'navwork',color:'#8a6bff',icon:'work'},
+  {name:'Musique',key:'music',color:'#e84393',icon:'note'},
+  {name:'YouTube',pkg:'com.google.android.youtube',color:'#ff0000',icon:'yt'},
+  {name:'Netflix',pkg:'com.netflix.mediaclient',color:'#141414',icon:'n'},
+  {name:'Téléphone',key:'phone',color:'#2ecc71',icon:'phone'},
+  {name:'Radio',pkg:'com.audials',color:'#e67e22'},
+  {name:'Galerie',pkg:'com.google.android.apps.photos',color:'#4b5563'},
+  {name:'Caméra',key:'camera',color:'#4b5563',icon:'cam'},
+  {name:'Réglages',key:'settings',color:'#4b5563',icon:'gear'},
+];
+const MUSIC={spotify:'com.spotify.music',ytmusic:'com.google.android.apps.youtube.music',deezer:'deezer.android.app'};
+const COLORS={'Rouge Flamme':['#c4161c','#6e0a0e','#ff5a5a'],'Blanc Glacier':['#e8ebef','#9aa1ab','#ffffff'],'Noir Étoilé':['#1b1e25','#06070a','#4a505c'],'Gris Platine':['#8d939b','#4b5058','#c9ced5'],'Bleu Iron':['#2f4766','#16243a','#5d7ea8'],'Orange Valencia':['#e8641e','#8a3208','#ff9a5a'],'Jaune Sirius':['#f0c419','#8a6c00','#ffe680']};
+const DEF={bright:100,theme:'auto',nightStart:20,dayStart:7,opacity:62,lights:'on',anim:'full',boot:'on',music:'spotify',nav:'waze',homeAddr:'',workAddr:'',name:'Clio 4',engine:'dCi 90',plate:'AB-123-CD',color:'Rouge Flamme',carplay:'com.zjinnova.zlink',apps:DEFAULT_APPS};
+let S;
+try{S=Object.assign({},DEF,JSON.parse(localStorage.getItem('clio4')||'{}'))}catch(e){S=Object.assign({},DEF)}
+function save(){try{localStorage.setItem('clio4',JSON.stringify(S))}catch(e){}}
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+function toast(t){const el=$('#toast');el.textContent=t;el.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('show'),2200)}
+
+/* ================== Horloge + thème ================== */
+function tick(){
+  const d=new Date();
+  const hm=d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  let ds=d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'long'});
+  ds=ds.charAt(0).toUpperCase()+ds.slice(1);
+  $$('[data-clock]').forEach(e=>e.textContent=hm);
+  $$('[data-date]').forEach(e=>e.textContent=ds);
+  applyTheme();
+  const w=$('[data-wifi]'); if(w) w.classList.toggle('off',!navigator.onLine);
+}
+function isNight(){
+  if(S.theme==='day')return false; if(S.theme==='night')return true;
+  const h=new Date().getHours(); return S.nightStart>S.dayStart ? (h>=S.nightStart||h<S.dayStart) : (h>=S.nightStart&&h<S.dayStart);
+}
+function applyTheme(){const n=isNight();document.body.classList.toggle('night',n);document.body.classList.toggle('day',!n)}
+
+/* ================== Applique les réglages ================== */
+function applyAll(){
+  $('#dim').style.opacity=(100-S.bright)/100*.85;
+  document.documentElement.style.setProperty('--card',`rgba(18,24,44,${S.opacity/100})`);
+  document.body.classList.toggle('reduced',S.anim==='reduced');
+  setLights(S.lights==='on',false);
+  const c=COLORS[S.color]||COLORS['Rouge Flamme'];
+  const r=document.documentElement.style; r.setProperty('--car',c[0]); r.setProperty('--car-dark',c[1]); r.setProperty('--car-light',c[2]);
+  $$('[data-carname]').forEach(e=>e.textContent=e.closest('#boot')?S.name.toUpperCase():S.name);
+  $$('[data-engine]').forEach(e=>e.textContent=S.engine);
+  $('#plateTxt').textContent=S.plate;
+  document.title=S.name+' Launcher';
+  applyTheme(); renderApps(); syncControls();
+}
+
+/* ================== Phares ================== */
+function setLights(on,store=true){
+  $('#carWrap').classList.toggle('lights-on',on);
+  $('#lightsTxt').textContent=on?'Éteindre les phares':'Allumer les phares';
+  if(store){S.lights=on?'on':'off';save();syncControls()}
+}
+function toggleLights(){setLights(!$('#carWrap').classList.contains('lights-on'))}
+
+/* ================== Écrans ================== */
+function openScreen(id){
+  $$('.screen').forEach(s=>s.classList.remove('active'));
+  const el=$('#'+id); el.classList.add('active'); el.classList.remove('fade-in'); void el.offsetWidth; el.classList.add('fade-in');
+  $('#carWrap').style.opacity=id==='home'?1:.15;
+}
+function toggleVehicle(){const on=document.body.classList.toggle('show-vehicle');$('#vehBtn').classList.toggle('on',on)}
+
+/* ================== Lancement des applis (Android) ================== */
+function pkgIntent(pkg){return `intent://#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=${pkg};S.browser_fallback_url=${encodeURIComponent('https://play.google.com/store/apps/details?id='+pkg)};end`}
+function navTo(addr){
+  if(!addr){toast('Ajoute l\'adresse dans Réglages › Navigation');openScreen('settings');showSec('nav');return}
+  const q=encodeURIComponent(addr);
+  location.href=S.nav==='waze'?`https://waze.com/ul?q=${q}&navigate=yes`:`google.navigation:q=${q}`;
+}
+function launchKey(k){
+  switch(k){
+    case 'carplay': return go(pkgIntent(S.carplay),'CarPlay');
+    case 'music': return go(pkgIntent(MUSIC[S.music]),'Musique');
+    case 'navhome': return navTo(S.homeAddr);
+    case 'navwork': return navTo(S.workAddr);
+    case 'phone': return go('intent:#Intent;action=android.intent.action.DIAL;end','Téléphone');
+    case 'camera': return go('intent:#Intent;action=android.media.action.STILL_IMAGE_CAMERA;end','Caméra');
+    case 'settings': return openScreen('settings');
+  }
+}
+function go(url,name){toast('Ouverture de '+name+'…');location.href=url}
+function launchApp(a){a.key?launchKey(a.key):go(pkgIntent(a.pkg),a.name)}
+function iconHTML(a){return a.icon&&ICONS[a.icon]?ICONS[a.icon]:`<span>${(a.name||'?').charAt(0).toUpperCase()}</span>`}
+function renderApps(){
+  const g=$('#appsGrid'); g.innerHTML='';
+  S.apps.forEach(a=>{
+    const b=document.createElement('button'); b.className='app';
+    b.innerHTML=`<div class="ai" style="background:${a.color||'#4b5563'}">${iconHTML(a)}</div>${esc(a.name)}`;
+    b.onclick=()=>launchApp(a); g.appendChild(b);
+  });
+  const l=$('#appList'); l.innerHTML='';
+  S.apps.forEach((a,i)=>{
+    const r=document.createElement('div'); r.className='row';
+    r.innerHTML=`<div style="display:flex;gap:1vw;align-items:center"><div class="mini" style="background:${a.color||'#4b5563'}">${iconHTML(a)}</div><div><div class="t">${esc(a.name)}</div><div class="d">${esc(a.pkg||'raccourci intégré')}</div></div></div><div style="display:flex;gap:.6vw"><button class="btn" data-up="${i}">▲</button><button class="btn danger" data-del="${i}">Retirer</button></div>`;
+    l.appendChild(r);
+  });
+  l.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{S.apps.splice(+b.dataset.del,1);save();renderApps()});
+  l.querySelectorAll('[data-up]').forEach(b=>b.onclick=()=>{const i=+b.dataset.up;if(i>0){[S.apps[i-1],S.apps[i]]=[S.apps[i],S.apps[i-1]];save();renderApps()}});
+}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function addApp(){
+  const n=$('#newName').value.trim(), p=$('#newPkg').value.trim();
+  if(!n||!/^[a-zA-Z][\w]*(\.[\w]+)+$/.test(p)){toast('Nom + paquet valide requis (ex : com.waze)');return}
+  const pal=['#2f6bff','#e84393','#00b894','#e17055','#6c5ce7','#0984e3','#fdcb6e'];
+  S.apps=[...S.apps,{name:n,pkg:p,color:pal[S.apps.length%pal.length]}]; save(); renderApps();
+  $('#newName').value='';$('#newPkg').value=''; toast(n+' ajouté');
+}
+
+/* ================== Contrôles des réglages ================== */
+function showSec(id){$$('#side button').forEach(b=>b.classList.toggle('on',b.dataset.sec===id));$$('.sec').forEach(s=>s.classList.toggle('on',s.id==='sec-'+id))}
+$$('#side button').forEach(b=>b.onclick=()=>showSec(b.dataset.sec));
+function bindSeg(id,key,after){$$('#'+id+' button').forEach(b=>b.onclick=()=>{S[key]=b.dataset.v;save();applyAll();after&&after()})}
+bindSeg('sTheme','theme');bindSeg('sLights','lights');bindSeg('sAnim','anim');bindSeg('sBoot','boot');bindSeg('sMusic','music');bindSeg('sNav','nav');
+function bindRange(id,key){$('#'+id).oninput=e=>{S[key]=+e.target.value;save();applyAll()}}
+bindRange('sBright','bright');bindRange('sOpacity','opacity');
+function bindText(id,key){$('#'+id).onchange=e=>{S[key]=e.target.value.trim()||DEF[key];save();applyAll()}}
+bindText('sHomeAddr','homeAddr');bindText('sWorkAddr','workAddr');bindText('sName','name');bindText('sEngine','engine');bindText('sPlate','plate');bindText('sCarplay','carplay');
+function stepH(key,d){S[key]=(S[key]+d+24)%24;save();applyAll()}
+const sw=$('#sColor');Object.entries(COLORS).forEach(([n,c])=>{const b=document.createElement('button');b.title=n;b.style.background=c[0];b.onclick=()=>{S.color=n;save();applyAll();toast(n)};sw.appendChild(b)});
+function syncControls(){
+  const segs={sTheme:'theme',sLights:'lights',sAnim:'anim',sBoot:'boot',sMusic:'music',sNav:'nav'};
+  for(const[id,k]of Object.entries(segs))$$('#'+id+' button').forEach(b=>b.classList.toggle('on',b.dataset.v===S[k]));
+  $('#sBright').value=S.bright;$('#sOpacity').value=S.opacity;
+  $('#vNight').textContent=S.nightStart+' h';$('#vDay').textContent=S.dayStart+' h';
+  for(const[id,k]of[['sHomeAddr','homeAddr'],['sWorkAddr','workAddr'],['sName','name'],['sEngine','engine'],['sPlate','plate'],['sCarplay','carplay']]){const el=$('#'+id);if(document.activeElement!==el)el.value=S[k]}
+  $$('#sColor button').forEach(b=>b.classList.toggle('on',b.title===S.color));
+}
+function resetAll(){if(confirm('Tout réinitialiser ?')){try{localStorage.removeItem('clio4')}catch(e){}S=JSON.parse(JSON.stringify(DEF));applyAll();toast('Réinitialisé')}}
+function goFull(){const d=document.documentElement;(d.requestFullscreen||d.webkitRequestFullscreen||function(){}).call(d);try{screen.orientation.lock('landscape')}catch(e){}}
+
+/* ================== Météo (Open-Meteo, gratuit, sans clé) ================== */
+const WMO={0:['Ciel dégagé','sun'],1:['Éclaircies','sunc'],2:['Partiellement nuageux','sunc'],3:['Couvert','cloud'],45:['Brouillard','fog'],48:['Brouillard givrant','fog'],51:['Bruine','rain'],53:['Bruine','rain'],55:['Bruine dense','rain'],61:['Pluie faible','rain'],63:['Pluie','rain'],65:['Forte pluie','rain'],66:['Pluie verglaçante','rain'],67:['Pluie verglaçante','rain'],71:['Neige faible','snow'],73:['Neige','snow'],75:['Forte neige','snow'],77:['Grains de neige','snow'],80:['Averses','rain'],81:['Averses','rain'],82:['Fortes averses','rain'],85:['Averses de neige','snow'],86:['Averses de neige','snow'],95:['Orage','storm'],96:['Orage et grêle','storm'],99:['Orage et grêle','storm']};
+function wIcon(t,night){
+  const sun=night?'<path d="M40 14a18 18 0 1 0 14 28A16 16 0 0 1 40 14z" fill="#f4e6a8"/>':'<circle cx="38" cy="26" r="13" fill="#ffd23f"/><g stroke="#ffd23f" stroke-width="3" stroke-linecap="round"><path d="M38 6v4M38 42v4M18 26h4M54 26h4M24 12l3 3M49 37l3 3M24 40l3-3M49 15l3-3"/></g>';
+  const cloud='<path d="M18 50h30a10 10 0 0 0 0-20 14 14 0 0 0-27-2 9 9 0 0 0-3 22z" fill="#f2f5fb"/>';
+  const s={sun:sun,sunc:sun+cloud,cloud:cloud.replace('#f2f5fb','#dfe5ef'),
+    rain:cloud+'<g stroke="#5ab0ff" stroke-width="3" stroke-linecap="round"><path d="M22 54l-2 6M32 54l-2 6M42 54l-2 6"/></g>',
+    snow:cloud+'<g fill="#fff"><circle cx="22" cy="57" r="2.5"/><circle cx="32" cy="59" r="2.5"/><circle cx="42" cy="57" r="2.5"/></g>',
+    storm:cloud+'<path d="M32 50l-6 9h6l-3 7 9-11h-6l3-5z" fill="#ffd23f"/>',
+    fog:'<g stroke="#e6eaf2" stroke-width="4" stroke-linecap="round"><path d="M12 26h40M8 36h44M14 46h36"/></g>'};
+  return `<svg viewBox="0 0 64 64">${s[t]||s.cloud}</svg>`;
+}
+let geo=null;
+try{geo=JSON.parse(localStorage.getItem('clio4geo')||'null')}catch(e){}
+function refreshWeather(askGeo){
+  const run=(lat,lon,label)=>{
+    fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,is_day&hourly=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=2`)
+    .then(r=>r.json()).then(d=>{
+      const c=d.current, w=WMO[c.weather_code]||['—','cloud'], night=!c.is_day;
+      const t=Math.round(c.temperature_2m);
+      $('#wTemp').textContent=t+'°'; $('#wDesc').textContent=w[0]; $('#wIcon').innerHTML=wIcon(w[1],night);
+      $('#wMeta').innerHTML=`Vent ${Math.round(c.wind_speed_10m)} km/h<br/>Humidité ${c.relative_humidity_2m}%<br/>Min ${Math.round(d.daily.temperature_2m_min[0])}° · Max ${Math.round(d.daily.temperature_2m_max[0])}°`;
+      $$('[data-outtemp]').forEach(e=>e.textContent=c.temperature_2m.toFixed(1)+' °C');
+      const now=Date.now(); let idx=d.hourly.time.findIndex(x=>new Date(x).getTime()>now); if(idx<0)idx=0;
+      $('#wHours').innerHTML=[1,3,5].map(o=>{const i=idx+o-1,h=new Date(d.hourly.time[i]).getHours(),ww=WMO[d.hourly.weather_code[i]]||['','cloud'];return `<div>${h} h${wIcon(ww[1],h>=S.nightStart||h<S.dayStart)}<b>${Math.round(d.hourly.temperature_2m[i])}°</b></div>`}).join('');
+      $('#wPlace').textContent=label; $('#geoInfo').textContent='Position : '+label;
+    }).catch(()=>{$('#wDesc').textContent='Hors ligne';});
+  };
+  const fallback=()=>run(48.8566,2.3522,'Paris (position par défaut)');
+  if(geo&&!askGeo)return run(geo.lat,geo.lon,geo.label);
+  if(!navigator.geolocation)return fallback();
+  navigator.geolocation.getCurrentPosition(p=>{
+    geo={lat:p.coords.latitude.toFixed(3),lon:p.coords.longitude.toFixed(3),label:'Position actuelle'};
+    try{localStorage.setItem('clio4geo',JSON.stringify(geo))}catch(e){}
+    run(geo.lat,geo.lon,geo.label);
+  },()=>geo?run(geo.lat,geo.lon,geo.label):fallback(),{timeout:8000,maximumAge:1800000});
+}
+
+/* ================== Animation de démarrage ================== */
+function playBoot(){
+  const b=$('#boot'); b.style.opacity=1; b.classList.add('show'); openScreen('home');
+  const was=$('#carWrap').classList.contains('lights-on');
+  setTimeout(()=>{b.style.opacity=0;
+    const car=$('#carWrap'); car.classList.remove('lights-on');
+    [400,650,900,1150].forEach((t,i)=>setTimeout(()=>car.classList.toggle('lights-on',i%2===0),t));
+    setTimeout(()=>{b.classList.remove('show');car.classList.toggle('lights-on',was)},1500);
+  },2000);
+}
+
+/* ================== Démarrage ================== */
+applyAll(); tick(); setInterval(tick,10000);
+refreshWeather(false); setInterval(()=>refreshWeather(false),15*60*1000);
+if(S.boot==='on'&&S.anim==='full')playBoot();
+document.addEventListener('contextmenu',e=>e.preventDefault());
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
