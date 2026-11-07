@@ -1,0 +1,143 @@
+import { themeWords } from "./helpers";
+
+/* Travail, technologie, IA, business, voyages, vie quotidienne */
+
+const work = themeWords("work");
+export const workWords = [
+  work("deadline", "word", "noun", "/ˈdedlaɪn/", "B1", "the latest time by which something must be finished", "date limite, échéance", "We're under pressure to meet the deadline on Friday.", { col: ["meet a deadline", "miss a deadline", "tight deadline"] }),
+  work("colleague", "word", "noun", "/ˈkɒliːɡ/", "B1", "a person you work with", "collègue", "I'm having lunch with a colleague from the marketing team.", { syn: ["co-worker"], us: "/ˈkɑːliːɡ/" }),
+  work("apply for", "phrasal", "phrasal verb", "/əˈplaɪ fɔː/", "B1", "to make a formal request for a job, a place or a document", "postuler, faire une demande", "She applied for a job at a software company.", { col: ["apply for a job", "apply for a visa"] }),
+  work("résumé", "word", "noun", "/ˈrezjuːmeɪ/", "B1", "(mainly US) a document listing your education and work experience", "CV", "She sent her résumé to five companies.", { us: "/ˈrezəmeɪ/", ukUs: "UK : CV · US : résumé (ou resume)", syn: ["CV"] }),
+  work("workload", "word", "noun", "/ˈwɜːkləʊd/", "B1", "the amount of work a person has to do", "charge de travail", "My workload has doubled since the merger.", { us: "/ˈwɝːkloʊd/", col: ["heavy workload", "manage your workload"] }),
+  work("promotion", "word", "noun", "/prəˈməʊʃn/", "B1", "a move to a more important job in the same organisation", "promotion", "She got a promotion after two years.", { us: "/prəˈmoʊʃn/", col: ["get a promotion", "be up for promotion"] }),
+  work("take on", "phrasal", "phrasal verb", "/teɪk ˈɒn/", "B1+", "to accept work or responsibility; to employ someone", "prendre en charge ; embaucher", "I can't take on any more projects this month.", { us: "/teɪk ˈɑːn/", syn: ["undertake", "hire"] }),
+  work("run out of", "phrasal", "phrasal verb", "/rʌn ˈaʊt əv/", "B1", "to use all of something so that none is left", "être à court de", "We've run out of paper for the printer.", {}),
+  work("delegate", "word", "verb", "/ˈdelɪɡeɪt/", "B2", "to give a task or responsibility to someone else", "déléguer", "Good managers know how to delegate.", { col: ["delegate tasks", "delegate responsibility"] }),
+  work("burnout", "word", "noun", "/ˈbɜːnaʊt/", "B2", "extreme tiredness caused by working too hard for too long", "épuisement professionnel", "Long hours without breaks can lead to burnout.", { us: "/ˈbɝːnaʊt/", col: ["suffer from burnout", "risk of burnout"] }),
+  work("career path", "collocation", "noun phrase", "/kəˈrɪə pɑːθ/", "B1+", "the series of jobs a person has during their working life", "parcours professionnel", "Moving into management is a common career path for engineers.", { us: "/kəˈrɪr pæθ/" }),
+  work("pull your weight", "idiom", "idiom", "/pʊl jɔː ˈweɪt/", "B2", "to do your fair share of the work", "faire sa part du travail", "If everyone pulls their weight, we'll finish on time.", {}),
+  work("hands-on", "word", "adjective", "/ˌhændz ˈɒn/", "B2", "involving direct, practical experience", "pratique, concret ; impliqué sur le terrain", "The internship gave me hands-on experience with servers.", { us: "/ˌhændz ˈɑːn/", col: ["hands-on experience", "hands-on approach"] }),
+  work("redundancy", "word", "noun", "/rɪˈdʌndənsi/", "B2", "the situation of losing your job because your employer no longer needs you", "licenciement économique", "The factory closure led to 300 redundancies.", { ukUs: "UK : be made redundant · US : be laid off" }),
+  work("perk", "word", "noun", "/pɜːk/", "B2", "an extra benefit you get from your job in addition to your salary", "avantage en nature", "Free lunches are one of the perks of the job.", { us: "/pɝːk/", syn: ["benefit", "fringe benefit"] }),
+  work("cut corners", "idiom", "idiom", "/kʌt ˈkɔːnəz/", "B2+", "to do something badly or cheaply to save time or money", "bâcler, rogner sur la qualité", "The builders cut corners and the roof started leaking.", { us: "/kʌt ˈkɔːrnərz/" }),
+  work("track record", "collocation", "noun phrase", "/ˈtræk rekɔːd/", "B2+", "all the past achievements or failures of a person or organisation", "antécédents, bilan, références", "She has a proven track record in project management.", { col: ["proven track record", "a good track record"] }),
+  work("leverage", "word", "verb / noun", "/ˈliːvərɪdʒ/", "C1", "to use something you have to gain an advantage", "tirer parti de ; levier", "We need to leverage our existing customer base.", { us: "/ˈlevərɪdʒ/", ukUs: "Prononciation : UK /ˈliːv-/, US /ˈlev-/" }),
+  work("onboarding", "word", "noun", "/ˈɒnbɔːdɪŋ/", "C1", "the process of integrating a new employee into an organisation", "intégration (des nouveaux salariés)", "A good onboarding process reduces staff turnover.", { us: "/ˈɑːnbɔːrdɪŋ/" }),
+  work("on the same page", "idiom", "idiom", "/ɒn ðə seɪm ˈpeɪdʒ/", "B2", "in agreement and having the same understanding", "sur la même longueur d'onde", "Let's have a quick call to make sure we're all on the same page.", {}),
+];
+
+const tech = themeWords("tech");
+export const techWords = [
+  tech("device", "word", "noun", "/dɪˈvaɪs/", "B1", "a piece of electronic equipment, such as a phone or tablet", "appareil", "Please switch off all electronic devices.", { col: ["mobile device", "connected device"] }),
+  tech("update", "word", "noun / verb", "/ˈʌpdeɪt/ (n), /ʌpˈdeɪt/ (v)", "B1", "a newer version of software; to make something more modern", "mise à jour ; mettre à jour", "Install the latest security update.", {}),
+  tech("download", "word", "verb", "/ˌdaʊnˈləʊd/", "B1", "to copy data from the internet to your device", "télécharger", "You can download the app for free.", { us: "/ˈdaʊnloʊd/", ant: ["upload"] }),
+  tech("back up", "phrasal", "phrasal verb", "/bæk ˈʌp/", "B1", "to make a copy of computer data in case the original is lost", "sauvegarder", "Always back up your files before an update.", { col: ["back up data"] }),
+  tech("set up", "phrasal", "phrasal verb", "/set ˈʌp/", "B1", "to prepare equipment or software so that it is ready to use", "installer, configurer", "It took an hour to set up the new router.", { syn: ["configure", "install"] }),
+  tech("password", "word", "noun", "/ˈpɑːswɜːd/", "B1", "a secret word or set of characters that gives access to a system", "mot de passe", "Choose a strong password with numbers and symbols.", { us: "/ˈpæswɝːd/", col: ["strong password", "reset a password"] }),
+  tech("bug", "word", "noun", "/bʌɡ/", "B1+", "a fault in a computer program", "bogue, bug", "The developers fixed the bug in the payment system.", { col: ["fix a bug", "report a bug"] }),
+  tech("user-friendly", "word", "adjective", "/ˌjuːzə ˈfrendli/", "B1+", "easy to use or understand", "convivial, facile à utiliser", "The new interface is much more user-friendly.", { us: "/ˌjuːzər ˈfrendli/", syn: ["intuitive"] }),
+  tech("bandwidth", "word", "noun", "/ˈbændwɪdθ/", "B2", "the amount of data that can be sent through a connection; (informal) capacity to deal with something", "bande passante ; disponibilité", "Video calls use a lot of bandwidth. / I don't have the bandwidth for another project.", {}),
+  tech("breach", "word", "noun", "/briːtʃ/", "B2", "an incident in which data is accessed without permission", "violation, faille (de sécurité)", "The data breach exposed millions of email addresses.", { col: ["data breach", "security breach"] }),
+  tech("encryption", "word", "noun", "/ɪnˈkrɪpʃn/", "B2", "the process of changing data into a code to protect it", "chiffrement", "End-to-end encryption protects your messages.", {}),
+  tech("cutting-edge", "word", "adjective", "/ˌkʌtɪŋ ˈedʒ/", "B2", "the most modern and advanced", "de pointe", "The lab uses cutting-edge technology.", { syn: ["state-of-the-art"] }),
+  tech("troubleshoot", "word", "verb", "/ˈtrʌblʃuːt/", "B2", "to find and solve problems in a system", "diagnostiquer et résoudre un problème", "I spent the morning troubleshooting network issues.", {}),
+  tech("roll out", "phrasal", "phrasal verb", "/rəʊl ˈaʊt/", "B2", "to introduce a new product or service gradually", "déployer", "The feature will be rolled out to all users next month.", { us: "/roʊl ˈaʊt/" }),
+  tech("scalable", "word", "adjective", "/ˈskeɪləbl/", "B2+", "able to grow or be expanded easily", "évolutif, extensible", "We need a scalable infrastructure to handle more users.", {}),
+  tech("obsolete", "word", "adjective", "/ˈɒbsəliːt/", "B2+", "no longer used because something newer exists", "obsolète", "Floppy disks became obsolete decades ago.", { us: "/ˌɑːbsəˈliːt/", syn: ["outdated"] }),
+  tech("seamless", "word", "adjective", "/ˈsiːmləs/", "C1", "smooth and continuous, without problems or interruptions", "fluide, sans accroc", "The app offers a seamless experience across devices.", { col: ["seamless integration", "seamless transition"] }),
+  tech("vulnerability", "word", "noun", "/ˌvʌlnərəˈbɪləti/", "C1", "a weakness that can be exploited", "vulnérabilité", "The patch fixes a critical vulnerability.", {}),
+  tech("glitch", "word", "noun", "/ɡlɪtʃ/", "B2", "a small fault that stops something working properly", "petit problème technique", "A technical glitch delayed the launch.", {}),
+  tech("tech-savvy", "word", "adjective", "/ˌtek ˈsævi/", "B2+", "knowing a lot about modern technology", "à l'aise avec la technologie", "Younger customers are generally more tech-savvy.", {}),
+];
+
+const ai = themeWords("ai");
+export const aiWords = [
+  ai("artificial intelligence", "collocation", "noun phrase", "/ˌɑːtɪfɪʃl ɪnˈtelɪdʒəns/", "B1", "the ability of computers to perform tasks that normally require human intelligence", "intelligence artificielle", "Artificial intelligence is changing many industries.", { us: "/ˌɑːrtɪfɪʃl ɪnˈtelɪdʒəns/" }),
+  ai("algorithm", "word", "noun", "/ˈælɡərɪðəm/", "B1+", "a set of rules a computer follows to solve a problem", "algorithme", "The algorithm recommends videos based on your history.", {}),
+  ai("dataset", "word", "noun", "/ˈdeɪtəset/", "B2", "a collection of data used for analysis or to train a model", "jeu de données", "The model was trained on a large dataset of images.", { us: "/ˈdeɪtəset/ ou /ˈdætəset/" }),
+  ai("train", "word", "verb", "/treɪn/", "B1+", "to teach a system to perform a task by giving it examples", "entraîner (un modèle)", "Engineers trained the model to detect spam.", { col: ["train a model", "training data"] }),
+  ai("bias", "word", "noun", "/ˈbaɪəs/", "B2", "an unfair preference for or against someone or something", "biais", "Bias in training data can lead to unfair decisions.", { col: ["algorithmic bias", "unconscious bias"] }),
+  ai("prompt", "word", "noun / verb", "/prɒmpt/", "B2", "the instruction or question you give to an AI system", "requête, instruction (prompt)", "A clear prompt usually produces a better answer.", { us: "/prɑːmpt/" }),
+  ai("automate", "word", "verb", "/ˈɔːtəmeɪt/", "B2", "to make a process work automatically, without people", "automatiser", "Many repetitive tasks can now be automated.", {}),
+  ai("accuracy", "word", "noun", "/ˈækjərəsi/", "B1+", "the quality of being correct and exact", "précision, exactitude", "The accuracy of the predictions has improved.", { ant: ["inaccuracy"] }),
+  ai("reliable", "word", "adjective", "/rɪˈlaɪəbl/", "B1", "able to be trusted", "fiable", "Is this source reliable?", { ant: ["unreliable"], syn: ["dependable", "trustworthy"] }),
+  ai("hallucination", "word", "noun", "/həˌluːsɪˈneɪʃn/", "C1", "(AI) a confident answer that is false or invented", "hallucination (réponse inventée)", "Always check citations — the chatbot may produce hallucinations.", {}),
+  ai("chatbot", "word", "noun", "/ˈtʃætbɒt/", "B1", "a computer program designed to have conversations with people", "agent conversationnel", "The bank's chatbot answers simple questions.", { us: "/ˈtʃætbɑːt/" }),
+  ai("machine learning", "collocation", "noun phrase", "/məˈʃiːn ˌlɜːnɪŋ/", "B2", "a type of AI in which systems learn from data", "apprentissage automatique", "Machine learning is used to detect fraud.", { us: "/məˈʃiːn ˌlɝːnɪŋ/" }),
+  ai("oversight", "word", "noun", "/ˈəʊvəsaɪt/", "C1", "1) supervision; 2) a mistake caused by not noticing something", "supervision ; oubli", "AI systems require human oversight. / The error was an oversight.", { us: "/ˈoʊvərsaɪt/" }),
+  ai("transparency", "word", "noun", "/trænsˈpærənsi/", "B2+", "the quality of being open and easy to understand", "transparence", "Users demand more transparency about how their data is used.", {}),
+  ai("job displacement", "collocation", "noun phrase", "/ˈdʒɒb dɪsˌpleɪsmənt/", "C1", "the loss of jobs because work is done by machines or moved elsewhere", "destruction / déplacement d'emplois", "Economists debate the scale of job displacement caused by AI.", { us: "/ˈdʒɑːb dɪsˌpleɪsmənt/" }),
+  ai("regulate", "word", "verb", "/ˈreɡjuleɪt/", "B2", "to control something using rules or laws", "réglementer", "Governments are trying to regulate AI.", { col: ["strictly regulated", "regulate the market"] }),
+  ai("cutting out the middleman", "idiom", "idiom", "/ˌkʌtɪŋ aʊt ðə ˈmɪdlmæn/", "C1", "dealing directly with someone instead of through an intermediary", "se passer d'intermédiaire", "Online platforms promise to cut out the middleman.", {}),
+  ai("augment", "word", "verb", "/ɔːɡˈment/", "C1", "to increase or improve something by adding to it", "augmenter, renforcer", "AI should augment human skills, not replace them.", { syn: ["enhance"] }),
+  ai("ethical", "word", "adjective", "/ˈeθɪkl/", "B2", "relating to what is morally right or wrong", "éthique", "There are serious ethical questions about facial recognition.", { ant: ["unethical"] }),
+  ai("raise concerns", "collocation", "verb phrase", "/reɪz kənˈsɜːnz/", "B2", "to make people worried or aware of a problem", "susciter des inquiétudes", "The new tool has raised concerns about privacy.", { us: "/reɪz kənˈsɝːnz/" }),
+];
+
+const business = themeWords("business");
+export const businessWords = [
+  business("revenue", "word", "noun", "/ˈrevənjuː/", "B1+", "the money a company receives from its activities", "chiffre d'affaires, recettes", "Annual revenue rose by 12%.", { us: "/ˈrevənuː/", col: ["generate revenue", "revenue growth"] }),
+  business("profit", "word", "noun", "/ˈprɒfɪt/", "B1", "money you gain after costs have been paid", "bénéfice", "The company made a profit for the first time.", { us: "/ˈprɑːfɪt/", ant: ["loss"], col: ["make a profit", "profit margin"] }),
+  business("customer", "word", "noun", "/ˈkʌstəmə/", "B1", "a person or organisation that buys goods or services", "client", "We aim to answer every customer within 24 hours.", { us: "/ˈkʌstəmər/", syn: ["client"] }),
+  business("supplier", "word", "noun", "/səˈplaɪə/", "B1+", "a company that provides goods to another company", "fournisseur", "We've found a cheaper supplier.", { us: "/səˈplaɪər/" }),
+  business("negotiate", "word", "verb", "/nɪˈɡəʊʃieɪt/", "B1+", "to discuss something formally to reach an agreement", "négocier", "We negotiated a 10% discount.", { us: "/nɪˈɡoʊʃieɪt/" }),
+  business("budget", "word", "noun", "/ˈbʌdʒɪt/", "B1", "a plan of how much money can be spent", "budget", "The project is over budget.", { col: ["on budget", "over budget", "tight budget"] }),
+  business("launch", "word", "verb / noun", "/lɔːntʃ/", "B1+", "to introduce a new product to the public", "lancer ; lancement", "They launched the product in March.", { col: ["product launch"] }),
+  business("market share", "collocation", "noun phrase", "/ˈmɑːkɪt ʃeə/", "B2", "the percentage of sales in a market that a company has", "part de marché", "We've increased our market share in Europe.", { us: "/ˈmɑːrkɪt ʃer/" }),
+  business("stakeholder", "word", "noun", "/ˈsteɪkhəʊldə/", "B2", "a person or group with an interest in a business or project", "partie prenante", "We consulted all stakeholders before the decision.", { us: "/ˈsteɪkhoʊldər/" }),
+  business("break even", "phrasal", "phrasal verb", "/breɪk ˈiːvn/", "B2", "to have neither a profit nor a loss", "atteindre le seuil de rentabilité", "We expect to break even in the second year.", {}),
+  business("turnover", "word", "noun", "/ˈtɜːnəʊvə/", "B2", "1) (UK) total sales; 2) the rate at which employees leave", "chiffre d'affaires ; rotation du personnel", "Staff turnover is high in this sector.", { us: "/ˈtɝːnoʊvər/", ukUs: "Au sens de chiffre d'affaires, l'anglais américain préfère revenue / sales." }),
+  business("merger", "word", "noun", "/ˈmɜːdʒə/", "B2", "the joining of two companies into one", "fusion", "The merger created the largest bank in the country.", { us: "/ˈmɝːdʒər/", col: ["mergers and acquisitions"] }),
+  business("ballpark figure", "idiom", "noun phrase", "/ˈbɔːlpɑːk ˌfɪɡə/", "B2+", "an approximate number", "estimation approximative", "Can you give me a ballpark figure for the costs?", { us: "/ˈbɔːlpɑːrk ˌfɪɡjər/" }),
+  business("the bottom line", "idiom", "noun phrase", "/ðə ˌbɒtəm ˈlaɪn/", "B2+", "1) the final profit or loss; 2) the most important fact", "le résultat net ; l'essentiel", "The bottom line is that we can't afford it.", { us: "/ðə ˌbɑːtəm ˈlaɪn/" }),
+  business("downturn", "word", "noun", "/ˈdaʊntɜːn/", "B2+", "a period when business activity falls", "ralentissement, récession", "Many shops closed during the economic downturn.", { us: "/ˈdaʊntɝːn/", ant: ["upturn"] }),
+  business("viable", "word", "adjective", "/ˈvaɪəbl/", "C1", "able to work successfully", "viable", "Is this business model financially viable?", { syn: ["feasible"] }),
+  business("streamline", "word", "verb", "/ˈstriːmlaɪn/", "C1", "to make a system more efficient by simplifying it", "rationaliser, simplifier", "We streamlined the ordering process.", {}),
+  business("follow up", "phrasal", "phrasal verb", "/ˌfɒləʊ ˈʌp/", "B1+", "to take further action after a first contact", "relancer, faire un suivi", "I'll follow up with an email after the meeting.", { us: "/ˌfɑːloʊ ˈʌp/", col: ["follow up on something"] }),
+  business("invoice", "word", "noun", "/ˈɪnvɔɪs/", "B1+", "a document asking for payment for goods or services", "facture", "Please send the invoice to our accounts department.", { syn: ["bill"] }),
+  business("win-win", "word", "adjective", "/ˌwɪn ˈwɪn/", "B2", "good for everyone involved", "gagnant-gagnant", "It's a win-win situation for both companies.", {}),
+];
+
+const travel = themeWords("travel");
+export const travelWords = [
+  travel("itinerary", "word", "noun", "/aɪˈtɪnərəri/", "B1+", "a detailed plan of a journey", "itinéraire, programme de voyage", "Our itinerary includes three days in Kyoto.", { us: "/aɪˈtɪnəreri/" }),
+  travel("check in", "phrasal", "phrasal verb", "/tʃek ˈɪn/", "B1", "to register at a hotel or airport", "s'enregistrer", "You can check in online 24 hours before your flight.", { ant: ["check out"] }),
+  travel("boarding pass", "collocation", "noun", "/ˈbɔːdɪŋ pɑːs/", "B1", "a card that allows you to get on a plane", "carte d'embarquement", "Have your boarding pass and passport ready.", { us: "/ˈbɔːrdɪŋ pæs/" }),
+  travel("luggage", "word", "noun (uncountable)", "/ˈlʌɡɪdʒ/", "B1", "bags and cases you take on a journey", "bagages", "How much luggage are you taking?", { ukUs: "UK : luggage · US : baggage (indénombrables tous les deux)" }),
+  travel("delay", "word", "noun / verb", "/dɪˈleɪ/", "B1", "a situation in which something happens later than planned", "retard ; retarder", "The flight was delayed by two hours.", {}),
+  travel("set off", "phrasal", "phrasal verb", "/set ˈɒf/", "B1+", "to start a journey", "partir, se mettre en route", "We set off at dawn to avoid the traffic.", { us: "/set ˈɑːf/", syn: ["set out", "leave"] }),
+  travel("jet lag", "word", "noun", "/ˈdʒet læɡ/", "B1+", "tiredness after a long flight across time zones", "décalage horaire", "I always suffer from jet lag after flying to New York.", {}),
+  travel("off the beaten track", "idiom", "idiom", "/ɒf ðə ˌbiːtn ˈtræk/", "B2", "in a place that few people visit", "hors des sentiers battus", "We stayed in a village off the beaten track.", { ukUs: "US : off the beaten path" }),
+  travel("accommodation", "word", "noun", "/əˌkɒməˈdeɪʃn/", "B1", "a place to stay", "hébergement, logement", "Accommodation is expensive in summer.", { us: "/əˌkɑːməˈdeɪʃn/", ukUs: "UK : accommodation (indénombrable) · US : accommodations" }),
+  travel("round trip", "collocation", "noun", "/ˌraʊnd ˈtrɪp/", "B1+", "a journey to a place and back again", "aller-retour", "A round trip to Lisbon costs about €150.", { ukUs: "UK : return ticket · US : round-trip ticket" }),
+  travel("layover", "word", "noun", "/ˈleɪəʊvə/", "B2", "a short stop between parts of a journey", "escale", "We have a three-hour layover in Dubai.", { us: "/ˈleɪoʊvər/", ukUs: "UK : stopover · US : layover" }),
+  travel("sightseeing", "word", "noun", "/ˈsaɪtsiːɪŋ/", "B1", "visiting interesting places as a tourist", "tourisme, visites", "We spent the afternoon sightseeing.", {}),
+  travel("breathtaking", "word", "adjective", "/ˈbreθteɪkɪŋ/", "B2", "extremely beautiful or impressive", "à couper le souffle", "The view from the summit was breathtaking.", { syn: ["stunning", "spectacular"] }),
+  travel("travel light", "collocation", "verb phrase", "/ˌtrævl ˈlaɪt/", "B2", "to travel with very little luggage", "voyager léger", "I always travel light — just a backpack.", {}),
+  travel("get around", "phrasal", "phrasal verb", "/ɡet əˈraʊnd/", "B1+", "to move from place to place", "se déplacer", "The easiest way to get around Amsterdam is by bike.", {}),
+  travel("wanderlust", "word", "noun", "/ˈwɒndəlʌst/", "C1", "a strong desire to travel", "envie de voyager, goût de l'aventure", "Her wanderlust took her to over 40 countries.", { us: "/ˈwɑːndərlʌst/" }),
+  travel("overbooked", "word", "adjective", "/ˌəʊvəˈbʊkt/", "B2", "having sold more seats or rooms than are available", "en surréservation", "The flight was overbooked, so they offered us compensation.", { us: "/ˌoʊvərˈbʊkt/" }),
+  travel("hit the road", "idiom", "idiom", "/hɪt ðə ˈrəʊd/", "B2", "to begin a journey", "prendre la route", "It's getting late — let's hit the road.", { us: "/hɪt ðə ˈroʊd/" }),
+];
+
+const daily = themeWords("daily");
+export const dailyWords = [
+  daily("chores", "word", "noun (plural)", "/tʃɔːz/", "B1", "regular jobs that need to be done at home", "tâches ménagères", "We share the household chores.", { us: "/tʃɔːrz/", col: ["do the chores", "household chores"] }),
+  daily("errand", "word", "noun", "/ˈerənd/", "B1+", "a short trip to buy or do something", "course, commission", "I have a few errands to run this morning.", { col: ["run errands"] }),
+  daily("groceries", "word", "noun (plural)", "/ˈɡrəʊsəriz/", "B1", "food and household items bought in a shop", "courses (alimentaires)", "I'll pick up the groceries on my way home.", { us: "/ˈɡroʊsəriz/" }),
+  daily("flat", "word", "noun", "/flæt/", "B1", "a set of rooms for living in, on one floor of a building", "appartement", "We're renting a two-bedroom flat.", { ukUs: "UK : flat · US : apartment" }),
+  daily("bill", "word", "noun", "/bɪl/", "B1", "a request for payment; (UK) a restaurant bill", "facture ; addition", "Can we have the bill, please?", { ukUs: "Au restaurant — UK : the bill · US : the check" }),
+  daily("queue", "word", "noun / verb", "/kjuː/", "B1", "a line of people waiting", "file d'attente ; faire la queue", "There was a long queue at the post office.", { ukUs: "UK : queue · US : line (stand in line)" }),
+  daily("get by", "phrasal", "phrasal verb", "/ɡet ˈbaɪ/", "B1+", "to manage to live or do something with difficulty", "se débrouiller, s'en sortir", "I can get by in Spanish, but I'm not fluent.", {}),
+  daily("put off", "phrasal", "phrasal verb", "/pʊt ˈɒf/", "B1+", "to delay doing something", "remettre à plus tard", "Stop putting off your dentist appointment!", { us: "/pʊt ˈɑːf/", syn: ["postpone"] }),
+  daily("look after", "phrasal", "phrasal verb", "/lʊk ˈɑːftə/", "B1", "to take care of someone or something", "s'occuper de", "Could you look after my cat this weekend?", { us: "/lʊk ˈæftər/", syn: ["take care of"] }),
+  daily("make ends meet", "idiom", "idiom", "/meɪk endz ˈmiːt/", "B2", "to have just enough money to pay for what you need", "joindre les deux bouts", "With rent so high, many families struggle to make ends meet.", {}),
+  daily("commute", "word", "noun / verb", "/kəˈmjuːt/", "B1+", "the journey to and from work; to make this journey", "trajet domicile-travail ; faire la navette", "My commute takes forty minutes.", {}),
+  daily("leftovers", "word", "noun (plural)", "/ˈleftəʊvəz/", "B1+", "food remaining after a meal", "restes", "We had the leftovers for lunch the next day.", { us: "/ˈleftoʊvərz/" }),
+  daily("tidy", "word", "adjective / verb", "/ˈtaɪdi/", "B1", "neat and in order; to make neat", "rangé ; ranger", "Please tidy your room.", { ant: ["messy", "untidy"], col: ["tidy up"] }),
+  daily("a piece of cake", "idiom", "idiom", "/ə ˌpiːs əv ˈkeɪk/", "B1+", "something very easy", "simple comme bonjour", "The test was a piece of cake.", {}),
+  daily("run late", "collocation", "verb phrase", "/rʌn ˈleɪt/", "B1+", "to be later than planned", "être en retard", "Sorry, I'm running ten minutes late.", {}),
+  daily("household", "word", "noun / adjective", "/ˈhaʊshəʊld/", "B2", "all the people living together in a home", "foyer, ménage ; ménager", "The average household spends 30% of its income on housing.", { us: "/ˈhaʊshoʊld/" }),
+  daily("wind down", "phrasal", "phrasal verb", "/waɪnd ˈdaʊn/", "B2", "to relax after a period of activity or stress", "décompresser", "I read for half an hour to wind down before bed.", { syn: ["unwind", "relax"] }),
+  daily("the last straw", "idiom", "idiom", "/ðə lɑːst ˈstrɔː/", "B2+", "the final problem that makes a situation unacceptable", "la goutte d'eau qui fait déborder le vase", "When the boiler broke again, it was the last straw.", { us: "/ðə læst ˈstrɑː/" }),
+];

@@ -1,0 +1,222 @@
+@import "tailwindcss";
+
+/* =========================================================
+   ENGLISH QUEST — Design system
+   Les couleurs sont des tokens. Le thème sombre est le thème
+   par défaut ; le thème clair est appliqué via data-theme.
+   ========================================================= */
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+:root,
+:root[data-theme="dark"] {
+  --bg: #070b1a;
+  --bg-elevated: #0b1126;
+  --surface: #10183a;
+  --surface-2: #162048;
+  --border: rgba(148, 163, 255, 0.14);
+  --border-strong: rgba(148, 163, 255, 0.28);
+  --text: #e8ebfa;
+  --text-muted: #a3acd4;
+  --text-faint: #6f7aa8;
+
+  --primary: #3d7bff; /* bleu électrique */
+  --primary-strong: #2a62f0;
+  --primary-soft: rgba(61, 123, 255, 0.16);
+  --violet: #9b6bff;
+  --violet-soft: rgba(155, 107, 255, 0.16);
+  --green: #2fd58b;
+  --green-soft: rgba(47, 213, 139, 0.15);
+  --amber: #ffb547;
+  --amber-soft: rgba(255, 181, 71, 0.16);
+  --red: #ff5d73;
+  --red-soft: rgba(255, 93, 115, 0.15);
+
+  --grad-hero: linear-gradient(135deg, #3d7bff 0%, #9b6bff 55%, #2fd58b 120%);
+  --grad-card: linear-gradient(160deg, rgba(61, 123, 255, 0.10), rgba(155, 107, 255, 0.06) 60%, transparent);
+  --shadow: 0 10px 40px -12px rgba(0, 0, 0, 0.6);
+  --ring: 0 0 0 3px rgba(61, 123, 255, 0.45);
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --bg: #f5f7ff;
+  --bg-elevated: #ffffff;
+  --surface: #ffffff;
+  --surface-2: #eef1fd;
+  --border: rgba(40, 56, 140, 0.12);
+  --border-strong: rgba(40, 56, 140, 0.24);
+  --text: #121735;
+  --text-muted: #4a5385;
+  --text-faint: #6e77a6;
+
+  --primary: #2459e8;
+  --primary-strong: #1a46c4;
+  --primary-soft: rgba(36, 89, 232, 0.10);
+  --violet: #7044e6;
+  --violet-soft: rgba(112, 68, 230, 0.10);
+  --green: #0f9a5f;
+  --green-soft: rgba(15, 154, 95, 0.10);
+  --amber: #b86e00;
+  --amber-soft: rgba(184, 110, 0, 0.10);
+  --red: #d42a45;
+  --red-soft: rgba(212, 42, 69, 0.08);
+
+  --grad-hero: linear-gradient(135deg, #2459e8 0%, #7044e6 60%, #0f9a5f 120%);
+  --grad-card: linear-gradient(160deg, rgba(36, 89, 232, 0.06), rgba(112, 68, 230, 0.04) 60%, transparent);
+  --shadow: 0 10px 30px -14px rgba(30, 40, 110, 0.25);
+  --ring: 0 0 0 3px rgba(36, 89, 232, 0.35);
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-elevated: var(--bg-elevated);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--border);
+  --color-line-strong: var(--border-strong);
+  --color-fg: var(--text);
+  --color-muted: var(--text-muted);
+  --color-faint: var(--text-faint);
+  --color-primary: var(--primary);
+  --color-primary-strong: var(--primary-strong);
+  --color-primary-soft: var(--primary-soft);
+  --color-violet: var(--violet);
+  --color-violet-soft: var(--violet-soft);
+  --color-green: var(--green);
+  --color-green-soft: var(--green-soft);
+  --color-amber: var(--amber);
+  --color-amber-soft: var(--amber-soft);
+  --color-red: var(--red);
+  --color-red-soft: var(--red-soft);
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Space Grotesk Variable", "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --radius-card: 1.25rem;
+}
+
+html {
+  background: var(--bg);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Fond d'ambiance discret (dégradés) */
+.app-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(60rem 30rem at 85% -10%, var(--violet-soft), transparent 70%),
+    radial-gradient(50rem 30rem at -10% 10%, var(--primary-soft), transparent 70%),
+    radial-gradient(40rem 25rem at 50% 120%, var(--green-soft), transparent 70%);
+}
+
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+.text-gradient {
+  background: var(--grad-hero);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.bg-hero {
+  background: var(--grad-hero);
+}
+
+.card {
+  background: var(--surface);
+  background-image: var(--grad-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow);
+}
+
+.card-flat {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--ring);
+  border-radius: 0.6rem;
+}
+
+.sr-only-focusable:not(:focus) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+/* Texte cliquable du Reading Center */
+.word-token {
+  cursor: pointer;
+  border-radius: 0.3rem;
+  transition: background 0.15s;
+}
+.word-token:hover,
+.word-token:focus-visible {
+  background: var(--primary-soft);
+}
+
+.prose-eq p {
+  margin: 0.6rem 0;
+  line-height: 1.7;
+}
+.prose-eq strong {
+  color: var(--text);
+}
+.prose-eq code {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 0.35rem;
+  padding: 0.05rem 0.35rem;
+  font-size: 0.92em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Espace pour la barre de navigation mobile */
+.pb-safe-nav {
+  padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+}
+@media (min-width: 1024px) {
+  .pb-safe-nav {
+    padding-bottom: 2rem;
+  }
+}
+
+.input {
+  height: 2.9rem;
+  width: 100%;
+  border-radius: 0.8rem;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  padding: 0 0.9rem;
+  outline: none;
+  color: var(--text);
+}
+.input:focus {
+  border-color: var(--primary);
+}
