@@ -9,8 +9,8 @@ export const metadata: Metadata = {
   title: { default: "English Quest — de B1 à C1", template: "%s · English Quest" },
   description: "Plateforme d'apprentissage de l'anglais B1 → C1 : parcours CECRL, vocabulaire en répétition espacée, grammaire, écoute, oral, conversation IA, écrit et examens d'entraînement.",
   applicationName: "English Quest",
-  manifest: "/manifest.webmanifest",
-  icons: { icon: "/icon.svg", apple: "/icon.svg" },
+  manifest: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/manifest.webmanifest`,
+  icons: { icon: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/icon.svg`, apple: `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/icon.svg` },
 };
 
 export const viewport: Viewport = {

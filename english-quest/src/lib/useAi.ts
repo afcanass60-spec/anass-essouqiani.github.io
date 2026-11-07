@@ -14,6 +14,8 @@ let cache: Omit<AiStatus, "loading"> | null = null;
 let pending: Promise<Omit<AiStatus, "loading">> | null = null;
 
 function fetchStatus() {
+  // Version statique (démo GitHub Pages) : aucune route serveur, donc pas d'IA.
+  if (process.env.NEXT_PUBLIC_STATIC === "1") return Promise.resolve((cache = { configured: false, provider: null, model: null, requiresAuth: false }));
   if (!pending)
     pending = fetch("/api/ai/status")
       .then((r) => r.json())
