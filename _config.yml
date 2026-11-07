@@ -1,0 +1,4 @@
+# GitHub Pages (Jekyll) ignore par défaut les dossiers commençant par « _ ».
+# La démo English Quest a besoin de son dossier _next (fichiers JS/CSS).
+include:
+  - english-quest-app/_next

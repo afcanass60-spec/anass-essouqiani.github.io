@@ -1,0 +1,13 @@
+{
+  "name": "English Quest",
+  "short_name": "EnglishQuest",
+  "description": "Apprendre l'anglais de B1 à C1 comme dans un jeu.",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#070b1a",
+  "theme_color": "#070b1a",
+  "lang": "fr",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
