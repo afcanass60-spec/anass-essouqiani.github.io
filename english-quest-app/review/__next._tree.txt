@@ -1,6 +1,6 @@
-:HL["/english-quest-app/_next/static/chunks/0yj7-z3oq-e5-.css","style"]
+:HL["/anass-essouqiani.github.io/english-quest-app/_next/static/chunks/0yj7-z3oq-e5-.css","style"]
 :HC["/",""]
 3:[["children",{"s":"__PAGE__","h":160}]]
 2:[["children",{"s":"review","h":96,"c":"$Q3"}]]
 1:[["children",{"s":"(app)","h":96,"c":"$Q2"}]]
-0:{"b":"Ygtmvy7JU9QHwkhGPUVms","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
+0:{"b":"RBVj7VqP95A0PSpWGNtlD","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
