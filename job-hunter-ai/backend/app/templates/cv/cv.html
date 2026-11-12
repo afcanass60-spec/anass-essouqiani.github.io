@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>{{ cv.identity.full_name or "CV" }}</title>
+<style>
+  @page { size: A4; margin: {{ theme.margin }}mm {{ theme.margin }}mm; }
+  :root { --accent: {{ theme.accent }}; --ink: #111827; --muted: #4b5563; --rule: #e5e7eb; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: "{{ theme.font }}", "Inter", "Source Sans 3", "IBM Plex Sans", "Lato", "DejaVu Sans", Arial, sans-serif;
+         color: var(--ink); font-size: {{ theme.font_size }}pt; line-height: 1.38; background: #fff; }
+  .page { max-width: 186mm; margin: 0 auto; }
+  header { margin-bottom: 5mm; }
+  h1 { font-size: 21pt; margin: 0; letter-spacing: -0.01em; font-weight: 700; }
+  .headline { font-size: 11pt; color: var(--accent); font-weight: 600; margin-top: 1mm; }
+  .contact { color: var(--muted); font-size: 9pt; margin-top: 1.5mm; }
+  .contact span + span::before { content: "  ·  "; color: #9ca3af; }
+  section { margin-top: 4.2mm; page-break-inside: auto; }
+  h2 { font-size: 9.5pt; text-transform: uppercase; letter-spacing: 0.09em; margin: 0 0 1.8mm; color: var(--accent); font-weight: 700; }
+  .summary { margin: 0; }
+  .row { display: flex; justify-content: space-between; gap: 4mm; align-items: baseline; }
+  .item { margin-bottom: 2.6mm; page-break-inside: avoid; }
+  .item-title { font-weight: 600; }
+  .item-sub { color: var(--muted); }
+  .dates { color: var(--muted); font-size: 9pt; white-space: nowrap; }
+  ul { margin: 1mm 0 0; padding-left: 4.2mm; }
+  li { margin: 0.5mm 0; }
+  .skills { display: grid; grid-template-columns: 38mm 1fr; row-gap: 1mm; column-gap: 3mm; }
+  .skills dt { font-weight: 600; }
+  .skills dd { margin: 0; }
+  .inline-list { margin: 0; }
+  /* --- Variantes de modèles (toutes en une colonne, lisibles par les ATS) --- */
+  .tpl-minimal h2 { color: var(--ink); border-bottom: 0.6pt solid var(--rule); padding-bottom: 1mm; }
+  .tpl-minimal .headline { color: var(--muted); }
+  .tpl-corporate header { border-bottom: 2pt solid var(--accent); padding-bottom: 3mm; }
+  .tpl-corporate h1 { color: var(--accent); font-size: 20pt; }
+  .tpl-corporate h2 { border-bottom: 0.6pt solid var(--accent); padding-bottom: 0.8mm; }
+  .tpl-infra header { border-left: 3pt solid var(--accent); padding-left: 3.5mm; }
+  .tpl-infra h2::before { content: "▍"; color: var(--accent); margin-right: 1mm; }
+  .tpl-cloud header { background: var(--accent); color: #fff; padding: 5mm 6mm; border-radius: 2mm; }
+  .tpl-cloud header .headline, .tpl-cloud header .contact { color: #e5edff; }
+  .tpl-cyber h1 { font-family: "IBM Plex Mono", "DejaVu Sans Mono", monospace; letter-spacing: -0.02em; }
+  .tpl-cyber h2 { border-left: 2pt solid var(--accent); padding-left: 2mm; }
+  .tpl-data h2 { color: var(--ink); }
+  .tpl-data h2::after { content: ""; display: block; width: 12mm; height: 1.4pt; background: var(--accent); margin-top: 1mm; }
+</style>
+</head>
+<body>
+<div class="page tpl-{{ template }}">
+  <header>
+    <h1>{{ cv.identity.full_name or "Prénom Nom" }}</h1>
+    {% if cv.headline %}<div class="headline">{{ cv.headline }}</div>{% endif %}
+    <div class="contact">
+      {% for k in ["city", "phone", "email", "linkedin", "website"] %}{% if cv.identity[k] %}<span>{{ cv.identity[k] }}</span>{% endif %}{% endfor %}
+    </div>
+  </header>
+
+  {% for sec in cv.sections_order if sec not in cv.hidden %}
+    {% if sec == "summary" and cv.summary %}
+    <section><h2>Profil</h2><p class="summary">{{ cv.summary }}</p></section>
+    {% elif sec == "skills" and cv.skills_groups %}
+    <section><h2>Compétences</h2>
+      <dl class="skills">{% for g in cv.skills_groups if g["items"] %}<dt>{{ g.label }}</dt><dd>{{ g["items"] | join(", ") }}</dd>{% endfor %}</dl>
+    </section>
+    {% elif sec == "experiences" and cv.experiences %}
+    <section><h2>Expérience professionnelle</h2>
+      {% for e in cv.experiences %}
+      <div class="item">
+        <div class="row"><div>{% if e.title %}<span class="item-title">{{ e.title }}</span>{% if e.company %} <span class="item-sub">— {{ e.company }}{% if e.location %}, {{ e.location }}{% endif %}</span>{% endif %}{% else %}<span class="item-title">{{ e.company }}</span>{% if e.location %} <span class="item-sub">— {{ e.location }}</span>{% endif %}{% endif %}</div>
+          <div class="dates">{{ e.start }}{% if e.start and e.end %} – {% endif %}{{ e.end }}</div></div>
+        {% if e.bullets %}<ul>{% for b in e.bullets %}<li>{{ b }}</li>{% endfor %}</ul>{% endif %}
+      </div>
+      {% endfor %}
+    </section>
+    {% elif sec == "education" and cv.education %}
+    <section><h2>Formation</h2>
+      {% for e in cv.education %}
+      <div class="item">
+        <div class="row"><div><span class="item-title">{{ e.degree }}</span>{% if e.school %} <span class="item-sub">— {{ e.school }}</span>{% endif %}</div>
+          <div class="dates">{{ e.start }}{% if e.start and e.end %} – {% endif %}{{ e.end }}</div></div>
+        {% if e.details %}<div class="item-sub">{{ e.details }}</div>{% endif %}
+      </div>
+      {% endfor %}
+    </section>
+    {% elif sec == "projects" and cv.projects %}
+    <section><h2>Projets</h2>
+      {% for p in cv.projects %}<div class="item"><span class="item-title">{{ p.name }}</span>{% if p.description %} — {{ p.description }}{% endif %}
+        {% if p.skills %}<div class="item-sub">{{ p.skills | join(", ") }}</div>{% endif %}</div>{% endfor %}
+    </section>
+    {% elif sec == "certifications" and cv.certifications %}
+    <section><h2>Certifications</h2>
+      {% for c in cv.certifications %}<div class="row"><div><span class="item-title">{{ c.name }}</span>{% if c.issuer %} <span class="item-sub">— {{ c.issuer }}</span>{% endif %}</div><div class="dates">{{ c.date }}</div></div>{% endfor %}
+    </section>
+    {% elif sec == "languages" and cv.languages %}
+    <section><h2>Langues</h2><p class="inline-list">{{ cv.languages | join("  ·  ") }}</p></section>
+    {% elif sec == "interests" and cv.interests %}
+    <section><h2>Centres d'intérêt</h2><p class="inline-list">{{ cv.interests | join("  ·  ") }}</p></section>
+    {% endif %}
+  {% endfor %}
+</div>
+</body>
+</html>
