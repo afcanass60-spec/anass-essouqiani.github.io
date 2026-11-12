@@ -121,7 +121,7 @@ def finalize_run(db: Session, run: SearchRun, stats: dict, errors: list[dict], n
     run.status = "failed" if stats["fetched"] == 0 and any(e.get("type") == "error" for e in errors) else "done"
     run.finished_at = datetime.now(timezone.utc)
     db.commit()
-    if new_offers or errors:
+    if new_offers or any(e.get("type") == "error" for e in errors):
         notify(db, run.user_id, "report", lines[0], "\n".join(lines[1:]), link="/offers?sort=score", external=bool(high))
     for o in top:
         notify(db, run.user_id, "match", f"Excellent match : {o.title} ({o.score}/100)", o.company or "", link=f"/offers/{o.id}")

@@ -241,6 +241,11 @@ def _letter(db: Session, user: User, lid: int) -> Letter:
     return x
 
 
+@router.get("/letters/{lid}")
+def get_letter(lid: int, user: User = Depends(current_user), db: Session = Depends(get_db)):
+    return letter_out(_letter(db, user, lid))
+
+
 class LetterSave(BaseModel):
     title: str = Field(max_length=300)
     body: str = Field(max_length=20000)

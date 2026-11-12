@@ -10,6 +10,7 @@ import logging
 from datetime import datetime, timedelta, timezone
 
 from celery import Celery
+from celery.signals import worker_ready
 from sqlalchemy import select
 
 from .config import get_settings
@@ -31,6 +32,12 @@ celery_app.conf.update(
 @celery_app.on_after_configure.connect
 def _setup(**_):
     init_db()
+
+
+@worker_ready.connect
+def _first_tick(sender=None, **_):
+    """Premier battement dès le démarrage (sinon le beat attend un intervalle complet)."""
+    sender.app.send_task("app.worker.tick")
 
 
 @celery_app.task(name="app.worker.tick")

@@ -2,3 +2,8 @@
 # La démo English Quest a besoin de son dossier _next (fichiers JS/CSS).
 include:
   - english-quest-app/_next
+
+# Job Hunter AI est une application serveur (FastAPI + Next.js), pas un site statique :
+# on l'exclut du build Jekyll (ses gabarits Jinja contiennent une syntaxe proche de Liquid).
+exclude:
+  - job-hunter-ai

@@ -11,6 +11,7 @@
   body { font-family: "{{ theme.font }}", "Inter", "Source Sans 3", "IBM Plex Sans", "Lato", "DejaVu Sans", Arial, sans-serif;
          color: var(--ink); font-size: {{ theme.font_size }}pt; line-height: 1.38; background: #fff; }
   .page { max-width: 186mm; margin: 0 auto; }
+  @media screen { body { padding: {{ theme.margin }}mm; } }
   header { margin-bottom: 5mm; }
   h1 { font-size: 21pt; margin: 0; letter-spacing: -0.01em; font-weight: 700; }
   .headline { font-size: 11pt; color: var(--accent); font-weight: 600; margin-top: 1mm; }
