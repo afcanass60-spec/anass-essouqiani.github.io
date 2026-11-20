@@ -13,9 +13,22 @@ from ..services import geo
 from ..services.normalize import PRESET_DEPARTMENTS, RawJob
 from .base import Connector, ConnectorError, NotConfigured, SearchQuery, parse_dt
 
-TOKEN_URL = "https://entreprise.francetravail.fr/connexion/oauth2/access_token"
+# Adresses connues du serveur d'authentification (la première qui répond est mémorisée).
+TOKEN_URLS = [
+    "https://entreprise.francetravail.fr/connexion/oauth2/access_token?realm=%2Fpartenaire",
+    "https://francetravail.io/connexion/oauth2/access_token?realm=%2Fpartenaire",
+    "https://entreprise.pole-emploi.fr/connexion/oauth2/access_token?realm=%2Fpartenaire",
+]
 SEARCH_URL = "https://api.francetravail.io/partenaire/offresdemploi/v2/offres/search"
 SCOPE = "api_offresdemploiv2 o2dsoffre"
+
+
+TRUSTED_AUTH_DOMAINS = ("francetravail.fr", "francetravail.io", "pole-emploi.fr")
+
+
+def _trusted(url: str) -> bool:
+    u = httpx.URL(url)
+    return u.scheme == "https" and any(u.host == d or u.host.endswith("." + d) for d in TRUSTED_AUTH_DOMAINS)
 
 
 class FranceTravailConnector(Connector):
@@ -25,17 +38,50 @@ class FranceTravailConnector(Connector):
     required_env = ("FRANCE_TRAVAIL_CLIENT_ID", "FRANCE_TRAVAIL_CLIENT_SECRET")
     notes = "API officielle. Inclut de nombreuses offres de partenaires (dont certaines de jobboards)."
     _token: tuple[str, float] | None = None
+    _token_url: str | None = None
 
     def _get_token(self, client: httpx.Client) -> str:
         if self._token and self._token[1] > time.time() + 30:
             return self._token[0]
         s = get_settings()
-        r = client.post(TOKEN_URL, params={"realm": "/partenaire"}, data={
-            "grant_type": "client_credentials", "client_id": s.france_travail_client_id,
-            "client_secret": s.france_travail_client_secret, "scope": SCOPE})
-        if r.status_code != 200:
-            raise ConnectorError(f"Authentification France Travail refusée ({r.status_code})")
-        data = r.json()
+        form = {"grant_type": "client_credentials", "client_id": s.france_travail_client_id.strip(),
+                "client_secret": s.france_travail_client_secret.strip(), "scope": s.france_travail_scope or SCOPE}
+        urls = ([s.france_travail_token_url] if s.france_travail_token_url else []) + TOKEN_URLS
+        problems: list[str] = []
+        data = None
+        for url in dict.fromkeys(urls):
+            try:
+                r = client.post(url, data=form, headers={"Accept": "application/json"})
+                hops = 0
+                # Redirection : on renvoie la même requête POST (formulaire inclus) vers la nouvelle adresse
+                while r.status_code in (301, 302, 303, 307, 308) and hops < 3 and r.headers.get("location"):
+                    url = str(r.url.join(r.headers["location"]))
+                    if not _trusted(url):  # la clé secrète n'est jamais renvoyée hors des domaines France Travail
+                        break
+                    r = client.post(url, data=form, headers={"Accept": "application/json"})
+                    hops += 1
+            except httpx.HTTPError as e:
+                problems.append(f"{httpx.URL(url).host} injoignable ({e.__class__.__name__})")
+                continue
+            if r.status_code == 200 and "application/json" in r.headers.get("content-type", ""):
+                data = r.json()
+                FranceTravailConnector._token_url = url
+                break
+            detail = ""
+            try:
+                body = r.json()
+                detail = body.get("error_description") or body.get("error") or ""
+            except ValueError:
+                pass
+            if detail in ("invalid_scope",) or "scope" in detail.lower():
+                raise ConnectorError("France Travail : votre application n'est pas abonnée à l'API « Offres d'emploi v2 » "
+                                     f"(scope refusé : {detail}). Ajoutez cette API à votre application sur francetravail.io.")
+            if r.status_code in (400, 401) and detail:
+                raise ConnectorError(f"France Travail : identifiants refusés ({detail}). Vérifiez l'identifiant client et la clé secrète.")
+            problems.append(f"{httpx.URL(url).host} → HTTP {r.status_code}{' ' + detail if detail else ''}"
+                            f"{' vers ' + str(httpx.URL(r.headers['location']).host) if r.headers.get('location') else ''}")
+        if data is None:
+            raise ConnectorError("Authentification France Travail impossible : " + " ; ".join(problems))
         FranceTravailConnector._token = (data["access_token"], time.time() + int(data.get("expires_in", 1400)))
         return data["access_token"]
 

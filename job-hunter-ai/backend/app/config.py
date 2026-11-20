@@ -37,6 +37,8 @@ class Settings(BaseSettings):
     # --- Sources officielles ---
     france_travail_client_id: str = ""
     france_travail_client_secret: str = ""
+    france_travail_token_url: str = ""  # surcharge facultative de l'adresse d'authentification
+    france_travail_scope: str = ""  # surcharge facultative (défaut : api_offresdemploiv2 o2dsoffre)
     adzuna_app_id: str = ""
     adzuna_app_key: str = ""
     lba_api_token: str = ""  # API apprentissage (La Bonne Alternance)
