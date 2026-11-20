@@ -78,9 +78,12 @@ class FranceTravailConnector(Connector):
                                      f"(scope refusé : {detail}). Ajoutez cette API à votre application sur francetravail.io.")
             if r.status_code in (400, 401) and detail:
                 raise ConnectorError(f"France Travail : identifiants refusés ({detail}). Vérifiez l'identifiant client et la clé secrète.")
-            problems.append(f"{httpx.URL(url).host} → HTTP {r.status_code}{' ' + detail if detail else ''}"
+            problems.append(f"{r.url.host} → HTTP {r.status_code}{' ' + detail if detail else ''}"
                             f"{' vers ' + str(httpx.URL(r.headers['location']).host) if r.headers.get('location') else ''}")
         if data is None:
+            if any("secours" in pb for pb in problems):
+                raise ConnectorError("Service d'authentification France Travail indisponible (page de secours / maintenance "
+                                     "côté France Travail). Vos clés n'ont pas pu être vérifiées : réessayez plus tard.")
             raise ConnectorError("Authentification France Travail impossible : " + " ; ".join(problems))
         FranceTravailConnector._token = (data["access_token"], time.time() + int(data.get("expires_in", 1400)))
         return data["access_token"]
