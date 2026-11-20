@@ -15,6 +15,15 @@ MAX_UPLOAD = 8 * 1024 * 1024
 
 
 def extract_text(filename: str, data: bytes) -> str:
+    try:
+        return _extract_text(filename, data)
+    except ValueError:
+        raise
+    except Exception as e:  # fichier corrompu, protégé par mot de passe…
+        raise ValueError("Fichier illisible : vérifiez qu'il s'agit d'un PDF ou DOCX valide et non protégé.") from e
+
+
+def _extract_text(filename: str, data: bytes) -> str:
     if len(data) > MAX_UPLOAD:
         raise ValueError("Fichier trop volumineux (8 Mo max)")
     name = filename.lower()

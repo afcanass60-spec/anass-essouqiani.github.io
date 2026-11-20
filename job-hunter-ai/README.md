@@ -24,6 +24,10 @@ Agent IA personnel de recherche d'emploi et d'alternance : il collecte des offre
 
 Aucune annonce fictive n'est jamais créée : la base démarre vide (seules des recherches sauvegardées et une liste d'entreprises cibles sont pré-remplies).
 
+## Mettre le site en ligne
+
+Voir [`docs/HEBERGEMENT.md`](docs/HEBERGEMENT.md) : déploiement Render en quelques clics (fichier `render.yaml`).
+
 ## Démarrage rapide (Docker)
 
 ```bash

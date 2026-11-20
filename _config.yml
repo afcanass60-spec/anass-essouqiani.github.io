@@ -7,3 +7,4 @@ include:
 # on l'exclut du build Jekyll (ses gabarits Jinja contiennent une syntaxe proche de Liquid).
 exclude:
   - job-hunter-ai
+  - render.yaml

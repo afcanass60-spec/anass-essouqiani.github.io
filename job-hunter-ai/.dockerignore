@@ -1,0 +1,8 @@
+backend/.venv
+backend/storage
+backend/*.db
+backend/tests
+**/__pycache__
+frontend/node_modules
+frontend/.next
+.env

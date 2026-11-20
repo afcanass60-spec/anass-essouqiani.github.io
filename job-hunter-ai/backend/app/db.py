@@ -12,7 +12,16 @@ class Base(DeclarativeBase):
     pass
 
 
+def _normalize_url(url: str) -> str:
+    """Les hébergeurs (Render, Heroku…) fournissent postgres:// ; on force le pilote psycopg 3."""
+    for prefix in ("postgres://", "postgresql://"):
+        if url.startswith(prefix):
+            return "postgresql+psycopg://" + url[len(prefix):]
+    return url
+
+
 def _make_engine(url: str):
+    url = _normalize_url(url)
     kwargs: dict = {"pool_pre_ping": True}
     if url.startswith("sqlite"):
         kwargs["connect_args"] = {"check_same_thread": False}

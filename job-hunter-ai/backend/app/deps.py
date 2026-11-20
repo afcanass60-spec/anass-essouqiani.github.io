@@ -20,7 +20,9 @@ def csrf_guard(request: Request) -> None:
     origin = request.headers.get("origin") or request.headers.get("referer")
     if not origin:
         return  # clients non navigateurs (tests, CLI) : le cookie SameSite protège déjà les navigateurs
-    allowed = {urlparse(get_settings().frontend_origin).netloc, request.headers.get("host", "")}
+    # x-forwarded-host : hôte public vu par le navigateur quand le frontend relaie /api
+    allowed = {urlparse(get_settings().frontend_origin).netloc, request.headers.get("host", ""),
+               request.headers.get("x-forwarded-host", "")}
     if urlparse(origin).netloc not in allowed:
         raise HTTPException(403, "Origine non autorisée")
 

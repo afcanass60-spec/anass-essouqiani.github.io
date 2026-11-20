@@ -62,7 +62,11 @@ def _fernet() -> Fernet:
     if not key:
         # Dev uniquement : dérive une clé de SECRET_KEY (en production ENCRYPTION_KEY est obligatoire)
         key = base64.urlsafe_b64encode(hashlib.sha256(s.secret_key.encode()).digest()).decode()
-    return Fernet(key.encode())
+    try:
+        return Fernet(key.encode())
+    except ValueError:
+        # Valeur aléatoire non au format Fernet (ex : générée par l'hébergeur) : on en dérive une clé valide
+        return Fernet(base64.urlsafe_b64encode(hashlib.sha256(key.encode()).digest()))
 
 
 def encrypt_secret(value: str) -> str:

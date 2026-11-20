@@ -182,7 +182,8 @@ def validate(aid: int, body: ValidateIn, request: Request, user: User = Depends(
         if not letter or letter.user_id != user.id:
             raise HTTPException(404, "Document introuvable")
         doc = ApplicationDocument(kind=letter.kind, title=f"{KIND_LABELS.get(letter.kind, letter.kind)} — {letter.title}",
-                                  content={"body": letter.body, "style": letter.style, "letter_id": letter.id})
+                                  content={"body": letter.body, "style": letter.style, "letter_id": letter.id,
+                                           "recipient": body.recipient or a.company, "subject": f"Candidature — {a.title}"})
         if letter.kind == "letter":
             base = folder / f"Lettre-{_slug(a.company)}-{stamp}-{letter.id}"
             subject = f"Candidature — {a.title}"
@@ -209,10 +210,24 @@ def download(aid: int, doc_id: int, format: Literal["pdf", "docx"] = "pdf", user
         raise HTTPException(404)
     path = doc.file_pdf if format == "pdf" else doc.file_docx
     root = (get_settings().storage_dir / "applications" / str(user.id)).resolve()
-    if not path or not Path(path).resolve().is_relative_to(root) or not Path(path).exists():
+    if not path or not Path(path).resolve().is_relative_to(root):
         raise HTTPException(404, "Fichier indisponible")
     media = "application/pdf" if format == "pdf" else "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-    return FileResponse(path, media_type=media, filename=Path(path).name)
+    if Path(path).exists():
+        return FileResponse(path, media_type=media, filename=Path(path).name)
+    # Disque éphémère (hébergement gratuit) : on régénère le fichier à l'identique depuis la copie figée en base
+    c = doc.content
+    if doc.kind == "cv" and "cv" in c:
+        data = html_to_pdf(cv_html(c["cv"], c["template"], c["theme"])) if format == "pdf" else cv_docx(c["cv"], c["template"], c["theme"])
+    elif "body" in c:
+        sender = get_profile(db, user.id).get("identity", {})
+        args = (c["body"], sender, c.get("recipient") or a.company, c.get("subject") or f"Candidature — {a.title}")
+        data = html_to_pdf(letter_html(*args)) if format == "pdf" else letter_docx(*args)
+    else:
+        raise HTTPException(404, "Fichier indisponible")
+    from fastapi.responses import Response
+
+    return Response(data, media_type=media, headers={"Content-Disposition": f'attachment; filename="{Path(path).name}"'})
 
 
 class SendIn(BaseModel):
