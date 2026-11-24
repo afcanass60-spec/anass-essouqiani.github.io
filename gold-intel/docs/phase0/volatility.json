@@ -1,0 +1,22 @@
+{
+ "H1_1h": {
+  "n": 1100,
+  "ratio_median": 1.06,
+  "part_au_dessus_base": 0.507
+ },
+ "H1_4h": {
+  "n": 1099,
+  "ratio_median": 1.07,
+  "part_au_dessus_base": 0.525
+ },
+ "M5_1h": {
+  "n": 465,
+  "ratio_median": 1.12,
+  "part_au_dessus_base": 0.544
+ },
+ "M5_4h": {
+  "n": 465,
+  "ratio_median": 1.19,
+  "part_au_dessus_base": 0.563
+ }
+}

@@ -1,0 +1,1173 @@
+{
+  "coverage": {
+    "resolution": "H1",
+    "marches_univers": 715,
+    "marches_direction": 428,
+    "or_debut": "2025-01-02 00:00:00+00:00",
+    "or_fin": "2026-10-30 21:00:00+00:00",
+    "barres_or": 10842,
+    "marches_exclus_hors_periode_ou_vides": 7
+  },
+  "n_sauts_bruts": 2112,
+  "n_nouvelles": 1507,
+  "events": {
+    "Tous": {
+      "n": 1507,
+      "jours": 549,
+      "part_haussier": 0.504,
+      "pre": {
+        "moy_pb": -1.02,
+        "t_jour": -0.71,
+        "taux_bon_sens": 0.393
+      },
+      "same_bar": {
+        "moy_pb": -1.37,
+        "t_jour": -1.01,
+        "taux_bon_sens": 0.354
+      },
+      "to_entry": {
+        "moy_pb": -1.04,
+        "t_jour": -1.49,
+        "taux_bon_sens": 0.127
+      },
+      "post_1h": {
+        "moy_pb": 0.38,
+        "t_jour": 1.34,
+        "taux_bon_sens": 0.495
+      },
+      "post_4h": {
+        "moy_pb": 1.52,
+        "t_jour": -0.32,
+        "taux_bon_sens": 0.507
+      },
+      "post_1d": {
+        "moy_pb": 5.6,
+        "t_jour": 0.24,
+        "taux_bon_sens": 0.522
+      },
+      "post_3d": {
+        "moy_pb": 11.54,
+        "t_jour": 0.63,
+        "taux_bon_sens": 0.51
+      },
+      "net_post_1h": {
+        "esperance_pb": -1.12,
+        "profit_factor": 0.91,
+        "taux_gain": 0.459
+      },
+      "net_post_4h": {
+        "esperance_pb": 0.02,
+        "profit_factor": 1.0,
+        "taux_gain": 0.488
+      },
+      "net_post_1d": {
+        "esperance_pb": 4.1,
+        "profit_factor": 1.08,
+        "taux_gain": 0.516
+      },
+      "net_post_3d": {
+        "esperance_pb": 10.04,
+        "profit_factor": 1.11,
+        "taux_gain": 0.507
+      }
+    },
+    "Hors veille de résolution": {
+      "n": 1471,
+      "jours": 547,
+      "part_haussier": 0.502,
+      "pre": {
+        "moy_pb": -0.92,
+        "t_jour": -0.73,
+        "taux_bon_sens": 0.392
+      },
+      "same_bar": {
+        "moy_pb": -1.23,
+        "t_jour": -0.83,
+        "taux_bon_sens": 0.354
+      },
+      "to_entry": {
+        "moy_pb": -1.13,
+        "t_jour": -1.56,
+        "taux_bon_sens": 0.127
+      },
+      "post_1h": {
+        "moy_pb": 0.34,
+        "t_jour": 1.48,
+        "taux_bon_sens": 0.496
+      },
+      "post_4h": {
+        "moy_pb": 1.47,
+        "t_jour": -0.14,
+        "taux_bon_sens": 0.506
+      },
+      "post_1d": {
+        "moy_pb": 5.79,
+        "t_jour": 0.29,
+        "taux_bon_sens": 0.522
+      },
+      "post_3d": {
+        "moy_pb": 11.07,
+        "t_jour": 0.56,
+        "taux_bon_sens": 0.508
+      },
+      "net_post_1h": {
+        "esperance_pb": -1.16,
+        "profit_factor": 0.91,
+        "taux_gain": 0.46
+      },
+      "net_post_4h": {
+        "esperance_pb": -0.03,
+        "profit_factor": 1.0,
+        "taux_gain": 0.487
+      },
+      "net_post_1d": {
+        "esperance_pb": 4.29,
+        "profit_factor": 1.09,
+        "taux_gain": 0.517
+      },
+      "net_post_3d": {
+        "esperance_pb": 9.57,
+        "profit_factor": 1.11,
+        "taux_gain": 0.505
+      }
+    },
+    "Or ouvert au moment du saut": {
+      "n": 1100,
+      "jours": 399,
+      "part_haussier": 0.485,
+      "pre": {
+        "moy_pb": -1.14,
+        "t_jour": -0.5,
+        "taux_bon_sens": 0.502
+      },
+      "same_bar": {
+        "moy_pb": -1.88,
+        "t_jour": -1.12,
+        "taux_bon_sens": 0.485
+      },
+      "to_entry": {
+        "moy_pb": 0.0,
+        "t_jour": NaN,
+        "taux_bon_sens": 0.0
+      },
+      "post_1h": {
+        "moy_pb": 0.44,
+        "t_jour": 0.4,
+        "taux_bon_sens": 0.491
+      },
+      "post_4h": {
+        "moy_pb": 2.72,
+        "t_jour": 0.47,
+        "taux_bon_sens": 0.525
+      },
+      "post_1d": {
+        "moy_pb": 4.46,
+        "t_jour": 0.29,
+        "taux_bon_sens": 0.507
+      },
+      "post_3d": {
+        "moy_pb": 11.13,
+        "t_jour": 0.81,
+        "taux_bon_sens": 0.506
+      },
+      "net_post_1h": {
+        "esperance_pb": -1.06,
+        "profit_factor": 0.91,
+        "taux_gain": 0.448
+      },
+      "net_post_4h": {
+        "esperance_pb": 1.22,
+        "profit_factor": 1.06,
+        "taux_gain": 0.503
+      },
+      "net_post_1d": {
+        "esperance_pb": 2.96,
+        "profit_factor": 1.06,
+        "taux_gain": 0.5
+      },
+      "net_post_3d": {
+        "esperance_pb": 9.63,
+        "profit_factor": 1.12,
+        "taux_gain": 0.503
+      }
+    },
+    "Or fermé au moment du saut": {
+      "n": 407,
+      "jours": 212,
+      "part_haussier": 0.558,
+      "pre": {
+        "moy_pb": -0.68,
+        "t_jour": -0.57,
+        "taux_bon_sens": 0.098
+      },
+      "same_bar": {
+        "moy_pb": 0.0,
+        "t_jour": NaN,
+        "taux_bon_sens": 0.0
+      },
+      "to_entry": {
+        "moy_pb": -3.84,
+        "t_jour": -1.38,
+        "taux_bon_sens": 0.472
+      },
+      "post_1h": {
+        "moy_pb": 0.23,
+        "t_jour": 1.57,
+        "taux_bon_sens": 0.506
+      },
+      "post_4h": {
+        "moy_pb": -1.75,
+        "t_jour": -0.31,
+        "taux_bon_sens": 0.459
+      },
+      "post_1d": {
+        "moy_pb": 8.68,
+        "t_jour": 0.63,
+        "taux_bon_sens": 0.56
+      },
+      "post_3d": {
+        "moy_pb": 12.67,
+        "t_jour": 0.37,
+        "taux_bon_sens": 0.521
+      },
+      "net_post_1h": {
+        "esperance_pb": -1.27,
+        "profit_factor": 0.91,
+        "taux_gain": 0.489
+      },
+      "net_post_4h": {
+        "esperance_pb": -3.25,
+        "profit_factor": 0.87,
+        "taux_gain": 0.45
+      },
+      "net_post_1d": {
+        "esperance_pb": 7.18,
+        "profit_factor": 1.16,
+        "taux_gain": 0.56
+      },
+      "net_post_3d": {
+        "esperance_pb": 11.17,
+        "profit_factor": 1.11,
+        "taux_gain": 0.518
+      }
+    },
+    "Période 2025": {
+      "n": 784,
+      "jours": 302,
+      "part_haussier": 0.499,
+      "pre": {
+        "moy_pb": 2.1,
+        "t_jour": 0.69,
+        "taux_bon_sens": 0.426
+      },
+      "same_bar": {
+        "moy_pb": 1.25,
+        "t_jour": 0.54,
+        "taux_bon_sens": 0.383
+      },
+      "to_entry": {
+        "moy_pb": -0.33,
+        "t_jour": -1.22,
+        "taux_bon_sens": 0.128
+      },
+      "post_1h": {
+        "moy_pb": 0.72,
+        "t_jour": 0.62,
+        "taux_bon_sens": 0.49
+      },
+      "post_4h": {
+        "moy_pb": 0.97,
+        "t_jour": -0.16,
+        "taux_bon_sens": 0.513
+      },
+      "post_1d": {
+        "moy_pb": 2.38,
+        "t_jour": -1.02,
+        "taux_bon_sens": 0.508
+      },
+      "post_3d": {
+        "moy_pb": 3.33,
+        "t_jour": -0.52,
+        "taux_bon_sens": 0.492
+      },
+      "net_post_1h": {
+        "esperance_pb": -0.78,
+        "profit_factor": 0.92,
+        "taux_gain": 0.455
+      },
+      "net_post_4h": {
+        "esperance_pb": -0.53,
+        "profit_factor": 0.97,
+        "taux_gain": 0.489
+      },
+      "net_post_1d": {
+        "esperance_pb": 0.88,
+        "profit_factor": 1.02,
+        "taux_gain": 0.5
+      },
+      "net_post_3d": {
+        "esperance_pb": 1.83,
+        "profit_factor": 1.02,
+        "taux_gain": 0.491
+      }
+    },
+    "Période 2026": {
+      "n": 723,
+      "jours": 247,
+      "part_haussier": 0.51,
+      "pre": {
+        "moy_pb": -4.4,
+        "t_jour": -1.43,
+        "taux_bon_sens": 0.357
+      },
+      "same_bar": {
+        "moy_pb": -4.21,
+        "t_jour": -1.53,
+        "taux_bon_sens": 0.322
+      },
+      "to_entry": {
+        "moy_pb": -1.8,
+        "t_jour": -1.1,
+        "taux_bon_sens": 0.127
+      },
+      "post_1h": {
+        "moy_pb": 0.01,
+        "t_jour": 1.21,
+        "taux_bon_sens": 0.501
+      },
+      "post_4h": {
+        "moy_pb": 2.1,
+        "t_jour": -0.28,
+        "taux_bon_sens": 0.501
+      },
+      "post_1d": {
+        "moy_pb": 9.09,
+        "t_jour": 1.07,
+        "taux_bon_sens": 0.537
+      },
+      "post_3d": {
+        "moy_pb": 20.45,
+        "t_jour": 1.09,
+        "taux_bon_sens": 0.53
+      },
+      "net_post_1h": {
+        "esperance_pb": -1.49,
+        "profit_factor": 0.91,
+        "taux_gain": 0.463
+      },
+      "net_post_4h": {
+        "esperance_pb": 0.6,
+        "profit_factor": 1.02,
+        "taux_gain": 0.488
+      },
+      "net_post_1d": {
+        "esperance_pb": 7.59,
+        "profit_factor": 1.14,
+        "taux_gain": 0.534
+      },
+      "net_post_3d": {
+        "esperance_pb": 18.95,
+        "profit_factor": 1.19,
+        "taux_gain": 0.524
+      }
+    },
+    "Nouvelle multi-marchés (≥3)": {
+      "n": 118,
+      "jours": 94,
+      "part_haussier": 0.432,
+      "pre": {
+        "moy_pb": -10.28,
+        "t_jour": -0.76,
+        "taux_bon_sens": 0.398
+      },
+      "same_bar": {
+        "moy_pb": -4.89,
+        "t_jour": -0.38,
+        "taux_bon_sens": 0.322
+      },
+      "to_entry": {
+        "moy_pb": -2.18,
+        "t_jour": -0.88,
+        "taux_bon_sens": 0.085
+      },
+      "post_1h": {
+        "moy_pb": -0.38,
+        "t_jour": -0.01,
+        "taux_bon_sens": 0.5
+      },
+      "post_4h": {
+        "moy_pb": -2.56,
+        "t_jour": 0.15,
+        "taux_bon_sens": 0.5
+      },
+      "post_1d": {
+        "moy_pb": 10.45,
+        "t_jour": 0.79,
+        "taux_bon_sens": 0.508
+      },
+      "post_3d": {
+        "moy_pb": 23.91,
+        "t_jour": 1.35,
+        "taux_bon_sens": 0.508
+      },
+      "net_post_1h": {
+        "esperance_pb": -1.88,
+        "profit_factor": 0.89,
+        "taux_gain": 0.432
+      },
+      "net_post_4h": {
+        "esperance_pb": -4.06,
+        "profit_factor": 0.87,
+        "taux_gain": 0.492
+      },
+      "net_post_1d": {
+        "esperance_pb": 8.95,
+        "profit_factor": 1.18,
+        "taux_gain": 0.508
+      },
+      "net_post_3d": {
+        "esperance_pb": 22.41,
+        "profit_factor": 1.25,
+        "taux_gain": 0.508
+      }
+    },
+    "Fed / taux": {
+      "n": 333,
+      "jours": 215,
+      "part_haussier": 0.447,
+      "pre": {
+        "moy_pb": 7.7,
+        "t_jour": 1.4,
+        "taux_bon_sens": 0.465
+      },
+      "same_bar": {
+        "moy_pb": 5.79,
+        "t_jour": 2.61,
+        "taux_bon_sens": 0.432
+      },
+      "to_entry": {
+        "moy_pb": 0.19,
+        "t_jour": 0.5,
+        "taux_bon_sens": 0.108
+      },
+      "post_1h": {
+        "moy_pb": 0.99,
+        "t_jour": 0.1,
+        "taux_bon_sens": 0.48
+      },
+      "post_4h": {
+        "moy_pb": 6.41,
+        "t_jour": 1.54,
+        "taux_bon_sens": 0.517
+      },
+      "post_1d": {
+        "moy_pb": 7.96,
+        "t_jour": 0.97,
+        "taux_bon_sens": 0.505
+      },
+      "post_3d": {
+        "moy_pb": 9.57,
+        "t_jour": 0.33,
+        "taux_bon_sens": 0.52
+      },
+      "net_post_1h": {
+        "esperance_pb": -0.51,
+        "profit_factor": 0.96,
+        "taux_gain": 0.453
+      },
+      "net_post_4h": {
+        "esperance_pb": 4.91,
+        "profit_factor": 1.25,
+        "taux_gain": 0.498
+      },
+      "net_post_1d": {
+        "esperance_pb": 6.46,
+        "profit_factor": 1.13,
+        "taux_gain": 0.502
+      },
+      "net_post_3d": {
+        "esperance_pb": 8.07,
+        "profit_factor": 1.09,
+        "taux_gain": 0.514
+      }
+    },
+    "Chine / Taïwan": {
+      "n": 41,
+      "jours": 32,
+      "part_haussier": 0.585,
+      "pre": {
+        "moy_pb": -1.47,
+        "t_jour": -0.94,
+        "taux_bon_sens": 0.317
+      },
+      "same_bar": {
+        "moy_pb": -1.95,
+        "t_jour": -0.35,
+        "taux_bon_sens": 0.366
+      },
+      "to_entry": {
+        "moy_pb": 17.61,
+        "t_jour": 1.59,
+        "taux_bon_sens": 0.195
+      },
+      "post_1h": {
+        "moy_pb": -1.88,
+        "t_jour": -0.3,
+        "taux_bon_sens": 0.439
+      },
+      "post_4h": {
+        "moy_pb": -15.89,
+        "t_jour": -1.71,
+        "taux_bon_sens": 0.366
+      },
+      "post_1d": {
+        "moy_pb": -27.23,
+        "t_jour": -2.0,
+        "taux_bon_sens": 0.39
+      },
+      "post_3d": {
+        "moy_pb": -58.81,
+        "t_jour": -1.44,
+        "taux_bon_sens": 0.415
+      },
+      "net_post_1h": {
+        "esperance_pb": -3.38,
+        "profit_factor": 0.77,
+        "taux_gain": 0.366
+      },
+      "net_post_4h": {
+        "esperance_pb": -17.39,
+        "profit_factor": 0.44,
+        "taux_gain": 0.341
+      },
+      "net_post_1d": {
+        "esperance_pb": -28.73,
+        "profit_factor": 0.59,
+        "taux_gain": 0.39
+      },
+      "net_post_3d": {
+        "esperance_pb": -60.31,
+        "profit_factor": 0.53,
+        "taux_gain": 0.39
+      }
+    },
+    "Moyen-Orient / Iran": {
+      "n": 262,
+      "jours": 137,
+      "part_haussier": 0.508,
+      "pre": {
+        "moy_pb": -16.89,
+        "t_jour": -2.52,
+        "taux_bon_sens": 0.294
+      },
+      "same_bar": {
+        "moy_pb": -14.54,
+        "t_jour": -4.35,
+        "taux_bon_sens": 0.233
+      },
+      "to_entry": {
+        "moy_pb": -2.73,
+        "t_jour": -0.01,
+        "taux_bon_sens": 0.13
+      },
+      "post_1h": {
+        "moy_pb": -1.22,
+        "t_jour": -0.34,
+        "taux_bon_sens": 0.481
+      },
+      "post_4h": {
+        "moy_pb": 1.7,
+        "t_jour": -0.61,
+        "taux_bon_sens": 0.511
+      },
+      "post_1d": {
+        "moy_pb": 4.1,
+        "t_jour": -0.39,
+        "taux_bon_sens": 0.55
+      },
+      "post_3d": {
+        "moy_pb": 3.97,
+        "t_jour": -0.63,
+        "taux_bon_sens": 0.508
+      },
+      "net_post_1h": {
+        "esperance_pb": -2.72,
+        "profit_factor": 0.84,
+        "taux_gain": 0.443
+      },
+      "net_post_4h": {
+        "esperance_pb": 0.2,
+        "profit_factor": 1.01,
+        "taux_gain": 0.5
+      },
+      "net_post_1d": {
+        "esperance_pb": 2.6,
+        "profit_factor": 1.04,
+        "taux_gain": 0.542
+      },
+      "net_post_3d": {
+        "esperance_pb": 2.47,
+        "profit_factor": 1.02,
+        "taux_gain": 0.508
+      }
+    },
+    "Russie / Ukraine": {
+      "n": 280,
+      "jours": 186,
+      "part_haussier": 0.507,
+      "pre": {
+        "moy_pb": 2.17,
+        "t_jour": 0.88,
+        "taux_bon_sens": 0.429
+      },
+      "same_bar": {
+        "moy_pb": -2.26,
+        "t_jour": -1.19,
+        "taux_bon_sens": 0.35
+      },
+      "to_entry": {
+        "moy_pb": -2.72,
+        "t_jour": -1.88,
+        "taux_bon_sens": 0.093
+      },
+      "post_1h": {
+        "moy_pb": 0.75,
+        "t_jour": 0.32,
+        "taux_bon_sens": 0.536
+      },
+      "post_4h": {
+        "moy_pb": -1.26,
+        "t_jour": -0.36,
+        "taux_bon_sens": 0.479
+      },
+      "post_1d": {
+        "moy_pb": -10.07,
+        "t_jour": -2.24,
+        "taux_bon_sens": 0.475
+      },
+      "post_3d": {
+        "moy_pb": -3.49,
+        "t_jour": -0.95,
+        "taux_bon_sens": 0.471
+      },
+      "net_post_1h": {
+        "esperance_pb": -0.75,
+        "profit_factor": 0.92,
+        "taux_gain": 0.504
+      },
+      "net_post_4h": {
+        "esperance_pb": -2.76,
+        "profit_factor": 0.85,
+        "taux_gain": 0.461
+      },
+      "net_post_1d": {
+        "esperance_pb": -11.57,
+        "profit_factor": 0.74,
+        "taux_gain": 0.468
+      },
+      "net_post_3d": {
+        "esperance_pb": -4.99,
+        "profit_factor": 0.93,
+        "taux_gain": 0.471
+      }
+    },
+    "Venezuela / Amériques": {
+      "n": 171,
+      "jours": 116,
+      "part_haussier": 0.626,
+      "pre": {
+        "moy_pb": -1.8,
+        "t_jour": -0.5,
+        "taux_bon_sens": 0.363
+      },
+      "same_bar": {
+        "moy_pb": -0.88,
+        "t_jour": -0.57,
+        "taux_bon_sens": 0.327
+      },
+      "to_entry": {
+        "moy_pb": 1.16,
+        "t_jour": 0.07,
+        "taux_bon_sens": 0.211
+      },
+      "post_1h": {
+        "moy_pb": 0.62,
+        "t_jour": 0.47,
+        "taux_bon_sens": 0.538
+      },
+      "post_4h": {
+        "moy_pb": 3.85,
+        "t_jour": 0.46,
+        "taux_bon_sens": 0.567
+      },
+      "post_1d": {
+        "moy_pb": 12.76,
+        "t_jour": 1.39,
+        "taux_bon_sens": 0.567
+      },
+      "post_3d": {
+        "moy_pb": 19.13,
+        "t_jour": 1.23,
+        "taux_bon_sens": 0.55
+      },
+      "net_post_1h": {
+        "esperance_pb": -0.88,
+        "profit_factor": 0.93,
+        "taux_gain": 0.509
+      },
+      "net_post_4h": {
+        "esperance_pb": 2.35,
+        "profit_factor": 1.12,
+        "taux_gain": 0.55
+      },
+      "net_post_1d": {
+        "esperance_pb": 11.26,
+        "profit_factor": 1.25,
+        "taux_gain": 0.561
+      },
+      "net_post_3d": {
+        "esperance_pb": 17.63,
+        "profit_factor": 1.23,
+        "taux_gain": 0.55
+      }
+    },
+    "Données macro": {
+      "n": 36,
+      "jours": 30,
+      "part_haussier": 0.528,
+      "pre": {
+        "moy_pb": 19.07,
+        "t_jour": 1.44,
+        "taux_bon_sens": 0.417
+      },
+      "same_bar": {
+        "moy_pb": 0.14,
+        "t_jour": 0.01,
+        "taux_bon_sens": 0.361
+      },
+      "to_entry": {
+        "moy_pb": -5.9,
+        "t_jour": -0.61,
+        "taux_bon_sens": 0.139
+      },
+      "post_1h": {
+        "moy_pb": -1.41,
+        "t_jour": -0.14,
+        "taux_bon_sens": 0.472
+      },
+      "post_4h": {
+        "moy_pb": -2.73,
+        "t_jour": -0.0,
+        "taux_bon_sens": 0.389
+      },
+      "post_1d": {
+        "moy_pb": 15.64,
+        "t_jour": 0.61,
+        "taux_bon_sens": 0.556
+      },
+      "post_3d": {
+        "moy_pb": 9.19,
+        "t_jour": 0.5,
+        "taux_bon_sens": 0.5
+      },
+      "net_post_1h": {
+        "esperance_pb": -2.91,
+        "profit_factor": 0.84,
+        "taux_gain": 0.444
+      },
+      "net_post_4h": {
+        "esperance_pb": -4.23,
+        "profit_factor": 0.87,
+        "taux_gain": 0.389
+      },
+      "net_post_1d": {
+        "esperance_pb": 14.14,
+        "profit_factor": 1.28,
+        "taux_gain": 0.556
+      },
+      "net_post_3d": {
+        "esperance_pb": 7.69,
+        "profit_factor": 1.07,
+        "taux_gain": 0.472
+      }
+    },
+    "Droits de douane": {
+      "n": 313,
+      "jours": 171,
+      "part_haussier": 0.482,
+      "pre": {
+        "moy_pb": 1.79,
+        "t_jour": -0.1,
+        "taux_bon_sens": 0.396
+      },
+      "same_bar": {
+        "moy_pb": 1.27,
+        "t_jour": 0.47,
+        "taux_bon_sens": 0.367
+      },
+      "to_entry": {
+        "moy_pb": -0.19,
+        "t_jour": -0.07,
+        "taux_bon_sens": 0.128
+      },
+      "post_1h": {
+        "moy_pb": 1.21,
+        "t_jour": 1.1,
+        "taux_bon_sens": 0.476
+      },
+      "post_4h": {
+        "moy_pb": 4.77,
+        "t_jour": 2.23,
+        "taux_bon_sens": 0.53
+      },
+      "post_1d": {
+        "moy_pb": 11.79,
+        "t_jour": 1.18,
+        "taux_bon_sens": 0.537
+      },
+      "post_3d": {
+        "moy_pb": 5.15,
+        "t_jour": 0.59,
+        "taux_bon_sens": 0.53
+      },
+      "net_post_1h": {
+        "esperance_pb": -0.29,
+        "profit_factor": 0.97,
+        "taux_gain": 0.431
+      },
+      "net_post_4h": {
+        "esperance_pb": 3.27,
+        "profit_factor": 1.22,
+        "taux_gain": 0.511
+      },
+      "net_post_1d": {
+        "esperance_pb": 10.29,
+        "profit_factor": 1.25,
+        "taux_gain": 0.53
+      },
+      "net_post_3d": {
+        "esperance_pb": 3.65,
+        "profit_factor": 1.04,
+        "taux_gain": 0.53
+      }
+    },
+    "Shutdown US": {
+      "n": 71,
+      "jours": 47,
+      "part_haussier": 0.493,
+      "pre": {
+        "moy_pb": -16.31,
+        "t_jour": -1.06,
+        "taux_bon_sens": 0.366
+      },
+      "same_bar": {
+        "moy_pb": 3.89,
+        "t_jour": 1.29,
+        "taux_bon_sens": 0.437
+      },
+      "to_entry": {
+        "moy_pb": -11.26,
+        "t_jour": -1.51,
+        "taux_bon_sens": 0.099
+      },
+      "post_1h": {
+        "moy_pb": -0.05,
+        "t_jour": 0.49,
+        "taux_bon_sens": 0.479
+      },
+      "post_4h": {
+        "moy_pb": -18.95,
+        "t_jour": -1.69,
+        "taux_bon_sens": 0.451
+      },
+      "post_1d": {
+        "moy_pb": 31.2,
+        "t_jour": 0.24,
+        "taux_bon_sens": 0.563
+      },
+      "post_3d": {
+        "moy_pb": 159.8,
+        "t_jour": 1.39,
+        "taux_bon_sens": 0.507
+      },
+      "net_post_1h": {
+        "esperance_pb": -1.55,
+        "profit_factor": 0.89,
+        "taux_gain": 0.437
+      },
+      "net_post_4h": {
+        "esperance_pb": -20.45,
+        "profit_factor": 0.5,
+        "taux_gain": 0.394
+      },
+      "net_post_1d": {
+        "esperance_pb": 29.7,
+        "profit_factor": 1.5,
+        "taux_gain": 0.563
+      },
+      "net_post_3d": {
+        "esperance_pb": 158.3,
+        "profit_factor": 3.04,
+        "taux_gain": 0.493
+      }
+    }
+  },
+  "granger": [
+    {
+      "n": 9951,
+      "p_pm_cause_or": 0.44,
+      "p_or_cause_pm": 0.0,
+      "category": "fed"
+    },
+    {
+      "n": 1730,
+      "p_pm_cause_or": 0.1747,
+      "p_or_cause_pm": 0.2681,
+      "category": "macro_data"
+    },
+    {
+      "n": 5982,
+      "p_pm_cause_or": 0.1315,
+      "p_or_cause_pm": 0.5386,
+      "category": "tariffs"
+    },
+    {
+      "n": 5218,
+      "p_pm_cause_or": 0.0734,
+      "p_or_cause_pm": 0.0,
+      "category": "geo_middle_east"
+    },
+    {
+      "n": 9546,
+      "p_pm_cause_or": 0.0815,
+      "p_or_cause_pm": 0.5758,
+      "category": "geo_russia_ukraine"
+    },
+    {
+      "n": 6138,
+      "p_pm_cause_or": 0.4538,
+      "p_or_cause_pm": 0.3033,
+      "category": "geo_china"
+    },
+    {
+      "n": 5063,
+      "p_pm_cause_or": 0.0151,
+      "p_or_cause_pm": 0.5498,
+      "category": "geo_venezuela"
+    },
+    {
+      "n": 2660,
+      "p_pm_cause_or": 0.0,
+      "p_or_cause_pm": 0.0013,
+      "category": "us_shutdown"
+    },
+    {
+      "n": 10351,
+      "p_pm_cause_or": 0.0174,
+      "p_or_cause_pm": 0.0249,
+      "category": "all"
+    }
+  ],
+  "leadlag_all": [
+    {
+      "lag": -12,
+      "n": 10346,
+      "pearson": -0.0139,
+      "spearman": -0.0149,
+      "t_nw": -1.0566,
+      "category": "all"
+    },
+    {
+      "lag": -11,
+      "n": 10346,
+      "pearson": 0.0251,
+      "spearman": 0.0011,
+      "t_nw": 1.8551,
+      "category": "all"
+    },
+    {
+      "lag": -10,
+      "n": 10347,
+      "pearson": -0.005,
+      "spearman": -0.0005,
+      "t_nw": -0.5034,
+      "category": "all"
+    },
+    {
+      "lag": -9,
+      "n": 10348,
+      "pearson": 0.0081,
+      "spearman": 0.0086,
+      "t_nw": 0.7548,
+      "category": "all"
+    },
+    {
+      "lag": -8,
+      "n": 10349,
+      "pearson": 0.0,
+      "spearman": -0.0023,
+      "t_nw": 0.0028,
+      "category": "all"
+    },
+    {
+      "lag": -7,
+      "n": 10349,
+      "pearson": -0.0057,
+      "spearman": 0.0047,
+      "t_nw": -0.4733,
+      "category": "all"
+    },
+    {
+      "lag": -6,
+      "n": 10349,
+      "pearson": -0.007,
+      "spearman": -0.0022,
+      "t_nw": -0.5899,
+      "category": "all"
+    },
+    {
+      "lag": -5,
+      "n": 10350,
+      "pearson": 0.0136,
+      "spearman": 0.0148,
+      "t_nw": 1.155,
+      "category": "all"
+    },
+    {
+      "lag": -4,
+      "n": 10348,
+      "pearson": -0.0106,
+      "spearman": -0.0149,
+      "t_nw": -0.8248,
+      "category": "all"
+    },
+    {
+      "lag": -3,
+      "n": 10349,
+      "pearson": -0.0175,
+      "spearman": -0.0141,
+      "t_nw": -1.487,
+      "category": "all"
+    },
+    {
+      "lag": -2,
+      "n": 10350,
+      "pearson": -0.0117,
+      "spearman": -0.001,
+      "t_nw": -0.9242,
+      "category": "all"
+    },
+    {
+      "lag": -1,
+      "n": 10350,
+      "pearson": -0.0227,
+      "spearman": -0.0112,
+      "t_nw": -1.8442,
+      "category": "all"
+    },
+    {
+      "lag": 0,
+      "n": 10351,
+      "pearson": -0.0546,
+      "spearman": -0.0144,
+      "t_nw": -2.638,
+      "category": "all"
+    },
+    {
+      "lag": 1,
+      "n": 10350,
+      "pearson": -0.017,
+      "spearman": 0.0041,
+      "t_nw": -1.1787,
+      "category": "all"
+    },
+    {
+      "lag": 2,
+      "n": 10349,
+      "pearson": -0.0113,
+      "spearman": -0.0163,
+      "t_nw": -0.9177,
+      "category": "all"
+    },
+    {
+      "lag": 3,
+      "n": 10349,
+      "pearson": 0.0017,
+      "spearman": -0.0127,
+      "t_nw": 0.167,
+      "category": "all"
+    },
+    {
+      "lag": 4,
+      "n": 10349,
+      "pearson": -0.0075,
+      "spearman": -0.006,
+      "t_nw": -0.641,
+      "category": "all"
+    },
+    {
+      "lag": 5,
+      "n": 10347,
+      "pearson": -0.0008,
+      "spearman": 0.0078,
+      "t_nw": -0.0739,
+      "category": "all"
+    },
+    {
+      "lag": 6,
+      "n": 10346,
+      "pearson": -0.0043,
+      "spearman": -0.0067,
+      "t_nw": -0.3753,
+      "category": "all"
+    },
+    {
+      "lag": 7,
+      "n": 10345,
+      "pearson": -0.0086,
+      "spearman": -0.0095,
+      "t_nw": -0.8739,
+      "category": "all"
+    },
+    {
+      "lag": 8,
+      "n": 10344,
+      "pearson": -0.0107,
+      "spearman": -0.0177,
+      "t_nw": -0.9943,
+      "category": "all"
+    },
+    {
+      "lag": 9,
+      "n": 10344,
+      "pearson": -0.0094,
+      "spearman": -0.0038,
+      "t_nw": -0.9088,
+      "category": "all"
+    },
+    {
+      "lag": 10,
+      "n": 10343,
+      "pearson": 0.0003,
+      "spearman": 0.012,
+      "t_nw": 0.0343,
+      "category": "all"
+    },
+    {
+      "lag": 11,
+      "n": 10342,
+      "pearson": 0.0077,
+      "spearman": 0.0023,
+      "t_nw": 0.4689,
+      "category": "all"
+    },
+    {
+      "lag": 12,
+      "n": 10342,
+      "pearson": -0.0073,
+      "spearman": 0.0016,
+      "t_nw": -0.65,
+      "category": "all"
+    }
+  ]
+}
