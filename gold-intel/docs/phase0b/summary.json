@@ -1,0 +1,50 @@
+{
+  "marches": 51,
+  "cas": 36,
+  "paris_suspects": 1622,
+  "tests_flux_vs_reference": {
+    "72h": {
+      "cas": 36,
+      "cas_hausse": 11,
+      "cas_baisse": 3,
+      "ratio_median_usd_j": 1.0,
+      "p_wilcoxon": 0.1501
+    },
+    "24h": {
+      "cas": 36,
+      "cas_hausse": 11,
+      "cas_baisse": 3,
+      "ratio_median_usd_j": 1.0,
+      "p_wilcoxon": 0.1501
+    },
+    "6h": {
+      "cas": 36,
+      "cas_hausse": 7,
+      "cas_baisse": 6,
+      "ratio_median_usd_j": 1.0,
+      "p_wilcoxon": 0.8893
+    }
+  },
+  "portefeuilles_neufs": [
+    {
+      "window": "pré-72h",
+      "n": 696,
+      "part_neufs": 0.108,
+      "usd": 3099061.15
+    },
+    {
+      "window": "référence",
+      "n": 926,
+      "part_neufs": 0.135,
+      "usd": 5069139.486
+    }
+  ],
+  "regle_alerte": {
+    "alertes_6h_distinctes": 108,
+    "dont_T*_dans_72h": 34,
+    "dont_T*_dans_24h": 20,
+    "cas_avec_alerte_avant_T*_72h": 6,
+    "cas_total": 36,
+    "delai_median_h_avant_T*": 40.2
+  }
+}
