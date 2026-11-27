@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/camera_controller.gd" id="1_camera"]
+
+[node name="CameraRig" type="Node3D"]
+script = ExtResource("1_camera")
+
+[node name="Pivot" type="Node3D" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="Pivot"]
+projection = 1
+current = true
+size = 13.0
+far = 200.0

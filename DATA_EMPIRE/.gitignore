@@ -1,0 +1,17 @@
+# Godot 4 generated / cache files
+.godot/
+.import/
+*.translation
+
+# Exports (built artefacts are not versioned)
+export/
+build/
+*.pck
+*.zip
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json

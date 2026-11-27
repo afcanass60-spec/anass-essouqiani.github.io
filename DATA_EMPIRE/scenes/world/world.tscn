@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/world/world.gd" id="1_world"]
+[ext_resource type="PackedScene" path="res://scenes/world/camera_controller.tscn" id="2_camera"]
+
+[node name="World" type="Node3D"]
+script = ExtResource("1_world")
+
+[node name="CameraRig" parent="." instance=ExtResource("2_camera")]

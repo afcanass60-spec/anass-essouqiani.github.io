@@ -1,0 +1,8 @@
+# Normalise line endings so Windows (CRLF) and CI (LF) produce identical diffs.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.ogg binary
+*.wav binary
+*.ttf binary
+*.otf binary
